@@ -47,6 +47,9 @@ class Settings(BaseSettings):
     # Redis Cache
     REDIS_URL: str = "redis://localhost:6379"
     
+    # External APIs
+    OPENWEATHER_API_KEY: str = ""
+    
     # Vector Store
     VECTOR_DIMENSION: int = 1536
     

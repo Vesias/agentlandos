@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { 
   Music, Palette, Theater, Camera,
@@ -129,6 +130,7 @@ const culturalInstitutions = [
 ]
 
 export default function CulturePage() {
+  const router = useRouter()
   const [selectedVenue, setSelectedVenue] = useState<any>(null)
   const [favoriteEvents, setFavoriteEvents] = useState<string[]>([])
 
@@ -412,7 +414,7 @@ export default function CulturePage() {
             <Button 
               size="lg" 
               className="bg-purple-600 hover:bg-purple-700"
-              onClick={() => window.location.href = '/chat'}
+              onClick={() => router.push('/chat')}
             >
               <Mic className="w-5 h-5 mr-2" />
               Kultur-Empfehlungen
@@ -420,7 +422,7 @@ export default function CulturePage() {
             <Button 
               size="lg" 
               variant="outline"
-              onClick={() => window.location.href = '/chat'}
+              onClick={() => router.push('/chat')}
             >
               <Ticket className="w-5 h-5 mr-2" />
               Tickets buchen

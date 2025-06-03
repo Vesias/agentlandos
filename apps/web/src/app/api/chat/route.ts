@@ -1,33 +1,70 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-// Aktuelle Saarland-Daten (Stand: 02.02.2025)
-const CURRENT_SAARLAND_DATA = {
-  date: '2025-02-02',
-  events: {
-    culture: [
-      'Romeo und Julia - Staatstheater (08.02.2025, 19:30)',
-      'Winter Jazz Festival - Congresshalle (15.02.2025, 20:00)', 
-      'KI und Kunst Ausstellung - Moderne Galerie (bis 20.04.2025)',
-      'Karneval Saarbrücken (28.02-04.03.2025)'
-    ],
-    tourism: [
-      'Winter-Wanderung Saarschleife (09.02.2025)',
-      'Völklinger Hütte bei Nacht (14.02.2025)'
-    ]
-  },
-  funding: [
-    'Saarland Innovation 2025: bis 150.000€ (Deadline: 31.03.2025)',
-    'Digitalisierungsbonus Plus: bis 25.000€ (KI-Integration)',
-    'Green Tech Saarland: bis 200.000€ (Umwelttechnologie)'
-  ],
-  education: [
-    'KI-Masterstudiengang UdS (Start: WS 2025/26, Bewerbung bis 15.07.2025)',
-    'Saarland Digital Stipendium: 800€/Monat (Deadline: 30.04.2025)'
-  ],
-  admin: {
-    'Bürgeramt Saarbrücken': 'Mo-Fr 8:00-18:00, Sa 9:00-13:00 (aktuell 12 Min Wartezeit)',
-    'KFZ-Zulassung': 'Mo-Fr 7:30-15:30 (aktuell 8 Min Wartezeit)',
-    'Online-Services': '99.2% Verfügbarkeit, neue Features: KI-Chatbot, Digitale Unterschrift'
+// Alte statische Daten entfernt - wird jetzt dynamisch via getCurrentSaarlandData() geladen
+
+// ECHTE SAARLAND DATEN - Automatisch aktualisiert via Real Data Engine
+async function getCurrentSaarlandData() {
+  try {
+    // Hole echte, verifizierte Daten aus Cache
+    const baseUrl = process.env.NEXT_PUBLIC_VERCEL_URL 
+      ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
+      : 'http://localhost:3000'
+    const response = await fetch(`${baseUrl}/api/cache/real-data`)
+    
+    if (response.ok) {
+      const realData = await response.json()
+      
+      return {
+        date: new Date().toISOString().split('T')[0],
+        weather: realData.weather || {
+          today: 'Wetterdaten werden geladen...',
+          recommendation: 'Aktuelle Wetterempfehlungen folgen'
+        },
+        events: {
+          verified: realData.events || [],
+          today: realData.events?.filter((e: any) => 
+            new Date(e.date).toDateString() === new Date().toDateString()
+          ) || [],
+          thisWeek: realData.events?.filter((e: any) => {
+            const eventDate = new Date(e.date)
+            const weekFromNow = new Date()
+            weekFromNow.setDate(weekFromNow.getDate() + 7)
+            return eventDate <= weekFromNow
+          }) || []
+        },
+        funding: realData.funding || [],
+        userAnalytics: realData.userAnalytics || {
+          activeUsers: 0,
+          totalUsers: 0
+        },
+        lastUpdate: realData.lastUpdate || new Date().toISOString(),
+        source: 'real-data-engine'
+      }
+    }
+  } catch (error) {
+    console.error('Real data fetch failed:', error)
+  }
+
+  // Fallback: Minimale echte Struktur ohne fake Daten
+  return {
+    date: new Date().toISOString().split('T')[0],
+    weather: {
+      today: 'Wetterdaten momentan nicht verfügbar',
+      recommendation: 'Prüfen Sie lokale Wetterberichte'
+    },
+    events: {
+      verified: [],
+      today: [],
+      thisWeek: []
+    },
+    funding: [],
+    userAnalytics: {
+      activeUsers: 0,
+      totalUsers: 0
+    },
+    lastUpdate: new Date().toISOString(),
+    source: 'fallback-real-structure',
+    note: 'Real data temporarily unavailable'
   }
 }
 
@@ -35,45 +72,96 @@ export async function POST(request: NextRequest) {
   try {
     const { message, language = 'de', context, conversationHistory, userInterests } = await request.json()
     
+    // Hole echte Saarland-Daten
+    const CURRENT_SAARLAND_DATA = await getCurrentSaarlandData()
+    
     const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY
-    const DEEPSEEK_API_URL = 'https://api.deepseek.com/v1/chat/completions'
 
-    // Versuche DeepSeek API für intelligente, kontextbezogene Antworten
+    // PRIORITÄT 1: Neues DeepSeek Agent System
+
     if (DEEPSEEK_API_KEY) {
       try {
-        // Baue intelligenten System-Prompt mit Kontext
-        const systemPrompt = `Du bist AGENTLAND.SAARLAND - ein spezialisierter KI-Assistent für das Saarland. Heute ist der 03.06.2025.
+        console.log('🤖 Verwende DeepSeek Agent System');
+        
+        const agentResponse = await fetch(`${process.env.NEXT_PUBLIC_VERCEL_URL ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}` : 'http://localhost:3000'}/api/agents/deepseek`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            query: message,
+            userContext: {
+              context,
+              conversationHistory: conversationHistory?.slice(-3), // Letzte 3 Nachrichten
+              userInterests,
+              timestamp: new Date().toISOString()
+            },
+            agentMode: 'standard'
+          })
+        });
 
-AKTUELLE SAARLAND-DATEN (Stand: 03.06.2025):
-${JSON.stringify(CURRENT_SAARLAND_DATA, null, 2)}
+        if (agentResponse.ok) {
+          const agentData = await agentResponse.json();
+          
+          if (agentData.success) {
+            return NextResponse.json({
+              success: true,
+              message: agentData.response,
+              source: 'deepseek-agent-system',
+              confidence: 0.98,
+              processingTime: agentData.processingTime,
+              hasRealData: Object.keys(agentData.relevantData).length > 0,
+              dataUsed: Object.keys(agentData.relevantData),
+              timestamp: agentData.timestamp
+            });
+          }
+        }
+      } catch (agentError) {
+        console.error('DeepSeek Agent System Error:', agentError);
+      }
+    }
 
-GESPRÄCHSKONTEXT:
-${context ? `Du hilfst gerade im Bereich: ${context.category} (${context.agentType})` : 'Allgemeine Beratung'}
+    // FALLBACK: Direkte DeepSeek API (Legacy)
+    if (DEEPSEEK_API_KEY) {
+      try {
+        console.log('🔄 Fallback: Direkte DeepSeek API');
+        
+        // Hole aktuelle Saarland-Daten
+        const saarlandData = await getCurrentSaarlandData();
+        
+        const systemPrompt = `Du bist AGENTLAND.SAARLAND - der offizielle KI-Assistent für das Saarland. 
 
-BISHERIGE UNTERHALTUNG:
+AKTUELLER ZEITPUNKT: ${new Date().toLocaleString('de-DE', { timeZone: 'Europe/Berlin' })} (03.06.2025)
+
+AKTUELLE SAARLAND-DATEN:
+${JSON.stringify(saarlandData, null, 2)}
+
+KONTEXT:
+${context ? `Bereich: ${context.category} (${context.agentType})` : 'Allgemeine Beratung'}
+
+GESPRÄCHSHISTORIE:
 ${conversationHistory ? conversationHistory.map((msg: any) => `${msg.role}: ${msg.content}`).join('\n') : 'Neue Unterhaltung'}
 
 USER INTERESSEN:
 ${userInterests ? Object.entries(userInterests).map(([key, value]) => `${key}: ${value} Interesse`).join(', ') : 'Noch keine erkannt'}
 
-WICHTIGE ANWEISUNGEN:
-1. Antworte IMMER kontextbezogen und intelligent
-2. Wenn nach "schwimmen", "baden", "wassersport" gefragt wird → Empfehle Bostalsee, Saarschleife Wassersport, nicht Kulturerbe!
-3. Wenn nach "sommer aktivitäten" gefragt wird → Open Air Events, Wassersport, Wanderungen
-4. Wenn nach "förderung" gefragt wird → Aktuelle KI-Förderung mit 50% Bonus erwähnen
-5. Nutze die bisherige Unterhaltung für bessere Antworten
-6. Sei spezifisch und hilfreich mit aktuellen Terminen und Preisen
+WICHTIGE REGELN:
+1. Nutze NUR echte Daten aus AKTUELLE SAARLAND-DATEN
+2. Bei "schwimmen/baden" → Wassersport-Angebote (Bostalsee, Saarschleife)
+3. Bei Verkehrsfragen → A6/A620 Status erwähnen
+4. Bei Events → Heute/Diese Woche priorisieren
+5. KEINE erfundenen Daten verwenden!
 
-Antworte freundlich, präzise und kontextbezogen auf Deutsch!`
+Antworte saarländisch-freundlich aber professionell auf Deutsch!`;
 
-        const deepseekResponse = await fetch(DEEPSEEK_API_URL, {
+        const deepseekResponse = await fetch('https://api.deepseek.com/v1/chat/completions', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${DEEPSEEK_API_KEY}`
           },
           body: JSON.stringify({
-            model: 'deepseek-chat',
+            model: 'deepseek-r1-0528', // Upgraded to R1!
             messages: [
               {
                 role: 'system',
@@ -84,25 +172,25 @@ Antworte freundlich, präzise und kontextbezogen auf Deutsch!`
                 content: message
               }
             ],
-            temperature: 0.7,
+            temperature: 0.1, // Präziser für Behördendaten
             max_tokens: 2000
           })
-        })
+        });
 
         if (deepseekResponse.ok) {
-          const deepseekData = await deepseekResponse.json()
-          const aiMessage = deepseekData.choices[0]?.message?.content || 'Entschuldigung, ich konnte keine Antwort generieren.'
+          const deepseekData = await deepseekResponse.json();
+          const aiMessage = deepseekData.choices[0]?.message?.content || 'Entschuldigung, ich konnte keine Antwort generieren.';
           
           return NextResponse.json({
             success: true,
             message: aiMessage,
-            source: 'deepseek-ai',
-            confidence: 0.95,
+            source: 'deepseek-r1-direct',
+            confidence: 0.92,
             timestamp: new Date().toISOString()
-          })
+          });
         }
       } catch (deepseekError) {
-        console.error('DeepSeek API Error:', deepseekError)
+        console.error('DeepSeek Direct API Error:', deepseekError);
       }
     }
 

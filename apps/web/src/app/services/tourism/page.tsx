@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { 
   MapPin, Calendar, Camera, Compass, Star, 
@@ -73,6 +74,7 @@ const activities = [
 ]
 
 export default function TourismPage() {
+  const router = useRouter()
   const [selectedAttraction, setSelectedAttraction] = useState<number | null>(null)
   const [favorites, setFavorites] = useState<number[]>([])
 
@@ -239,7 +241,7 @@ export default function TourismPage() {
             <Button 
               size="lg" 
               className="bg-green-600 hover:bg-green-700"
-              onClick={() => window.location.href = '/chat'}
+              onClick={() => router.push('/chat')}
             >
               <Compass className="w-5 h-5 mr-2" />
               Reise planen
@@ -247,7 +249,7 @@ export default function TourismPage() {
             <Button 
               size="lg" 
               variant="outline"
-              onClick={() => window.location.href = '/chat'}
+              onClick={() => router.push('/chat')}
             >
               <Info className="w-5 h-5 mr-2" />
               Mehr erfahren

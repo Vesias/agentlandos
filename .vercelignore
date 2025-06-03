@@ -1,0 +1,46 @@
+# Development files
+.git
+.github
+.husky
+.vscode
+.env
+.env.local
+
+# Documentation
+documentation/
+*.md
+!README.md
+
+# Development dependencies
+node_modules/
+.turbo/
+.next/
+dist/
+build/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+venv/
+env/
+.venv/
+
+# Tests
+tests/
+test/
+*.test.js
+*.test.ts
+*.spec.js
+*.spec.ts
+
+# IDE
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db

@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { 
   Building2, TrendingUp, Euro, Users, 
@@ -88,6 +89,7 @@ const statistics = [
 ]
 
 export default function BusinessPage() {
+  const router = useRouter()
   const [selectedProgram, setSelectedProgram] = useState<number | null>(null)
   const [applicationStep, setApplicationStep] = useState(0)
 
@@ -281,7 +283,7 @@ export default function BusinessPage() {
             <Button 
               size="lg" 
               className="bg-white text-blue-900 hover:bg-gray-100"
-              onClick={() => window.location.href = '/chat'}
+              onClick={() => router.push('/chat')}
             >
               <Briefcase className="w-5 h-5 mr-2" />
               Beratung starten

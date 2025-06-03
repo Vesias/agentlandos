@@ -1,22 +1,39 @@
 {
+  "framework": "nextjs",
   "buildCommand": "cd apps/web && npm install && npm run build",
   "outputDirectory": "apps/web/.next",
+  "devCommand": "npm run dev",
   "installCommand": "npm install",
   "functions": {
-    "apps/api/api/health.py": {
-      "runtime": "python3.9"
+    "api/health.py": {
+      "runtime": "python3.9",
+      "maxDuration": 10
     },
-    "apps/api/api/saartasks.py": {
-      "runtime": "python3.9"
+    "api/saartasks.py": {
+      "runtime": "python3.9",
+      "maxDuration": 30
     },
-    "apps/api/api/saarag.py": {
-      "runtime": "python3.9"
+    "api/saarag.py": {
+      "runtime": "python3.9",
+      "maxDuration": 30
     }
   },
   "rewrites": [
     {
-      "source": "/api/(.*)",
-      "destination": "/apps/api/api/$1"
+      "source": "/api/:path*",
+      "destination": "/api/:path*"
     }
-  ]
+  ],
+  "headers": [
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        { "key": "Access-Control-Allow-Credentials", "value": "true" },
+        { "key": "Access-Control-Allow-Origin", "value": "*" },
+        { "key": "Access-Control-Allow-Methods", "value": "GET,DELETE,PATCH,POST,PUT" },
+        { "key": "Access-Control-Allow-Headers", "value": "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version" }
+      ]
+    }
+  ],
+  "regions": ["fra1"]
 }

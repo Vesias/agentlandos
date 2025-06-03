@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { 
   Shield, FileText, Clock, CheckCircle,
@@ -152,6 +153,7 @@ const onlineServices = [
 ]
 
 export default function AdminPage() {
+  const router = useRouter()
   const [selectedService, setSelectedService] = useState<any>(null)
   const [showOnlineOnly, setShowOnlineOnly] = useState(false)
 
@@ -358,7 +360,7 @@ export default function AdminPage() {
             <Button 
               size="lg" 
               className="bg-white text-blue-900 hover:bg-gray-100"
-              onClick={() => window.location.href = '/chat'}
+              onClick={() => router.push('/chat')}
             >
               <Users className="w-5 h-5 mr-2" />
               KI-Assistent starten

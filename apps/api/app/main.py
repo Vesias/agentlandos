@@ -10,7 +10,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.config import settings
 from app.db.database import create_db_and_tables, engine
-from app.api import agents_router, auth, health, users, enhanced_agents
+from app.api import agents_router, auth, health, users, enhanced_agents, realtime
 
 
 @asynccontextmanager
@@ -54,6 +54,7 @@ app.include_router(auth.router, prefix="/api/auth", tags=["Authentifizierung"])
 app.include_router(users.router, prefix="/api/users", tags=["Benutzer"])
 app.include_router(agents_router.router, prefix="/api/v1", tags=["KI-Agenten"])
 app.include_router(enhanced_agents.router, tags=["Enhanced KI-Agenten"])
+app.include_router(realtime.router, tags=["Echtzeit-Daten"])
 
 
 @app.get("/", tags=["Root"])
