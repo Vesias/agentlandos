@@ -1,0 +1,90 @@
+name: 🐛 Bug Report
+description: Melde einen Bug für AGENTLAND.SAARLAND
+title: "[BUG] "
+labels: ["bug", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        # 🏛️ AGENTLAND.SAARLAND Bug Report
+        Danke für deine Mithilfe bei der Verbesserung unserer souveränen KI-Technologie!
+
+  - type: input
+    id: component
+    attributes:
+      label: 🧩 Betroffene Komponente
+      description: Welcher Teil von AGENTLAND.SAARLAND ist betroffen?
+      placeholder: z.B. PLZ-Finder, Tourism Agent, Admin Dashboard
+    validations:
+      required: true
+
+  - type: textarea
+    id: bug-description
+    attributes:
+      label: 🐛 Bug Beschreibung
+      description: Beschreibe den Bug so detailliert wie möglich
+      placeholder: Was ist passiert? Was hast du erwartet?
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: 🔄 Reproduktionsschritte
+      description: Schritt-für-Schritt Anleitung um den Bug zu reproduzieren
+      placeholder: |
+        1. Gehe zu '...'
+        2. Klicke auf '...'
+        3. Scroll runter zu '...'
+        4. Bug tritt auf
+    validations:
+      required: true
+
+  - type: dropdown
+    id: browsers
+    attributes:
+      label: 🌐 Browser
+      description: In welchen Browsern tritt der Bug auf?
+      multiple: true
+      options:
+        - Chrome
+        - Firefox
+        - Safari
+        - Edge
+        - Mobile Safari
+        - Chrome Mobile
+    validations:
+      required: true
+
+  - type: dropdown
+    id: severity
+    attributes:
+      label: 🎯 Schweregrad
+      description: Wie kritisch ist dieser Bug?
+      options:
+        - "🔴 Critical - System nicht nutzbar"
+        - "🟠 High - Wichtige Funktionen betroffen"
+        - "🟡 Medium - Einschränkungen vorhanden"
+        - "🟢 Low - Kleine Verbesserung"
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: 📎 Zusätzlicher Kontext
+      description: Screenshots, Logs, oder andere hilfreiche Informationen
+      placeholder: Weitere Details die helfen könnten...
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: ✅ Bestätigung
+      description: Bitte bestätige folgende Punkte
+      options:
+        - label: Ich habe nach ähnlichen Issues gesucht
+          required: true
+        - label: Ich habe die Dokumentation gelesen
+          required: true
+        - label: Dies ist ein reproduzierbarer Bug
+          required: true

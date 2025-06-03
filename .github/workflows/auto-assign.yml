@@ -1,0 +1,64 @@
+name: Auto-assign Issues and PRs
+
+on:
+  issues:
+    types: [opened]
+  pull_request:
+    types: [opened]
+
+jobs:
+  auto-assign:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Auto-assign based on labels
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const issueNumber = context.issue?.number || context.payload.pull_request?.number;
+            
+            if (!issueNumber) return;
+            
+            // Define assignment rules based on labels
+            const assignmentRules = {
+              'ai': ['vesias'],
+              'saarland-data': ['vesias'],
+              'bug': ['vesias'],
+              'security': ['vesias'],
+              'documentation': ['vesias']
+            };
+            
+            // Get labels from issue/PR
+            const { data: issue } = await github.rest.issues.get({
+              owner,
+              repo,
+              issue_number: issueNumber
+            });
+            
+            const labels = issue.labels.map(label => label.name);
+            
+            // Find assignees based on labels
+            let assignees = new Set();
+            
+            for (const label of labels) {
+              if (assignmentRules[label]) {
+                assignmentRules[label].forEach(assignee => assignees.add(assignee));
+              }
+            }
+            
+            // If no specific assignee found, assign to default maintainer
+            if (assignees.size === 0) {
+              assignees.add('vesias');
+            }
+            
+            // Assign the issue/PR
+            if (assignees.size > 0) {
+              await github.rest.issues.addAssignees({
+                owner,
+                repo,
+                issue_number: issueNumber,
+                assignees: Array.from(assignees)
+              });
+              
+              console.log(`Assigned to: ${Array.from(assignees).join(', ')}`);
+            }

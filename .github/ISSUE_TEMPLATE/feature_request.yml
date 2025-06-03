@@ -1,0 +1,107 @@
+name: ✨ Feature Request
+description: Schlage eine neue Funktion für AGENTLAND.SAARLAND vor
+title: "[FEATURE] "
+labels: ["enhancement", "feature-request"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        # 🏛️ AGENTLAND.SAARLAND Feature Request
+        Teile deine Ideen für souveräne KI-Technologie aus dem Saarland!
+
+  - type: dropdown
+    id: category
+    attributes:
+      label: 🎯 Feature-Kategorie
+      description: Welche Art von Feature schlägst du vor?
+      options:
+        - "🤖 AI/Agent - Neue KI-Funktionalität"
+        - "📍 Saarland Data - Regionale Daten & Services"
+        - "🎨 UI/UX - Benutzeroberfläche"
+        - "🔧 API - Backend/API Erweiterung"
+        - "📊 Analytics - Datenanalyse & Reporting"
+        - "🔒 Security - Sicherheits-Features"
+        - "⚡ Performance - Leistungsverbesserung"
+        - "🏛️ Admin - Verwaltungsfunktionen"
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: 🤔 Problem/Bedürfnis
+      description: Welches Problem löst dieses Feature? Warum ist es wichtig?
+      placeholder: Beschreibe die Herausforderung oder das Bedürfnis...
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: 💡 Vorgeschlagene Lösung
+      description: Wie könnte dieses Feature implementiert werden?
+      placeholder: Beschreibe deine Lösungsidee detailliert...
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: 🔄 Alternative Lösungen
+      description: Hast du andere Lösungsansätze bedacht?
+      placeholder: Andere Wege um das Problem zu lösen...
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: 🚀 Priorität
+      description: Wie wichtig ist dieses Feature?
+      options:
+        - "🔴 Critical - Blockiert wichtige Workflows"
+        - "🟠 High - Würde Produktivität stark verbessern"
+        - "🟡 Medium - Nice-to-have Verbesserung"
+        - "🟢 Low - Kleine Verbesserung"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: saarland-relevance
+    attributes:
+      label: 🏛️ Saarland-Relevanz
+      description: Wie relevant ist dieses Feature für das Saarland?
+      options:
+        - "🎯 Hoch - Spezifisch für Saarland-Nutzer"
+        - "🌍 Medium - Allgemein nützlich mit Saarland-Bezug"
+        - "⚡ Niedrig - Allgemeine Verbesserung"
+    validations:
+      required: true
+
+  - type: textarea
+    id: user-story
+    attributes:
+      label: 👤 User Story
+      description: Beschreibe das Feature aus Nutzersicht
+      placeholder: |
+        Als [Nutzertyp]
+        möchte ich [Feature]
+        damit ich [Nutzen]
+
+  - type: textarea
+    id: technical-considerations
+    attributes:
+      label: 🔧 Technische Überlegungen
+      description: Technische Aspekte, Abhängigkeiten oder Herausforderungen
+      placeholder: API-Integrationen, Performance-Aspekte, Sicherheit...
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: ✅ Bestätigung
+      description: Bitte bestätige folgende Punkte
+      options:
+        - label: Ich habe nach ähnlichen Feature Requests gesucht
+          required: true
+        - label: Dieses Feature passt zur AGENTLAND.SAARLAND Vision
+          required: true
+        - label: Ich bin bereit bei der Umsetzung zu helfen
+          required: false
