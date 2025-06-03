@@ -9,7 +9,9 @@ import uuid
 
 from app.services.real_data import (
     SaarlandDataService,
-    AnalyticsService
+    AnalyticsService,
+    SaarlandPLZService,
+    MapsService
 )
 from app.core.config import settings
 
@@ -163,6 +165,185 @@ async def get_user_count():
                 "total_users": stats.get("total_users", 0),
                 "timestamp": datetime.utcnow().isoformat()
             },
+            "source": "real_time"
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+
+@router.get("/plz/{plz}")
+async def get_plz_info(plz: str):
+    """Gibt Informationen und zuständige Behörden für eine PLZ zurück"""
+    try:
+        plz_service = SaarlandPLZService()
+        info = plz_service.get_nearest_services(plz)
+        
+        if "error" in info:
+            raise HTTPException(status_code=404, detail=f"PLZ {plz} nicht gefunden")
+        
+        return {
+            "status": "success",
+            "data": info,
+            "source": "real_time"
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/plz/{plz}/behoerde/{service_type}")
+async def get_behoerde_for_plz(plz: str, service_type: str):
+    """Gibt die zuständige Behörde für eine PLZ und einen Service-Typ zurück"""
+    try:
+        plz_service = SaarlandPLZService()
+        behoerde = plz_service.get_behoerde_by_plz(plz, service_type)
+        
+        if not behoerde:
+            raise HTTPException(
+                status_code=404, 
+                detail=f"Keine {service_type} für PLZ {plz} gefunden"
+            )
+        
+        # Füge Maps-Integration hinzu
+        maps_service = MapsService()
+        if behoerde.get("koordinaten"):
+            lat, lon = behoerde["koordinaten"]["lat"], behoerde["koordinaten"]["lon"]
+            behoerde["map_url"] = maps_service.generate_static_map_url(
+                [{"lat": lat, "lon": lon}]
+            )
+            behoerde["directions"] = maps_service.get_route_url(
+                49.2354, 6.9969,  # Beispiel-Startpunkt
+                lat, lon
+            )
+        
+        return {
+            "status": "success",
+            "data": behoerde,
+            "source": "real_time"
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/plz/search")
+async def search_plz(query: str = Query(..., description="PLZ oder Stadtname")):
+    """Sucht nach PLZ oder Stadtnamen"""
+    try:
+        plz_service = SaarlandPLZService()
+        results = plz_service.search_plz(query)
+        
+        return {
+            "status": "success",
+            "data": {
+                "query": query,
+                "results": results,
+                "count": len(results)
+            },
+            "source": "real_time"
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/maps/config")
+async def get_map_config():
+    """Gibt Kartenkonfiguration für das Saarland zurück"""
+    try:
+        maps_service = MapsService()
+        config = maps_service.get_map_config()
+        
+        return {
+            "status": "success",
+            "data": config,
+            "source": "real_time"
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/maps/pois")
+async def get_points_of_interest(
+    category: Optional[str] = Query(None, description="POI-Kategorie")
+):
+    """Gibt Points of Interest zurück"""
+    try:
+        maps_service = MapsService()
+        
+        if category:
+            pois = maps_service.get_pois_by_category(category)
+        else:
+            pois = maps_service.get_all_pois()
+        
+        return {
+            "status": "success",
+            "data": pois,
+            "source": "real_time"
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/maps/event/{event_id}")
+async def get_event_location(event_id: str):
+    """Gibt Standort- und Ticket-Informationen für ein Event zurück"""
+    try:
+        maps_service = MapsService()
+        location = maps_service.get_event_location(event_id)
+        
+        if not location:
+            raise HTTPException(status_code=404, detail="Event-Location nicht gefunden")
+        
+        return {
+            "status": "success",
+            "data": location,
+            "source": "real_time"
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/maps/parking")
+async def get_parking_nearby(
+    lat: float = Query(..., description="Latitude"),
+    lon: float = Query(..., description="Longitude")
+):
+    """Gibt Parkplätze in der Nähe zurück"""
+    try:
+        maps_service = MapsService()
+        parking = maps_service.get_nearby_parking(lat, lon)
+        
+        return {
+            "status": "success",
+            "data": {
+                "location": {"lat": lat, "lon": lon},
+                "parking": parking,
+                "count": len(parking)
+            },
+            "source": "real_time"
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/maps/emergency")
+async def get_emergency_services(
+    lat: float = Query(..., description="Latitude"),
+    lon: float = Query(..., description="Longitude")
+):
+    """Gibt Notdienste in der Nähe zurück"""
+    try:
+        maps_service = MapsService()
+        services = maps_service.get_emergency_services(lat, lon)
+        
+        return {
+            "status": "success",
+            "data": services,
             "source": "real_time"
         }
     except Exception as e:
