@@ -1,0 +1,40 @@
+# 🏛️ AGENTLAND.SAARLAND Commit Message
+# 
+# Format: <emoji> <type>: <description>
+#
+# Typen:
+# ✨ FEAT: Neues Feature
+# 🐛 FIX: Bugfix  
+# 💡 UPDATE: Verbesserung bestehender Funktionalität
+# 🔧 REFACTOR: Code-Refactoring
+# 📚 DOCS: Dokumentation
+# 🧪 TEST: Tests hinzufügen/ändern
+# 🔒 SECURITY: Sicherheits-Updates
+# ⚡ PERF: Performance-Verbesserungen
+# 🎨 STYLE: Code-Formatting
+# 🚀 DEPLOY: Deployment-bezogen
+# 📦 DEPS: Dependencies aktualisieren
+# 🏗️ BUILD: Build-System Änderungen
+# 🤖 AI: KI/Agent-spezifische Updates
+# 📍 DATA: Daten-Updates (PLZ, etc.)
+# 🏛️ ADMIN: Administrative Änderungen
+#
+# Beispiele:
+# ✨ FEAT: Saarland PLZ-Finder mit Echtzeitdaten
+# 🐛 FIX: Navigation Bug in Tourism Agent behoben
+# 💡 UPDATE: DeepSeek Agent Performance optimiert
+# 🤖 AI: Neue Spezialisierungs-Agenten implementiert
+#
+# Regeln:
+# - Erste Zeile: max 72 Zeichen
+# - Imperativ verwenden ("Add" nicht "Added")
+# - Deutsch für Saarland-spezifische Features
+# - Body für komplexe Änderungen (optional)
+# - Footer für Breaking Changes und Issues
+#
+# Breaking Changes:
+# BREAKING CHANGE: <description>
+#
+# Issues schließen:
+# Closes #123
+# Fixes #456

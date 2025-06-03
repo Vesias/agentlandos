@@ -1,0 +1,157 @@
+name: AGENTLAND.SAARLAND CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop, 'feature/*', 'hotfix/*' ]
+  pull_request:
+    branches: [ main, develop ]
+
+env:
+  NODE_VERSION: '18'
+  PYTHON_VERSION: '3.9'
+
+jobs:
+  # Code Quality & Testing
+  quality-check:
+    name: 🔍 Code Quality Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📦 Checkout Code
+        uses: actions/checkout@v4
+        
+      - name: 🛠️ Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          
+      - name: 🐍 Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          
+      - name: 📥 Install Dependencies
+        run: |
+          npm install
+          pip install -r requirements.txt
+          
+      - name: 🔬 Run Linting
+        run: npm run lint
+        
+      - name: 🧪 Run Tests
+        run: npm run test
+        
+      - name: 📝 Type Check
+        run: npm run typecheck
+
+  # Build Verification
+  build-check:
+    name: 🏗️ Build Verification
+    runs-on: ubuntu-latest
+    needs: quality-check
+    steps:
+      - name: 📦 Checkout Code
+        uses: actions/checkout@v4
+        
+      - name: 🛠️ Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          
+      - name: 📥 Install Dependencies
+        run: npm install
+        
+      - name: 🏗️ Build Application
+        run: npm run build
+
+  # Security Scan
+  security-scan:
+    name: 🛡️ Security Scan
+    runs-on: ubuntu-latest
+    needs: quality-check
+    steps:
+      - name: 📦 Checkout Code
+        uses: actions/checkout@v4
+        
+      - name: 🔍 Run Security Audit
+        run: |
+          npm audit --audit-level=moderate
+          
+  # Deploy to Preview (Feature Branches)
+  deploy-preview:
+    name: 🚀 Deploy Preview
+    runs-on: ubuntu-latest
+    needs: [quality-check, build-check]
+    if: github.ref != 'refs/heads/main' && github.ref != 'refs/heads/develop'
+    steps:
+      - name: 📦 Checkout Code
+        uses: actions/checkout@v4
+        
+      - name: 🚀 Deploy to Vercel Preview
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          scope: ${{ secrets.VERCEL_ORG_ID }}
+
+  # Deploy to Staging (Develop Branch)
+  deploy-staging:
+    name: 🎭 Deploy Staging
+    runs-on: ubuntu-latest
+    needs: [quality-check, build-check, security-scan]
+    if: github.ref == 'refs/heads/develop'
+    environment: staging
+    steps:
+      - name: 📦 Checkout Code
+        uses: actions/checkout@v4
+        
+      - name: 🎭 Deploy to Vercel Staging
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          vercel-args: '--prod'
+          scope: ${{ secrets.VERCEL_ORG_ID }}
+
+  # Deploy to Production (Main Branch)
+  deploy-production:
+    name: 🌟 Deploy Production
+    runs-on: ubuntu-latest
+    needs: [quality-check, build-check, security-scan]
+    if: github.ref == 'refs/heads/main'
+    environment: production
+    steps:
+      - name: 📦 Checkout Code
+        uses: actions/checkout@v4
+        
+      - name: 🌟 Deploy to Vercel Production
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          vercel-args: '--prod'
+          scope: ${{ secrets.VERCEL_ORG_ID }}
+          
+      - name: 📊 Post-Deploy Health Check
+        run: |
+          sleep 30
+          curl -f https://agentland.saarland/api/health || exit 1
+
+  # Notification
+  notify:
+    name: 📢 Deployment Notification
+    runs-on: ubuntu-latest
+    needs: [deploy-production]
+    if: always()
+    steps:
+      - name: 📢 Success Notification
+        if: needs.deploy-production.result == 'success'
+        run: echo "✅ AGENTLAND.SAARLAND wurde erfolgreich deployed!"
+        
+      - name: 📢 Failure Notification
+        if: needs.deploy-production.result == 'failure'
+        run: echo "❌ Deployment fehlgeschlagen!"
