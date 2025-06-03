@@ -2,7 +2,41 @@
 
 import React, { useState } from 'react';
 import { Search, MapPin, Phone, Mail, Globe, Clock, Navigation, CheckCircle, Building2, ExternalLink } from 'lucide-react';
-import { getPLZInfo, findNearestBehoerde, isValidSaarlandPLZ, BehoerdeInfo } from '@/lib/saarland-plz-data';
+import { BehoerdeInfo, PLZInfo } from '@/lib/saarland-plz-data';
+import { saarlandCompletePLZ } from '@/lib/saarland-plz-complete';
+
+// Hilfsfunktionen für die komplette PLZ-Datenbank
+function isValidSaarlandPLZ(plz: string): boolean {
+  return plz in saarlandCompletePLZ;
+}
+
+function getPLZInfo(plz: string): PLZInfo | null {
+  return saarlandCompletePLZ[plz] || null;
+}
+
+function findNearestBehoerde(plz: string, behoerdeType: string): BehoerdeInfo | null {
+  // Wenn PLZ direkt gefunden mit Behörde
+  if (saarlandCompletePLZ[plz] && saarlandCompletePLZ[plz].behoerden[behoerdeType]) {
+    return saarlandCompletePLZ[plz].behoerden[behoerdeType];
+  }
+  
+  // Suche in nahegelegenen PLZ (gleicher Kreis)
+  const currentKreis = saarlandCompletePLZ[plz]?.kreis;
+  if (currentKreis) {
+    // Finde alle PLZ im gleichen Kreis
+    const kreisPlzList = Object.entries(saarlandCompletePLZ)
+      .filter(([_, info]) => info.kreis === currentKreis)
+      .map(([plz, _]) => plz);
+      
+    for (const nearbyPlz of kreisPlzList) {
+      if (saarlandCompletePLZ[nearbyPlz].behoerden[behoerdeType]) {
+        return saarlandCompletePLZ[nearbyPlz].behoerden[behoerdeType];
+      }
+    }
+  }
+  
+  return null;
+}
 
 export default function PLZServiceFinder() {
   const [plz, setPLZ] = useState('');
