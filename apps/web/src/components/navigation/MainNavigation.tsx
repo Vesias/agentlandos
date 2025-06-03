@@ -10,6 +10,7 @@ import {
   Globe, ChevronDown
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import LiveUserCounter from '@/components/ui/live-user-counter'
 
 const navigationItems = [
   { name: 'Home', href: '/', icon: Home },
@@ -93,6 +94,7 @@ export default function MainNavigation() {
 
             {/* Navigation Items */}
             <div className="flex items-center space-x-8">
+              <LiveUserCounter />
               {navigationItems.map((item) => (
                 <div key={item.name} className="relative">
                   {item.submenu ? (

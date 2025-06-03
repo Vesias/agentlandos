@@ -305,8 +305,43 @@ Ich helfe Ihnen gerne bei Fragen zu:
     setInput('')
     setIsLoading(true)
 
-    // Kleine Verzögerung für bessere UX
-    setTimeout(() => {
+    try {
+      // Versuche zuerst DeepSeek API für intelligente Antworten
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          message: currentInput,
+          language: 'de',
+          context: currentContext ? {
+            id: currentContext.id,
+            category: currentContext.category,
+            agentType: currentContext.agentType
+          } : undefined,
+          conversationHistory: messages.slice(-4), // Letzte 4 Nachrichten für Kontext
+          userInterests: userInterests
+        })
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+        setMessages(prev => [...prev, {
+          id: Date.now().toString(),
+          role: 'assistant',
+          content: data.message || data.response,
+          timestamp: new Date()
+        }])
+      } else {
+        throw new Error('API not available')
+      }
+    } catch (error) {
+      console.error('DeepSeek API error, using fallback:', error)
+      
+      // Fallback mit verbesserter Logik
+      const interests = analyzeUserInterests(currentInput)
+      const category = determineCategory(currentInput, interests)
       const response = generateResponse(currentInput)
       
       setMessages(prev => [...prev, {
@@ -315,9 +350,9 @@ Ich helfe Ihnen gerne bei Fragen zu:
         content: response,
         timestamp: new Date()
       }])
-      
+    } finally {
       setIsLoading(false)
-    }, 800)
+    }
   }
 
   return (

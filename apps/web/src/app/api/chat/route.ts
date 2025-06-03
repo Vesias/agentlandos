@@ -33,22 +33,153 @@ const CURRENT_SAARLAND_DATA = {
 
 export async function POST(request: NextRequest) {
   try {
-    const { message, language = 'de', context } = await request.json()
+    const { message, language = 'de', context, conversationHistory, userInterests } = await request.json()
+    
+    const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY
+    const DEEPSEEK_API_URL = 'https://api.deepseek.com/v1/chat/completions'
 
-    // Fallback: Intelligente Mock-Antworten mit aktuellen Daten
+    // Versuche DeepSeek API für intelligente, kontextbezogene Antworten
+    if (DEEPSEEK_API_KEY) {
+      try {
+        // Baue intelligenten System-Prompt mit Kontext
+        const systemPrompt = `Du bist AGENTLAND.SAARLAND - ein spezialisierter KI-Assistent für das Saarland. Heute ist der 03.06.2025.
+
+AKTUELLE SAARLAND-DATEN (Stand: 03.06.2025):
+${JSON.stringify(CURRENT_SAARLAND_DATA, null, 2)}
+
+GESPRÄCHSKONTEXT:
+${context ? `Du hilfst gerade im Bereich: ${context.category} (${context.agentType})` : 'Allgemeine Beratung'}
+
+BISHERIGE UNTERHALTUNG:
+${conversationHistory ? conversationHistory.map((msg: any) => `${msg.role}: ${msg.content}`).join('\n') : 'Neue Unterhaltung'}
+
+USER INTERESSEN:
+${userInterests ? Object.entries(userInterests).map(([key, value]) => `${key}: ${value} Interesse`).join(', ') : 'Noch keine erkannt'}
+
+WICHTIGE ANWEISUNGEN:
+1. Antworte IMMER kontextbezogen und intelligent
+2. Wenn nach "schwimmen", "baden", "wassersport" gefragt wird → Empfehle Bostalsee, Saarschleife Wassersport, nicht Kulturerbe!
+3. Wenn nach "sommer aktivitäten" gefragt wird → Open Air Events, Wassersport, Wanderungen
+4. Wenn nach "förderung" gefragt wird → Aktuelle KI-Förderung mit 50% Bonus erwähnen
+5. Nutze die bisherige Unterhaltung für bessere Antworten
+6. Sei spezifisch und hilfreich mit aktuellen Terminen und Preisen
+
+Antworte freundlich, präzise und kontextbezogen auf Deutsch!`
+
+        const deepseekResponse = await fetch(DEEPSEEK_API_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${DEEPSEEK_API_KEY}`
+          },
+          body: JSON.stringify({
+            model: 'deepseek-chat',
+            messages: [
+              {
+                role: 'system',
+                content: systemPrompt
+              },
+              {
+                role: 'user',
+                content: message
+              }
+            ],
+            temperature: 0.7,
+            max_tokens: 2000
+          })
+        })
+
+        if (deepseekResponse.ok) {
+          const deepseekData = await deepseekResponse.json()
+          const aiMessage = deepseekData.choices[0]?.message?.content || 'Entschuldigung, ich konnte keine Antwort generieren.'
+          
+          return NextResponse.json({
+            success: true,
+            message: aiMessage,
+            source: 'deepseek-ai',
+            confidence: 0.95,
+            timestamp: new Date().toISOString()
+          })
+        }
+      } catch (deepseekError) {
+        console.error('DeepSeek API Error:', deepseekError)
+      }
+    }
+
+    // Fallback: Verbesserte lokale Antworten mit besserer Logik
     const keywords = message.toLowerCase()
     let response = ''
     let agentName = context?.agentType || 'NavigatorAgent'
 
-    // Verwende Kontext für bessere Kategorisierung
-    const category = context?.category || 
-      (keywords.includes('tour') || keywords.includes('sehen') || keywords.includes('reise') ? 'tourism' :
-       keywords.includes('förder') || keywords.includes('business') || keywords.includes('unternehmen') ? 'business' :
-       keywords.includes('kultur') || keywords.includes('theater') || keywords.includes('konzert') ? 'culture' :
-       keywords.includes('amt') || keywords.includes('behörde') || keywords.includes('antrag') ? 'admin' :
-       keywords.includes('studium') || keywords.includes('bildung') || keywords.includes('universität') ? 'education' : 'general')
+    // INTELLIGENTE KATEGORISIERUNG - Spezifische Keywords haben Priorität
+    let category = 'general'
+    
+    // Erste Priorität: Sehr spezifische Aktivitäten
+    if (keywords.includes('schwimm') || keywords.includes('baden') || keywords.includes('wassersport') || keywords.includes('see') || keywords.includes('strand')) {
+      category = 'tourism-water'
+    } else if (keywords.includes('wandern') || keywords.includes('spazier') || keywords.includes('lauf') || keywords.includes('outdoor')) {
+      category = 'tourism-outdoor'
+    } else if (keywords.includes('förder') || keywords.includes('geld') || keywords.includes('finanz') || keywords.includes('ki') && (keywords.includes('startup') || keywords.includes('business'))) {
+      category = 'business'
+    } else if (keywords.includes('festival') || keywords.includes('konzert') || keywords.includes('theater') || keywords.includes('kultur')) {
+      category = 'culture'
+    } else if (keywords.includes('studium') || keywords.includes('master') || keywords.includes('stipendium') || keywords.includes('uni')) {
+      category = 'education'
+    } else if (keywords.includes('amt') || keywords.includes('ausweis') || keywords.includes('antrag') || keywords.includes('behörde')) {
+      category = 'admin'
+    } else if (context?.category) {
+      category = context.category
+    } else if (keywords.includes('tour') || keywords.includes('sehen') || keywords.includes('reise') || keywords.includes('aktivität')) {
+      category = 'tourism'
+    }
 
     switch(category) {
+      case 'tourism-water':
+        agentName = 'TourismAgent'
+        response = `🏊‍♂️ Schwimmen & Wassersport im Saarland - Stand 03.06.2025:
+
+**PERFEKT ZUM BADEN & SCHWIMMEN:**
+🌊 **Bostalsee - Der Wassersport-Hotspot**
+• Naturbadestrand mit Sandstrand (8€ Eintritt)
+• Wassersport: SUP, Kajak, Segeln, Windsurfen
+• Beachvolleyball & Grillplätze
+• Öffnungszeiten: täglich 9:00-20:00
+
+🏊‍♀️ **Saarschleife Wassersport**
+• Schwimmen in der Saar (kostenlos)
+• Kajakverleih direkt vor Ort (20€/Tag)
+• Geführte Schwimmtouren verfügbar
+
+🏖️ **Weitere Bademöglichkeiten:**
+• Losheimer Stausee - Familienbadestelle
+• Nohner Mühle - Naturbadestelle mit Grillmöglichkeit
+
+Bei dem perfekten Sommerwetter heute ideal zum Baden! Welcher Wassersport interessiert Sie?`
+        break
+
+      case 'tourism-outdoor':
+        agentName = 'TourismAgent'
+        response = `🥾 Outdoor & Wandern im Saarland - Stand 03.06.2025:
+
+**BESTE WANDERROUTEN FÜR HEUTE:**
+🌞 **Saarschleife Panoramaweg** (2,5h, mittelschwer)
+• Start: Cloef-Atrium Mettlach
+• Highlight: Baumwipfelpfad & Aussichtspunkt
+• Perfekt bei Sonnenschein!
+
+🚶‍♀️ **Völklinger Hütte Rundweg** (1,5h, leicht)
+• Industrie-Kultur-Wanderung
+• UNESCO Welterbe entdecken
+• Führungen um 14:00 & 16:00
+
+🌳 **Bostalsee Rundweg** (3h, leicht)
+• 7km um den See herum
+• Badestops möglich
+• Fahrradverleih verfügbar (12€/Tag)
+
+**TIPP:** Bei dem schönen Wetter unbedingt Sonnenschutz mitbringen! Welche Route interessiert Sie?`
+        break
+
       case 'tourism':
         agentName = 'TourismAgent'
         response = `🏞️ Tourismus im Saarland - Stand 02.02.2025:
