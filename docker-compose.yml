@@ -1,0 +1,102 @@
+version: '3.9'
+
+services:
+  # PostgreSQL mit pgvector
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: agentland-postgres
+    environment:
+      POSTGRES_USER: agentland
+      POSTGRES_PASSWORD: saarland2024
+      POSTGRES_DB: agentland_saarland
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./infrastructure/docker/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U agentland"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - agentland-network
+
+  # Redis für Caching
+  redis:
+    image: redis:7-alpine
+    container_name: agentland-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - agentland-network
+
+  # FastAPI Backend
+  api:
+    build:
+      context: ./apps/api
+      dockerfile: Dockerfile
+    container_name: agentland-api
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://agentland:saarland2024@postgres:5432/agentland_saarland
+      - REDIS_URL=redis://redis:6379
+      - SECRET_KEY=${SECRET_KEY:-your-secret-key-change-in-production}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./apps/api:/app
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    networks:
+      - agentland-network
+
+  # Next.js Frontend
+  web:
+    build:
+      context: ./apps/web
+      dockerfile: Dockerfile
+    container_name: agentland-web
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:8000
+    ports:
+      - "3000:3000"
+    depends_on:
+      - api
+    volumes:
+      - ./apps/web:/app
+      - /app/node_modules
+      - /app/.next
+    networks:
+      - agentland-network
+
+  # Adminer für Datenbank-Management
+  adminer:
+    image: adminer
+    container_name: agentland-adminer
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+    networks:
+      - agentland-network
+
+networks:
+  agentland-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  redis_data:

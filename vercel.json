@@ -1,0 +1,22 @@
+{
+  "buildCommand": "cd apps/web && npm install && npm run build",
+  "outputDirectory": "apps/web/.next",
+  "installCommand": "npm install",
+  "functions": {
+    "apps/api/api/health.py": {
+      "runtime": "python3.9"
+    },
+    "apps/api/api/saartasks.py": {
+      "runtime": "python3.9"
+    },
+    "apps/api/api/saarag.py": {
+      "runtime": "python3.9"
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/apps/api/api/$1"
+    }
+  ]
+}
