@@ -9,31 +9,49 @@ export default function LiveUserCounter() {
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    // Simuliere Live User Count mit realistischen Schwankungen
-    const updateUserCount = () => {
-      const baseLiveCount = 127 // Basis Live-Nutzeranzahl
-      const liveVariation = Math.floor(Math.random() * 23) // 0-22 zusätzliche Live-Nutzer
-      const timeBonus = new Date().getHours() >= 9 && new Date().getHours() <= 17 ? 15 : 0 // Arbeitszeit Bonus
-      
-      const currentLive = baseLiveCount + liveVariation + timeBonus
-      setLiveUsers(currentLive)
-      
-      // Berechne realistische Gesamtnutzer basierend auf Live-Nutzern
-      const totalMultiplier = 47 // Realistische Multiplikator für Gesamt vs Live
-      const dailyGrowth = Math.floor(new Date().getDate() * 2.3) // Tägliches Wachstum
-      const total = currentLive * totalMultiplier + dailyGrowth + 1247 // Basis Gesamtnutzer
-      
-      setTotalUsers(total)
-      setIsLoading(false)
+    // ECHTE USER ANALYTICS - KEINE FAKE DATEN
+    const fetchRealUserData = async () => {
+      try {
+        const response = await fetch('/api/analytics/real-users')
+        
+        if (response.ok) {
+          const data = await response.json()
+          
+          // Nutze nur echte Daten
+          setLiveUsers(data.activeUsers || 0)
+          setTotalUsers(data.totalUsers || 0)
+          setIsLoading(false)
+          
+          console.log('✅ Real user data loaded:', {
+            live: data.activeUsers,
+            total: data.totalUsers,
+            source: data.source
+          })
+        } else {
+          // Bei API-Fehler: Zeige 0 statt fake Daten
+          setLiveUsers(0)
+          setTotalUsers(0)
+          setIsLoading(false)
+          
+          console.log('ℹ️ Real analytics unavailable - showing actual zeros')
+        }
+      } catch (error) {
+        console.error('Real analytics fetch failed:', error)
+        
+        // KEINE FAKE DATEN - zeige echte Nullwerte
+        setLiveUsers(0)
+        setTotalUsers(0)
+        setIsLoading(false)
+      }
     }
 
     // Initial load
-    updateUserCount()
+    fetchRealUserData()
 
-    // Update alle 30-60 Sekunden mit realistischen Schwankungen
+    // Update alle 2 Minuten (echte Analytics)
     const interval = setInterval(() => {
-      updateUserCount()
-    }, Math.random() * 30000 + 30000) // 30-60 Sekunden
+      fetchRealUserData()
+    }, 2 * 60 * 1000) // 2 Minuten
 
     return () => clearInterval(interval)
   }, [])
