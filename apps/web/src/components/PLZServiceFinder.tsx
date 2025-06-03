@@ -1,30 +1,8 @@
 'use client'
 
 import React, { useState } from 'react';
-import { Search, MapPin, Building2, Phone, Mail, Clock, ExternalLink } from 'lucide-react';
-import { realTimeService } from '@/lib/realTimeDataService';
-
-interface BehoerdeInfo {
-  name: string;
-  adresse: string;
-  telefon: string;
-  email?: string;
-  online_services: string;
-  oeffnungszeiten: Record<string, string>;
-  services?: string[];
-  plz: string;
-  stadt: string;
-  kreis: string;
-  koordinaten: {
-    lat: number;
-    lon: number;
-  };
-  map_url?: string;
-  directions?: {
-    openstreetmap: string;
-    google_maps: string;
-  };
-}
+import { Search, MapPin, Phone, Mail, Globe, Clock, Navigation, CheckCircle, Building2, ExternalLink } from 'lucide-react';
+import { getPLZInfo, findNearestBehoerde, isValidSaarlandPLZ, BehoerdeInfo } from '@/lib/saarland-plz-data';
 
 export default function PLZServiceFinder() {
   const [plz, setPLZ] = useState('');
@@ -42,15 +20,34 @@ export default function PLZServiceFinder() {
     setLoading(true);
     setError(null);
 
+    // Kleine Verzögerung für bessere UX
+    await new Promise(resolve => setTimeout(resolve, 300));
+
     try {
-      const response = await fetch(`/api/v1/realtime/plz/${plz}`);
-      if (!response.ok) {
-        throw new Error('PLZ nicht gefunden');
+      if (!isValidSaarlandPLZ(plz)) {
+        setError('Diese PLZ gehört nicht zum Saarland');
+        setServices(null);
+      } else {
+        const plzInfo = getPLZInfo(plz);
+        if (plzInfo) {
+          setServices(plzInfo);
+          // Wenn die gewählte Behörde nicht verfügbar ist, finde die nächstgelegene
+          if (!plzInfo.behoerden[selectedService]) {
+            const nearestBehoerde = findNearestBehoerde(plz, selectedService);
+            if (nearestBehoerde) {
+              setServices({
+                ...plzInfo,
+                behoerden: {
+                  ...plzInfo.behoerden,
+                  [selectedService]: nearestBehoerde
+                }
+              });
+            }
+          }
+        }
       }
-      const data = await response.json();
-      setServices(data.data);
     } catch (err) {
-      setError('Die eingegebene PLZ wurde nicht gefunden');
+      setError('Ein Fehler ist aufgetreten');
       setServices(null);
     } finally {
       setLoading(false);
@@ -58,10 +55,12 @@ export default function PLZServiceFinder() {
   };
 
   const getDirectionsUrl = (behoerde: BehoerdeInfo) => {
-    // Nutze aktuelle Position oder Saarbrücken als Startpunkt
-    const startLat = 49.2354;
-    const startLon = 6.9969;
-    return `https://www.openstreetmap.org/directions?from=${startLat},${startLon}&to=${behoerde.koordinaten.lat},${behoerde.koordinaten.lon}`;
+    // Nutze OpenStreetMap für Routenplanung
+    return `https://www.openstreetmap.org/directions?to=${behoerde.koordinaten.lat},${behoerde.koordinaten.lon}`;
+  };
+
+  const getGoogleMapsUrl = (behoerde: BehoerdeInfo) => {
+    return `https://www.google.com/maps/search/?api=1&query=${behoerde.koordinaten.lat},${behoerde.koordinaten.lon}`;
   };
 
   return (
@@ -69,110 +68,139 @@ export default function PLZServiceFinder() {
       <h2 className="text-2xl font-bold text-gray-900 mb-6">
         🏛️ Behördenfinder nach Postleitzahl
       </h2>
-
-      {/* PLZ Eingabe */}
+      
+      {/* PLZ Suche */}
       <div className="mb-6">
-        <label htmlFor="plz" className="block text-sm font-medium text-gray-700 mb-2">
-          Ihre Postleitzahl im Saarland
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Ihre Postleitzahl
         </label>
         <div className="flex gap-2">
           <input
             type="text"
-            id="plz"
             value={plz}
-            onChange={(e) => setPLZ(e.target.value)}
+            onChange={(e) => setPLZ(e.target.value.replace(/\D/g, '').slice(0, 5))}
+            onKeyDown={(e) => e.key === 'Enter' && searchPLZ()}
             placeholder="z.B. 66111"
-            maxLength={5}
             className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            maxLength={5}
           />
           <button
             onClick={searchPLZ}
-            disabled={loading}
-            className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+            disabled={loading || plz.length !== 5}
+            className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 transition-colors flex items-center gap-2"
           >
             <Search className="w-4 h-4" />
             {loading ? 'Suche...' : 'Suchen'}
           </button>
         </div>
+        
+        {/* Beispiel PLZ */}
+        <p className="text-xs text-gray-500 mt-2">
+          Beispiele: 66111 (Saarbrücken), 66424 (Homburg), 66740 (Saarlouis), 66606 (St. Wendel)
+        </p>
       </div>
 
-      {/* Error Message */}
+      {/* Service Auswahl */}
+      {services && (
+        <div className="mb-6">
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Gewünschter Service
+          </label>
+          <select
+            value={selectedService}
+            onChange={(e) => setSelectedService(e.target.value)}
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+          >
+            <option value="buergeramt">Bürgeramt / Bürgerbüro</option>
+            <option value="kfz">KFZ-Zulassungsstelle</option>
+            <option value="finanzamt">Finanzamt</option>
+            <option value="standesamt">Standesamt</option>
+            <option value="jugendamt">Jugendamt</option>
+            <option value="sozialamt">Sozialamt</option>
+          </select>
+        </div>
+      )}
+
+      {/* Fehler */}
       {error && (
-        <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+        <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700">
           {error}
         </div>
       )}
 
-      {/* Results */}
-      {services && (
-        <div className="space-y-6">
-          {/* Location Info */}
-          <div className="bg-gray-50 p-4 rounded-lg">
-            <div className="flex items-center gap-2 mb-2">
-              <MapPin className="w-5 h-5 text-gray-600" />
-              <h3 className="font-semibold text-gray-900">
-                {services.stadt} ({services.plz})
-              </h3>
-            </div>
-            <p className="text-sm text-gray-600">Landkreis: {services.kreis}</p>
-          </div>
+      {/* Ergebnisse */}
+      {services && services.behoerden[selectedService] && (
+        <div className="space-y-4">
+          <div className="border-t pt-4">
+            <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
+              <Building2 className="w-5 h-5 text-blue-600" />
+              {services.behoerden[selectedService].name}
+            </h3>
 
-          {/* Service Type Selection */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Service auswählen
-            </label>
-            <select
-              value={selectedService}
-              onChange={(e) => setSelectedService(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="buergeramt">Bürgeramt</option>
-              <option value="kfz_zulassung">KFZ-Zulassungsstelle</option>
-              <option value="finanzamt">Finanzamt</option>
-            </select>
-          </div>
-
-          {/* Behörde Details */}
-          {services.behoerden && services.behoerden[selectedService] && (
-            <div className="border border-gray-200 rounded-lg p-5 space-y-4">
-              <h4 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                <Building2 className="w-5 h-5" />
-                {services.behoerden[selectedService].name}
-              </h4>
-
-              <div className="grid md:grid-cols-2 gap-4">
-                <div>
-                  <p className="text-sm text-gray-600 mb-1">Adresse</p>
-                  <p className="font-medium">{services.behoerden[selectedService].adresse}</p>
+            {/* Kontakt Info */}
+            <div className="grid md:grid-cols-2 gap-4">
+              <div className="space-y-3">
+                <div className="flex items-start gap-3">
+                  <MapPin className="w-5 h-5 text-gray-400 mt-0.5" />
+                  <div>
+                    <p className="text-sm font-medium text-gray-900">Adresse</p>
+                    <p className="text-sm text-gray-600">
+                      {services.behoerden[selectedService].strasse}<br />
+                      {services.behoerden[selectedService].ort}
+                    </p>
+                  </div>
                 </div>
 
-                <div>
-                  <p className="text-sm text-gray-600 mb-1">Telefon</p>
-                  <a
-                    href={`tel:${services.behoerden[selectedService].telefon}`}
-                    className="font-medium text-blue-600 hover:underline flex items-center gap-1"
-                  >
-                    <Phone className="w-4 h-4" />
-                    {services.behoerden[selectedService].telefon}
-                  </a>
+                <div className="flex items-start gap-3">
+                  <Phone className="w-5 h-5 text-gray-400" />
+                  <div>
+                    <p className="text-sm font-medium text-gray-900">Telefon</p>
+                    <a 
+                      href={`tel:${services.behoerden[selectedService].telefon}`}
+                      className="text-sm text-blue-600 hover:underline"
+                    >
+                      {services.behoerden[selectedService].telefon}
+                    </a>
+                  </div>
                 </div>
 
                 {services.behoerden[selectedService].email && (
-                  <div>
-                    <p className="text-sm text-gray-600 mb-1">E-Mail</p>
-                    <a
-                      href={`mailto:${services.behoerden[selectedService].email}`}
-                      className="font-medium text-blue-600 hover:underline flex items-center gap-1"
-                    >
-                      <Mail className="w-4 h-4" />
-                      {services.behoerden[selectedService].email}
-                    </a>
+                  <div className="flex items-start gap-3">
+                    <Mail className="w-5 h-5 text-gray-400" />
+                    <div>
+                      <p className="text-sm font-medium text-gray-900">E-Mail</p>
+                      <a 
+                        href={`mailto:${services.behoerden[selectedService].email}`}
+                        className="text-sm text-blue-600 hover:underline"
+                      >
+                        {services.behoerden[selectedService].email}
+                      </a>
+                    </div>
                   </div>
                 )}
 
+                {services.behoerden[selectedService].webseite && (
+                  <div className="flex items-start gap-3">
+                    <Globe className="w-5 h-5 text-gray-400" />
+                    <div>
+                      <p className="text-sm font-medium text-gray-900">Webseite</p>
+                      <a 
+                        href={services.behoerden[selectedService].webseite}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-sm text-blue-600 hover:underline flex items-center gap-1"
+                      >
+                        Online-Portal
+                        <ExternalLink className="w-3 h-3" />
+                      </a>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <div className="space-y-3">
                 <div>
-                  <p className="text-sm text-gray-600 mb-1">Öffnungszeiten</p>
+                  <p className="text-sm font-medium text-gray-900 mb-1">Öffnungszeiten</p>
                   <div className="space-y-1">
                     {Object.entries(services.behoerden[selectedService].oeffnungszeiten).map(([tag, zeit]) => (
                       <div key={tag} className="flex items-center gap-1 text-sm">
@@ -182,75 +210,66 @@ export default function PLZServiceFinder() {
                     ))}
                   </div>
                 </div>
-              </div>
 
-              {/* Action Buttons */}
-              <div className="flex flex-wrap gap-3 pt-3 border-t">
-                <a
-                  href={services.behoerden[selectedService].online_services}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-                >
-                  <ExternalLink className="w-4 h-4" />
-                  Online-Services
-                </a>
-                
-                <a
-                  href={getDirectionsUrl(services.behoerden[selectedService])}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
-                >
-                  <MapPin className="w-4 h-4" />
-                  Route planen
-                </a>
-              </div>
-
-              {/* Available Services */}
-              {services.behoerden[selectedService].services && (
-                <div className="pt-3 border-t">
-                  <p className="text-sm font-medium text-gray-700 mb-2">Verfügbare Services:</p>
-                  <div className="flex flex-wrap gap-2">
-                    {services.behoerden[selectedService].services.map((service: string) => (
-                      <span
-                        key={service}
-                        className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm"
-                      >
-                        {service}
-                      </span>
-                    ))}
+                {services.behoerden[selectedService].wartezeit !== undefined && (
+                  <div className="mt-4 p-3 bg-blue-50 rounded-lg">
+                    <p className="text-sm font-medium text-blue-900">
+                      ⏱️ Durchschnittliche Wartezeit
+                    </p>
+                    <p className="text-xl font-bold text-blue-700">
+                      {services.behoerden[selectedService].wartezeit} Minuten
+                    </p>
                   </div>
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* Online Services */}
-          {services.online_services && (
-            <div className="border-t pt-6">
-              <h4 className="text-lg font-semibold text-gray-900 mb-4">
-                💻 Online-Services (landesweit verfügbar)
-              </h4>
-              <div className="grid md:grid-cols-2 gap-4">
-                {Object.entries(services.online_services).map(([key, service]: [string, any]) => (
-                  <a
-                    key={key}
-                    href={service.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow"
-                  >
-                    <h5 className="font-medium text-gray-900 mb-1">{service.name}</h5>
-                    <p className="text-sm text-gray-600">{service.beschreibung}</p>
-                    <span className="inline-flex items-center gap-1 mt-2 text-sm text-blue-600">
-                      Jetzt nutzen <ExternalLink className="w-3 h-3" />
-                    </span>
-                  </a>
-                ))}
+                )}
               </div>
             </div>
-          )}
+
+            {/* Route planen */}
+            <div className="mt-6 flex flex-wrap gap-3">
+              <a
+                href={getDirectionsUrl(services.behoerden[selectedService])}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+              >
+                <Navigation className="w-4 h-4" />
+                Route planen (OpenStreetMap)
+              </a>
+              
+              <a
+                href={getGoogleMapsUrl(services.behoerden[selectedService])}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              >
+                <MapPin className="w-4 h-4" />
+                Google Maps
+              </a>
+            </div>
+
+            {/* Online Services */}
+            {services.behoerden[selectedService].online_services && 
+             services.behoerden[selectedService].online_services.length > 0 && (
+              <div className="mt-6 p-4 bg-green-50 rounded-lg">
+                <h4 className="text-sm font-semibold text-green-900 mb-2">
+                  ✅ Online verfügbare Services
+                </h4>
+                <ul className="space-y-1">
+                  {services.behoerden[selectedService].online_services.map((service: string, idx: number) => (
+                    <li key={idx} className="flex items-center gap-2 text-sm text-green-700">
+                      <CheckCircle className="w-4 h-4" />
+                      {service}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {/* PLZ Info */}
+            <div className="mt-4 text-sm text-gray-500">
+              PLZ {services.plz} • {services.ort} • {services.kreis}
+            </div>
+          </div>
         </div>
       )}
     </div>
