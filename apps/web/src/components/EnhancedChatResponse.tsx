@@ -50,7 +50,7 @@ export default function EnhancedChatResponse({ category, query }: EnhancedChatRe
         // Attractions
         if (data.attractions && data.attractions.length > 0) {
           tourismResponse += `**Sehenswürdigkeiten:**\n`;
-          data.attractions.forEach(attr => {
+          data.attractions.forEach((attr: any) => {
             tourismResponse += `• **${attr.name}** - ${attr.status === 'open' ? '✅ Geöffnet' : '❌ Geschlossen'}\n`;
             tourismResponse += `  ${attr.opening_hours} | ${attr.price}\n`;
             if (attr.current_visitors) {
@@ -63,7 +63,7 @@ export default function EnhancedChatResponse({ category, query }: EnhancedChatRe
         // Events
         if (data.events && data.events.length > 0) {
           tourismResponse += `**Aktuelle Veranstaltungen:**\n`;
-          data.events.forEach(event => {
+          data.events.forEach((event: any) => {
             tourismResponse += `• **${event.title}**\n`;
             tourismResponse += `  📅 ${event.date} | 📍 ${event.location}\n`;
             tourismResponse += `  💶 ${event.price_range || event.price}\n`;
@@ -80,7 +80,7 @@ export default function EnhancedChatResponse({ category, query }: EnhancedChatRe
         // Funding programs
         if (data.funding_programs && data.funding_programs.length > 0) {
           businessResponse += `**Aktive Förderprogramme:**\n`;
-          data.funding_programs.forEach(program => {
+          data.funding_programs.forEach((program: any) => {
             businessResponse += `• **${program.name}**\n`;
             businessResponse += `  💰 Bis zu ${program.max_funding.toLocaleString('de-DE')}€\n`;
             businessResponse += `  🎯 Fokus: ${program.focus.join(', ')}\n`;

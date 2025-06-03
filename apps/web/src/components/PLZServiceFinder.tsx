@@ -177,7 +177,7 @@ export default function PLZServiceFinder() {
                     {Object.entries(services.behoerden[selectedService].oeffnungszeiten).map(([tag, zeit]) => (
                       <div key={tag} className="flex items-center gap-1 text-sm">
                         <Clock className="w-3 h-3 text-gray-400" />
-                        <span className="font-medium">{tag}:</span> {zeit}
+                        <span className="font-medium">{tag}:</span> {String(zeit)}
                       </div>
                     ))}
                   </div>

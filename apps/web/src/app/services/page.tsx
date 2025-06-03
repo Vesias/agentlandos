@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { MapPin, Building2, Calendar, Navigation } from 'lucide-react';
 import PLZServiceFinder from '@/components/PLZServiceFinder';
-import InteractiveSaarlandMap from '@/components/InteractiveSaarlandMap';
+import InteractiveSaarlandMap from '@/components/InteractiveSaarlandMapWrapper';
 import { useRealTimeData } from '@/hooks/useRealTimeData';
 
 export default function ServicesPage() {

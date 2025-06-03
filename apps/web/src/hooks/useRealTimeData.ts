@@ -51,6 +51,8 @@ export function useRealTimeData(dataType: string, refreshInterval: number = 6000
 
 export function useUserTracking() {
   useEffect(() => {
+    if (typeof window === 'undefined') return;
+    
     // Track initial page view
     realTimeService.trackActivity({
       activity_type: 'page_view',

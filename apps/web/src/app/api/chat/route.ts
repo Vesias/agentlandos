@@ -6,7 +6,10 @@ import { NextRequest, NextResponse } from 'next/server'
 async function getCurrentSaarlandData() {
   try {
     // Hole echte, verifizierte Daten aus Cache
-    const response = await fetch('/api/cache/real-data')
+    const baseUrl = process.env.NEXT_PUBLIC_VERCEL_URL 
+      ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
+      : 'http://localhost:3000'
+    const response = await fetch(`${baseUrl}/api/cache/real-data`)
     
     if (response.ok) {
       const realData = await response.json()

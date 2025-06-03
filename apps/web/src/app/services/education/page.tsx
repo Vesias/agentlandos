@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { 
   GraduationCap, BookOpen, Users, Award,
@@ -110,6 +111,7 @@ const scholarships = [
 ]
 
 export default function EducationPage() {
+  const router = useRouter()
   const [selectedCategory, setSelectedCategory] = useState<'university' | 'training' | 'scholarship'>('university')
   const [selectedItem, setSelectedItem] = useState<number | null>(null)
 
@@ -417,7 +419,7 @@ export default function EducationPage() {
             <Button 
               size="lg" 
               className="bg-orange-600 hover:bg-orange-700"
-              onClick={() => window.location.href = '/chat'}
+              onClick={() => router.push('/chat')}
             >
               <BookOpen className="w-5 h-5 mr-2" />
               Beratung starten
@@ -425,7 +427,7 @@ export default function EducationPage() {
             <Button 
               size="lg" 
               variant="outline"
-              onClick={() => window.location.href = '/chat'}
+              onClick={() => router.push('/chat')}
             >
               <Calendar className="w-5 h-5 mr-2" />
               Info-Veranstaltungen

@@ -105,11 +105,11 @@ export async function POST(request: NextRequest) {
       
       return NextResponse.json({ 
         success: true, 
-        timestamp: cachedData.lastUpdate,
+        timestamp: cachedData!.lastUpdate,
         dataPoints: {
-          events: cachedData.events.length,
-          hasWeather: !!cachedData.weather,
-          fundingPrograms: cachedData.funding.length
+          events: cachedData!.events.length,
+          hasWeather: !!cachedData!.weather,
+          fundingPrograms: cachedData!.funding.length
         }
       })
     }
@@ -167,7 +167,10 @@ async function updateCacheWithRealData() {
 async function fetchRealUserAnalytics() {
   try {
     // Interne API für echte User-Daten
-    const response = await fetch('/api/analytics/real-users')
+    const baseUrl = process.env.NEXT_PUBLIC_VERCEL_URL 
+      ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
+      : 'http://localhost:3000'
+    const response = await fetch(`${baseUrl}/api/analytics/real-users`)
     if (response.ok) {
       return await response.json()
     }
@@ -184,7 +187,7 @@ async function fetchRealUserAnalytics() {
 }
 
 async function fetchVerifiedSaarlandEvents() {
-  const events = []
+  const events: any[] = []
 
   try {
     // Saarbrücken Events API
@@ -243,7 +246,7 @@ async function fetchRealWeatherData() {
 }
 
 async function fetchRealFundingData() {
-  const funding = []
+  const funding: any[] = []
 
   try {
     // Saarland Wirtschaftsförderung
@@ -298,10 +301,4 @@ function isValidRealData(data: any): boolean {
   )
 }
 
-// STARTUP: Initialer Cache-Load
-if (typeof window === 'undefined') {
-  // Server-side: Lade initiale echte Daten
-  setTimeout(() => {
-    updateCacheWithRealData()
-  }, 1000)
-}
+// STARTUP: Removed auto-load to prevent build errors

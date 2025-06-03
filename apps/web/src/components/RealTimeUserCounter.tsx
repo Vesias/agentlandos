@@ -42,11 +42,13 @@ export default function RealTimeUserCounter({ className = '', showDetails = true
     fetchStats();
     
     // Track page view
-    realTimeService.trackActivity({
-      activity_type: 'page_view',
-      page: window.location.pathname,
-      metadata: { component: 'user_counter' }
-    });
+    if (typeof window !== 'undefined') {
+      realTimeService.trackActivity({
+        activity_type: 'page_view',
+        page: window.location.pathname,
+        metadata: { component: 'user_counter' }
+      });
+    }
     
     // Update every 30 seconds
     const interval = setInterval(fetchStats, 30000);
