@@ -1,9 +1,11 @@
 'use client'
 
 import React, { useState, useRef, useEffect } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { Send, Bot, User, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
+import { getChatContextById } from '@/lib/chat-contexts'
 
 interface Message {
   id: string
@@ -16,11 +18,33 @@ export default function SimpleChat() {
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+  const [currentContext, setCurrentContext] = useState<any>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
+  const searchParams = useSearchParams()
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages])
+
+  // Handle context parameter from URL
+  useEffect(() => {
+    const contextId = searchParams.get('context')
+    if (contextId) {
+      const context = getChatContextById(contextId)
+      if (context) {
+        setCurrentContext(context)
+        
+        // Add initial context message
+        const initialMessage: Message = {
+          id: Date.now().toString(),
+          role: 'assistant',
+          content: context.initialMessage,
+          timestamp: new Date()
+        }
+        setMessages([initialMessage])
+      }
+    }
+  }, [searchParams])
 
   const handleSend = async () => {
     if (!input.trim() || isLoading) return
@@ -44,7 +68,12 @@ export default function SimpleChat() {
         },
         body: JSON.stringify({ 
           message: input,
-          language: 'de'
+          language: 'de',
+          context: currentContext ? {
+            id: currentContext.id,
+            category: currentContext.category,
+            agentType: currentContext.agentType
+          } : undefined
         })
       })
 
@@ -73,8 +102,42 @@ export default function SimpleChat() {
     <div className="flex flex-col h-[calc(100vh-4rem)] max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
       {/* Chat Header */}
       <div className="py-4 sm:py-6 border-b">
-        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Chat mit AGENTLAND.SAARLAND</h1>
-        <p className="text-sm sm:text-base text-gray-600 mt-1">Ihre KI-Assistenz für das Saarland</p>
+        {currentContext ? (
+          <div className="flex items-center space-x-3">
+            <div 
+              className="w-10 h-10 rounded-lg flex items-center justify-center"
+              style={{ backgroundColor: `${currentContext.color}20` }}
+            >
+              <div className="text-lg" style={{ color: currentContext.color }}>
+                {currentContext.icon === 'Sparkles' ? '✨' : 
+                 currentContext.icon === 'Calendar' ? '📅' :
+                 currentContext.icon === 'Euro' ? '💶' :
+                 currentContext.icon === 'Rocket' ? '🚀' :
+                 currentContext.icon === 'GraduationCap' ? '🎓' :
+                 currentContext.icon === 'Award' ? '🏆' :
+                 currentContext.icon === 'FileText' ? '📄' :
+                 currentContext.icon === 'Building2' ? '🏢' :
+                 currentContext.icon === 'Theater' ? '🎭' :
+                 currentContext.icon === 'PartyPopper' ? '🎉' : '🤖'}
+              </div>
+            </div>
+            <div>
+              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">{currentContext.title}</h1>
+              <p className="text-sm sm:text-base text-gray-600 mt-1">
+                Spezialisierte Beratung für {currentContext.category === 'tourism' ? 'Tourismus' :
+                currentContext.category === 'business' ? 'Wirtschaft' :
+                currentContext.category === 'education' ? 'Bildung' :
+                currentContext.category === 'admin' ? 'Verwaltung' :
+                currentContext.category === 'culture' ? 'Kultur' : 'Services'}
+              </p>
+            </div>
+          </div>
+        ) : (
+          <>
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Chat mit AGENTLAND.SAARLAND</h1>
+            <p className="text-sm sm:text-base text-gray-600 mt-1">Ihre KI-Assistenz für das Saarland</p>
+          </>
+        )}
       </div>
 
       {/* Messages Area */}
@@ -123,6 +186,26 @@ export default function SimpleChat() {
         )}
         <div ref={messagesEndRef} />
       </div>
+
+      {/* Suggested Questions */}
+      {currentContext && currentContext.suggestedQuestions && (
+        <div className="border-t border-gray-200 py-3">
+          <p className="text-xs text-gray-500 mb-2 px-1">💡 Häufige Fragen:</p>
+          <div className="flex flex-wrap gap-2">
+            {currentContext.suggestedQuestions.map((question: string, index: number) => (
+              <button
+                key={index}
+                onClick={() => {
+                  setInput(question)
+                }}
+                className="text-xs px-3 py-1 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-full transition-colors"
+              >
+                {question}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Input Area */}
       <div className="border-t py-4">

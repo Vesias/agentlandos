@@ -18,11 +18,56 @@ const navigationItems = [
     name: 'Services',
     icon: ChevronDown,
     submenu: [
-      { name: 'Tourismus', href: '/services/tourism', icon: Sparkles, color: '#00A54A' },
-      { name: 'Wirtschaft', href: '/services/business', icon: Building2, color: '#003399' },
-      { name: 'Bildung', href: '/services/education', icon: GraduationCap, color: '#FFB300' },
-      { name: 'Verwaltung', href: '/services/admin', icon: Shield, color: '#E30613' },
-      { name: 'Kultur', href: '/services/culture', icon: Music, color: '#8B008B' }
+      { 
+        name: 'Tourismus', 
+        href: '/services/tourism', 
+        icon: Sparkles, 
+        color: '#00A54A',
+        chatLinks: [
+          { name: 'Reiseplanung', href: '/chat?context=tourism-planning' },
+          { name: 'Aktuelle Events', href: '/chat?context=tourism-events' }
+        ]
+      },
+      { 
+        name: 'Wirtschaft', 
+        href: '/services/business', 
+        icon: Building2, 
+        color: '#003399',
+        chatLinks: [
+          { name: 'Förderprogramme', href: '/chat?context=business-funding' },
+          { name: 'Gründungsberatung', href: '/chat?context=business-startup' }
+        ]
+      },
+      { 
+        name: 'Bildung', 
+        href: '/services/education', 
+        icon: GraduationCap, 
+        color: '#FFB300',
+        chatLinks: [
+          { name: 'Studium', href: '/chat?context=education-studies' },
+          { name: 'Stipendien', href: '/chat?context=education-scholarships' }
+        ]
+      },
+      { 
+        name: 'Verwaltung', 
+        href: '/services/admin', 
+        icon: Shield, 
+        color: '#E30613',
+        chatLinks: [
+          { name: 'Ausweise & Dokumente', href: '/chat?context=admin-documents' },
+          { name: 'Gewerbeanmeldung', href: '/chat?context=admin-business-registration' }
+        ]
+      },
+      { 
+        name: 'Kultur', 
+        href: '/services/culture', 
+        icon: Music, 
+        color: '#8B008B',
+        chatLinks: [
+          { name: 'Theater & Konzerte', href: '/chat?context=culture-events' },
+          { name: 'Karneval 2025', href: '/chat?context=culture-carnival' }
+        ]
+      }
     ]
   }
 ]
@@ -70,22 +115,37 @@ export default function MainNavigation() {
                             className="absolute top-full left-0 mt-2 w-64 bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden"
                           >
                             {item.submenu.map((subitem) => (
-                              <Link
-                                key={subitem.name}
-                                href={subitem.href}
-                                className="flex items-center space-x-3 px-4 py-3 hover:bg-gray-50 transition-colors"
-                              >
-                                <div 
-                                  className="w-8 h-8 rounded-lg flex items-center justify-center"
-                                  style={{ backgroundColor: `${subitem.color}20` }}
+                              <div key={subitem.name} className="border-b border-gray-100 last:border-b-0">
+                                <Link
+                                  href={subitem.href}
+                                  className="flex items-center space-x-3 px-4 py-3 hover:bg-gray-50 transition-colors"
                                 >
-                                  <subitem.icon 
-                                    className="w-4 h-4" 
-                                    style={{ color: subitem.color }}
-                                  />
-                                </div>
-                                <span className="text-gray-700">{subitem.name}</span>
-                              </Link>
+                                  <div 
+                                    className="w-8 h-8 rounded-lg flex items-center justify-center"
+                                    style={{ backgroundColor: `${subitem.color}20` }}
+                                  >
+                                    <subitem.icon 
+                                      className="w-4 h-4" 
+                                      style={{ color: subitem.color }}
+                                    />
+                                  </div>
+                                  <span className="text-gray-700 font-medium">{subitem.name}</span>
+                                </Link>
+                                {subitem.chatLinks && (
+                                  <div className="px-4 pb-2">
+                                    <p className="text-xs text-gray-500 mb-2">💬 Direkte Beratung:</p>
+                                    {subitem.chatLinks.map((chatLink) => (
+                                      <Link
+                                        key={chatLink.name}
+                                        href={chatLink.href}
+                                        className="block px-2 py-1 text-xs text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded transition-colors"
+                                      >
+                                        → {chatLink.name}
+                                      </Link>
+                                    ))}
+                                  </div>
+                                )}
+                              </div>
                             ))}
                           </motion.div>
                         )}
@@ -168,23 +228,39 @@ export default function MainNavigation() {
                         </h3>
                         <div className="space-y-2 pl-4">
                           {item.submenu.map((subitem) => (
-                            <Link
-                              key={subitem.name}
-                              href={subitem.href}
-                              onClick={() => setMobileMenuOpen(false)}
-                              className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-50"
-                            >
-                              <div 
-                                className="w-8 h-8 rounded-lg flex items-center justify-center"
-                                style={{ backgroundColor: `${subitem.color}20` }}
+                            <div key={subitem.name} className="space-y-2">
+                              <Link
+                                href={subitem.href}
+                                onClick={() => setMobileMenuOpen(false)}
+                                className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-50"
                               >
-                                <subitem.icon 
-                                  className="w-4 h-4" 
-                                  style={{ color: subitem.color }}
-                                />
-                              </div>
-                              <span className="text-gray-700">{subitem.name}</span>
-                            </Link>
+                                <div 
+                                  className="w-8 h-8 rounded-lg flex items-center justify-center"
+                                  style={{ backgroundColor: `${subitem.color}20` }}
+                                >
+                                  <subitem.icon 
+                                    className="w-4 h-4" 
+                                    style={{ color: subitem.color }}
+                                  />
+                                </div>
+                                <span className="text-gray-700 font-medium">{subitem.name}</span>
+                              </Link>
+                              {subitem.chatLinks && (
+                                <div className="ml-11 space-y-1">
+                                  <p className="text-xs text-gray-500">💬 Direkte Beratung:</p>
+                                  {subitem.chatLinks.map((chatLink) => (
+                                    <Link
+                                      key={chatLink.name}
+                                      href={chatLink.href}
+                                      onClick={() => setMobileMenuOpen(false)}
+                                      className="block px-2 py-1 text-xs text-gray-600 hover:text-gray-900 rounded"
+                                    >
+                                      → {chatLink.name}
+                                    </Link>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
                           ))}
                         </div>
                       </div>
