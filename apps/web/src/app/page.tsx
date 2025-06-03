@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { ArrowRight, Bot, Shield, Users, Sparkles, Globe, Database } from 'lucide-react'
+import RealTimeUserCounter from '@/components/RealTimeUserCounter'
 
 export default function HomePage() {
   return (
@@ -85,6 +86,16 @@ export default function HomePage() {
               Souveräne KI-Technologie aus dem Saarland – 
               <span style={{ color: '#003399', fontWeight: 500 }}> für ein intelligentes Morgen</span>
             </p>
+
+            {/* Real-Time User Counter */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4, duration: 0.6 }}
+              style={{ marginBottom: '3rem' }}
+            >
+              <RealTimeUserCounter showDetails={false} />
+            </motion.div>
 
             {/* CTA Buttons */}
             <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
