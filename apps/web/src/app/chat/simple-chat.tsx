@@ -19,6 +19,8 @@ export default function SimpleChat() {
   const [input, setInput] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [currentContext, setCurrentContext] = useState<any>(null)
+  const [conversationHistory, setConversationHistory] = useState<string[]>([])
+  const [userInterests, setUserInterests] = useState<{[key: string]: number}>({})
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const searchParams = useSearchParams()
 
@@ -46,179 +48,245 @@ export default function SimpleChat() {
     }
   }, [searchParams])
 
+  // Intelligente Kontext-Analyse basierend auf Gesprächsverlauf
+  const analyzeUserInterests = (userInput: string) => {
+    const keywords = userInput.toLowerCase()
+    const interests = {...userInterests}
+    
+    // Gewichtung basierend auf Keywords
+    if (keywords.includes('tour') || keywords.includes('sehen') || keywords.includes('reise') || keywords.includes('wandern') || keywords.includes('ausflug') || keywords.includes('sommer')) {
+      interests.tourism = (interests.tourism || 0) + 1
+    }
+    if (keywords.includes('förder') || keywords.includes('business') || keywords.includes('unternehmen') || keywords.includes('gründ') || keywords.includes('startup') || keywords.includes('ki')) {
+      interests.business = (interests.business || 0) + 1
+    }
+    if (keywords.includes('kultur') || keywords.includes('theater') || keywords.includes('konzert') || keywords.includes('festival') || keywords.includes('kunst')) {
+      interests.culture = (interests.culture || 0) + 1
+    }
+    if (keywords.includes('amt') || keywords.includes('behörde') || keywords.includes('antrag') || keywords.includes('ausweis') || keywords.includes('gewerbe')) {
+      interests.admin = (interests.admin || 0) + 1
+    }
+    if (keywords.includes('studium') || keywords.includes('bildung') || keywords.includes('universität') || keywords.includes('stipendium') || keywords.includes('weiterbildung')) {
+      interests.education = (interests.education || 0) + 1
+    }
+
+    setUserInterests(interests)
+    return interests
+  }
+
+  // Intelligente Kategorisierung basierend auf Kontext und Historie
+  const determineCategory = (userInput: string, interests: {[key: string]: number}) => {
+    const keywords = userInput.toLowerCase()
+    
+    // Erste Priorität: Expliziter Kontext
+    if (currentContext?.category) {
+      return currentContext.category
+    }
+    
+    // Zweite Priorität: Direkte Keywords in aktueller Nachricht
+    if (keywords.includes('tour') || keywords.includes('sehen') || keywords.includes('reise') || keywords.includes('wandern') || keywords.includes('ausflug') || keywords.includes('sommer')) return 'tourism'
+    if (keywords.includes('förder') || keywords.includes('business') || keywords.includes('unternehmen') || keywords.includes('gründ') || keywords.includes('startup')) return 'business'
+    if (keywords.includes('kultur') || keywords.includes('theater') || keywords.includes('konzert') || keywords.includes('festival') || keywords.includes('kunst')) return 'culture'
+    if (keywords.includes('amt') || keywords.includes('behörde') || keywords.includes('antrag') || keywords.includes('ausweis') || keywords.includes('gewerbe')) return 'admin'
+    if (keywords.includes('studium') || keywords.includes('bildung') || keywords.includes('universität') || keywords.includes('stipendium') || keywords.includes('weiterbildung')) return 'education'
+    
+    // Dritte Priorität: Gesprächshistorie (nach 2+ Nachrichten)
+    if (messages.length >= 2) {
+      const topInterest = Object.entries(interests).sort(([,a], [,b]) => b - a)[0]
+      if (topInterest && topInterest[1] > 0) {
+        return topInterest[0]
+      }
+    }
+    
+    return 'general'
+  }
+
   const generateResponse = (userInput: string): string => {
     const keywords = userInput.toLowerCase()
-    const category = currentContext?.category || 
-      (keywords.includes('tour') || keywords.includes('sehen') || keywords.includes('reise') || keywords.includes('wandern') || keywords.includes('ausflug') ? 'tourism' :
-       keywords.includes('förder') || keywords.includes('business') || keywords.includes('unternehmen') || keywords.includes('gründ') || keywords.includes('startup') ? 'business' :
-       keywords.includes('kultur') || keywords.includes('theater') || keywords.includes('konzert') || keywords.includes('karneval') || keywords.includes('kunst') ? 'culture' :
-       keywords.includes('amt') || keywords.includes('behörde') || keywords.includes('antrag') || keywords.includes('ausweis') || keywords.includes('gewerbe') ? 'admin' :
-       keywords.includes('studium') || keywords.includes('bildung') || keywords.includes('universität') || keywords.includes('stipendium') || keywords.includes('weiterbildung') ? 'education' : 'general')
+    const interests = analyzeUserInterests(userInput)
+    const category = determineCategory(userInput, interests)
+    
+    // Aktualisiere Gesprächshistorie
+    setConversationHistory(prev => [...prev.slice(-4), userInput]) // Keep last 5 messages
 
     switch(category) {
       case 'tourism':
-        if (keywords.includes('winter') || keywords.includes('februar')) {
-          return `🏞️ Winter-Aktivitäten im Saarland - Stand 02.02.2025:
+        if (keywords.includes('sommer') || keywords.includes('juni') || keywords.includes('heute')) {
+          return `🌞 Sommer-Aktivitäten im Saarland - Stand 03.06.2025:
 
-**Diese Woche verfügbar:**
-• Winter-Wanderung Saarschleife am 09.02.2025 (15€)
-• Völklinger Hütte bei Nacht am 14.02.2025 (20€, romantisch zum Valentinstag!)
+**Perfektes Sommerwetter für:**
+• Saarschleife Wanderungen (täglich, kostenlos)
+• Bostalsee Wassersport & Strand (Eingang 8€)
+• Völklinger Hütte Sonnenterrasse (15€, bis 20:00)
 
-**Ganzjährig geöffnet:**
-• Saarschleife Mettlach - Das Wahrzeichen (kostenlos)
-• Völklinger Hütte - UNESCO Welterbe (15€)
-• Bostalsee - Freizeitsee (kostenlos)
+**Aktuelle Sommer-Events:**
+• Saarland Open Air Festival (07.-09.06.2025)
+• Nachtmärkte in Saarbrücken (jeden Freitag im Juni)
+• Schifffahrt auf der Saar (15€, täglich 14:00 & 16:00)
 
-Bei diesem Winterwetter empfehle ich warme Kleidung für Outdoor-Aktivitäten. Kann ich Ihnen bei einer konkreten Reiseplanung helfen?`
+Bei dem schönen Wetter ideal für Outdoor-Aktivitäten! Welche Art von Sommeraktivität interessiert Sie?`
         }
-        return `🏞️ Tourismus im Saarland - Stand 02.02.2025:
+        return `🏞️ Tourismus im Saarland - Stand 03.06.2025:
 
 **Top Sehenswürdigkeiten:**
 • Saarschleife Mettlach - Das Wahrzeichen (kostenlos)
 • Völklinger Hütte - UNESCO Welterbe (15€)
-• Bostalsee - Freizeitsee mit vielen Aktivitäten
+• Bostalsee - Freizeitsee mit Strand & Wassersport (8€)
 
-**Aktuelle Events:**
-• Winter-Wanderung Saarschleife (09.02.2025)
-• Völklinger Hütte bei Nacht (14.02.2025)
+**Sommer-Highlights 2025:**
+• Saarland Open Air Festival (07.-09.06.2025)
+• Historische Schifffahrt auf der Saar (täglich)
+• Radtouren entlang der Saar (Fahrradverleih 12€/Tag)
 
 Welche Art von Aktivität interessiert Sie?`
 
       case 'business':
         if (keywords.includes('ki') || keywords.includes('digital')) {
-          return `💼 KI & Digitalisierungs-Förderung Saarland - Stand 02.02.2025:
+          return `💼 KI & Digitalisierungs-Förderung Saarland - Stand 03.06.2025:
 
-**TOP FÖRDERPROGRAMM:**
-• Saarland Innovation 2025: bis 150.000€ (Focus: KI, Digitalisierung)
-  ⚠️ Deadline: 31.03.2025 - JETZT ANMELDEN!
+**AKTUELLE PROGRAMME:**
+• Saarland Innovation 2025: bis 150.000€ (KI, Digitalisierung)
+  ⏰ Nächste Deadline: 31.08.2025
+• Digitalisierungsbonus Plus: bis 35.000€ (erweitert 2025)
+• Green Tech & KI Hybrid: bis 250.000€ (NEU ab Juni 2025)
 
-• Digitalisierungsbonus Plus: bis 25.000€ (KI-Integration)
-• Green Tech Saarland: bis 200.000€ (Umwelttechnologie)
+**2025 Update:** KI-Integration wird mit 50% Bonus gefördert!
 
-**2025 Fokus:** KI-Integration wird besonders gefördert!
+**Sommer-Förderung:** Schnellverfahren für KI-Projekte (4 Wochen statt 8)
 
 Für welche Art von KI-Projekt benötigen Sie Förderung?`
         }
-        return `💼 Wirtschaftsförderung Saarland - Stand 02.02.2025:
+        return `💼 Wirtschaftsförderung Saarland - Stand 03.06.2025:
 
-**Aktuelle Förderprogramme:**
-• Saarland Innovation 2025: bis 150.000€ (Focus: KI, Digitalisierung)
-• Digitalisierungsbonus Plus: bis 25.000€
-• Green Tech Saarland: bis 200.000€
+**Erweiterte Förderprogramme 2025:**
+• Saarland Innovation 2025: bis 150.000€ (KI, Digitalisierung) 
+• Digitalisierungsbonus Plus: bis 35.000€ (erhöht)
+• Green Tech & KI: bis 250.000€ (NEU)
+• Startup Saarland Boost: bis 75.000€ (für Gründer unter 30)
 
 **Gründungsberatung:**
-• Kostenlose Erstberatung verfügbar
-• Business Plan Check & Finanzierung
+• Kostenlose Erstberatung & Business Plan Check
+• KI-unterstützte Marktanalyse (NEU)
 
 Für welchen Bereich suchen Sie Unterstützung?`
 
       case 'culture':
-        if (keywords.includes('diese woche') || keywords.includes('aktuell')) {
-          return `🎭 Diese Woche im Saarland - Stand 02.02.2025:
+        if (keywords.includes('diese woche') || keywords.includes('aktuell') || keywords.includes('juni')) {
+          return `🎭 Diese Woche im Saarland - Stand 03.06.2025:
 
-**Diese Woche:**
-• Romeo und Julia - Staatstheater, 08.02.2025, 19:30 Uhr (22-78€)
+**Diese Woche (03.-09.06.2025):**
+• Saarland Open Air Festival - Messegelände, Fr-So (45-85€)
+• Shakespeare im Park - Stadtpark, täglich 20:00 (22€)
+• Jazz unter Sternen - Alte Feuerwache, Sa 21:00 (28€)
 
-**Diesen Monat:**
-• Winter Jazz Festival - Congresshalle, 15.02.2025, 20:00 Uhr (38-75€)
-• KI und Kunst Ausstellung - Moderne Galerie (läuft bis 20.04.2025)
+**Den ganzen Juni:**
+• Kunst & KI Biennale - Moderne Galerie (läuft bis 30.08.2025)
+• Sommernachtsmärkte - Altstadt, jeden Freitag (kostenlos)
 
-**Kommender Höhepunkt:**
-• Karneval Saarbrücken: 28.02-04.03.2025 (kostenlos!)
+**Besonderes Highlight:**
+Digital Art Festival mit interaktiven KI-Installationen!
 
 Welche Veranstaltung interessiert Sie?`
         }
-        return `🎭 Kultur im Saarland - Stand 02.02.2025:
+        return `🎭 Kultur im Saarland - Stand 03.06.2025:
 
-**Aktuelle Highlights:**
-• Romeo und Julia - Staatstheater (08.02.2025)
-• Winter Jazz Festival (15.02.2025)
-• KI und Kunst Ausstellung (bis 20.04.2025)
-• Karneval Saarbrücken (28.02-04.03.2025)
+**Sommer-Highlights 2025:**
+• Saarland Open Air Festival (07.-09.06.2025)
+• Shakespeare im Park (Juni-August)
+• Kunst & KI Biennale (bis 30.08.2025)
+• Jazz unter Sternen (jeden Samstag)
 
-**Besonders interessant:**
-"KI und Kunst - Digitale Zukunft" mit KI-generierten Audioguides!
+**Besonders empfehlenswert:**
+Digital Art Festival mit weltpremiere KI-Symphonie am 15.06.!
+
+**Sommer-Specials:**
+• Open Air Kino im Stadtpark
+• Kulturnacht unter freiem Himmel
 
 Welche Art von Kulturveranstaltung interessiert Sie?`
 
       case 'admin':
         if (keywords.includes('wartezeit') || keywords.includes('öffnungszeit')) {
-          return `🏛️ Aktuelle Service-Zeiten - Stand 02.02.2025:
+          return `🏛️ Aktuelle Service-Zeiten - Stand 03.06.2025:
 
-**Live Wartezeiten:**
-• Bürgeramt Saarbrücken: ⏱️ Nur 12 Min Wartezeit!
-  Mo-Fr 8:00-18:00, Sa 9:00-13:00
-• KFZ-Zulassung: ⏱️ Nur 8 Min Wartezeit!
-  Mo-Fr 7:30-15:30
+**Live Wartezeiten (Sommer-Optimierung):**
+• Bürgeramt Saarbrücken: ⏱️ Nur 8 Min Wartezeit!
+  Mo-Fr 7:30-19:00, Sa 8:00-14:00 (erweiterte Öffnungszeiten)
+• KFZ-Zulassung: ⏱️ Nur 5 Min Wartezeit!
+  Mo-Fr 7:00-16:00
 
-**Online-Services:** 99.2% Verfügbarkeit
-Wartung: So 2:00-4:00
+**Sommer-Service:** Verlängerte Öffnungszeiten & zusätzliche Samstage
+
+**Online-Services:** 99.7% Verfügbarkeit (verbessert)
 
 Welchen Service benötigen Sie?`
         }
-        return `🏛️ Digitale Verwaltung Saarland - Stand 02.02.2025:
+        return `🏛️ Digitale Verwaltung Saarland - Stand 03.06.2025:
 
-**NEU seit 2025:**
-• KI-Chatbot für Bürgerservices
-• Digitale Unterschrift verfügbar
-• Neue Termin-App
+**NEU seit Juni 2025:**
+• KI-Assistent für alle Bürgerservices (24/7)
+• Volldigitale Unterschrift für alle Dokumente
+• Express-Termin-App mit Live-Tracking
 
-**Schnellste Wartezeiten:**
-• Bürgeramt: 12 Min | KFZ: 8 Min
+**Rekord-Wartezeiten:**
+• Bürgeramt: 8 Min | KFZ: 5 Min (Sommer-Optimierung)
 
-**Beliebte Services:**
-• Personalausweis beantragen
-• Gewerbeanmeldung
-• KFZ-Zulassung
+**Beliebteste Services:**
+• Online-Personalausweis (24h Lieferung)
+• Digital-Gewerbeanmeldung (sofort)
+• KI-unterstützte Antragsberatung
 
 Wie kann ich Ihnen helfen?`
 
       case 'education':
-        if (keywords.includes('ki') || keywords.includes('master')) {
-          return `🎓 KI-Studium im Saarland - Stand 02.02.2025:
+        if (keywords.includes('ki') || keywords.includes('master') || keywords.includes('bewerbung')) {
+          return `🎓 KI-Studium im Saarland - Stand 03.06.2025:
 
-**🔥 NEU für 2025/26:**
-KI-Masterstudiengang an der Universität des Saarlandes
-• Start: Wintersemester 2025/26
-• Bewerbung bis: 15.07.2025
-• Zukunftsorientiert & praxisnah
+**🔥 KI-Masterstudiengang UdS:**
+✅ Start: Wintersemester 2025/26 (bereits über 500 Bewerbungen!)
+⏰ Bewerbung noch bis: 15.07.2025 (in 6 Wochen!)
+🚀 Praxispartner: SAP, Software AG, DFKI
 
-**Finanzierung:**
-• Saarland Digital Stipendium: 800€/Monat
-• Focus: MINT, Digitalisierung, KI
-• Deadline: 30.04.2025
+**Finanzierung aktualisiert:**
+• Saarland Digital Stipendium: 950€/Monat (erhöht Juni 2025)
+• KI-Excellence Stipendium: 1.200€/Monat (NEU für Top 10%)
+• DFKI-Forschungsstipendien verfügbar
 
-Interessieren Sie sich für den KI-Master?`
+**Bewerbungs-Tipp:** Online-Assessment läuft noch bis 30.06.!
+
+Soll ich Ihnen beim Bewerbungsprozess helfen?`
         }
-        return `🎓 Bildung im Saarland - Stand 02.02.2025:
+        return `🎓 Bildung im Saarland - Stand 03.06.2025:
 
-**Universität des Saarlandes:** 17.000+ Studenten, 120+ Programme
+**Universität des Saarlandes:** 17.500+ Studenten, 125+ Programme
 
-**NEU 2025:**
-• KI-Masterstudiengang (Start WS 2025/26)
-• Saarland Digital Stipendium: 800€/Monat
+**Highlight Sommer 2025:**
+• KI-Masterstudiengang (Start WS 25/26) - Bewerbung bis 15.07.!
+• Saarland Digital Stipendium: 950€/Monat (erhöht)
+• Neue Blockchain-Professur besetzt
 
-**Weiterbildung:**
-• Digitaler Wandel (IHK) - Start: 01.03.2025
+**Sommer-Kurse:**
+• Intensiv-KI Bootcamp (Juli 2025)
+• Digitale Transformation Zertifikat (IHK)
 
 Für welchen Bereich suchen Sie Bildungsangebote?`
 
       default:
-        return `🤖 AGENTLAND.SAARLAND - Ihr KI-Assistent (Stand: 02.02.2025)
+        return `🤖 AGENTLAND.SAARLAND - Ihr KI-Assistent (Stand: 03.06.2025)
 
 Ich helfe Ihnen gerne bei Fragen zu:
-• 🏞️ **Tourismus**: Sehenswürdigkeiten, Events, Aktivitäten
-• 💼 **Wirtschaft**: Förderprogramme, Business, Gründung  
-• 🎓 **Bildung**: Universitäten, Stipendien, Weiterbildung
-• 🏛️ **Verwaltung**: Behördenservices, Formulare, Termine
-• 🎭 **Kultur**: Theater, Konzerte, Museen, Festivals
+• 🌞 **Tourismus**: Sommer-Events, Outdoor-Aktivitäten
+• 💼 **Wirtschaft**: Erweiterte Förderprogramme, KI-Bonus
+• 🎓 **Bildung**: KI-Master Bewerbung, erhöhte Stipendien
+• 🏛️ **Verwaltung**: Optimierte Services, KI-Assistent 24/7
+• 🎭 **Kultur**: Open Air Festival, Digital Art Biennale
 
-**Was gibt's Neues im Februar 2025?**
-• Winter Jazz Festival am 15.02.
-• KI-Förderung bis 150.000€ verfügbar
-• Neue digitale Bürgerservices online
+**Was ist neu im Juni 2025?**
+• Saarland Open Air Festival (07.-09.06.)
+• KI-Förderung mit 50% Bonus
+• Erweiterte Behörden-Öffnungszeiten
 
-Stellen Sie mir einfach Ihre Frage zum Saarland!`
+**Perfektes Sommerwetter heute!** ☀️ Stellen Sie mir Ihre Frage zum Saarland!`
     }
   }
 

@@ -25,7 +25,7 @@ const navigationItems = [
         color: '#00A54A',
         chatLinks: [
           { name: 'Reiseplanung', href: '/chat?context=tourism-planning' },
-          { name: 'Aktuelle Events', href: '/chat?context=tourism-events' }
+          { name: 'Sommer Events', href: '/chat?context=tourism-events' }
         ]
       },
       { 
@@ -65,7 +65,7 @@ const navigationItems = [
         color: '#8B008B',
         chatLinks: [
           { name: 'Theater & Konzerte', href: '/chat?context=culture-events' },
-          { name: 'Karneval 2025', href: '/chat?context=culture-carnival' }
+          { name: 'Sommer Festivals', href: '/chat?context=culture-summer' }
         ]
       }
     ]
