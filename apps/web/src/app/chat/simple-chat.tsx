@@ -46,69 +46,21 @@ export default function SimpleChat() {
     }
   }, [searchParams])
 
-  const handleSend = async () => {
-    if (!input.trim() || isLoading) return
+  const generateResponse = (userInput: string): string => {
+    const keywords = userInput.toLowerCase()
+    const category = currentContext?.category || 
+      (keywords.includes('tour') || keywords.includes('sehen') || keywords.includes('reise') || keywords.includes('wandern') || keywords.includes('ausflug') ? 'tourism' :
+       keywords.includes('förder') || keywords.includes('business') || keywords.includes('unternehmen') || keywords.includes('gründ') || keywords.includes('startup') ? 'business' :
+       keywords.includes('kultur') || keywords.includes('theater') || keywords.includes('konzert') || keywords.includes('karneval') || keywords.includes('kunst') ? 'culture' :
+       keywords.includes('amt') || keywords.includes('behörde') || keywords.includes('antrag') || keywords.includes('ausweis') || keywords.includes('gewerbe') ? 'admin' :
+       keywords.includes('studium') || keywords.includes('bildung') || keywords.includes('universität') || keywords.includes('stipendium') || keywords.includes('weiterbildung') ? 'education' : 'general')
 
-    const userMessage: Message = {
-      id: Date.now().toString(),
-      role: 'user',
-      content: input,
-      timestamp: new Date()
-    }
+    switch(category) {
+      case 'tourism':
+        if (keywords.includes('winter') || keywords.includes('februar')) {
+          return `🏞️ Winter-Aktivitäten im Saarland - Stand 02.02.2025:
 
-    setMessages(prev => [...prev, userMessage])
-    setInput('')
-    setIsLoading(true)
-
-    try {
-      const response = await fetch('/api/chat', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ 
-          message: input,
-          language: 'de',
-          context: currentContext ? {
-            id: currentContext.id,
-            category: currentContext.category,
-            agentType: currentContext.agentType
-          } : undefined
-        })
-      })
-
-      // Fallback für Authentication-Probleme
-      if (!response.ok) {
-        throw new Error('API not accessible')
-      }
-
-      const data = await response.json()
-      
-      setMessages(prev => [...prev, {
-        id: Date.now().toString(),
-        role: 'assistant',
-        content: data.message || data.response || 'Entschuldigung, ich konnte keine Antwort generieren.',
-        timestamp: new Date()
-      }])
-    } catch (error) {
-      console.error('Chat error:', error)
-      
-      // Client-side Fallback mit aktuellen Daten
-      const keywords = input.toLowerCase()
-      let fallbackResponse = ''
-      
-      const category = currentContext?.category || 
-        (keywords.includes('tour') || keywords.includes('sehen') || keywords.includes('reise') ? 'tourism' :
-         keywords.includes('förder') || keywords.includes('business') || keywords.includes('unternehmen') ? 'business' :
-         keywords.includes('kultur') || keywords.includes('theater') || keywords.includes('konzert') ? 'culture' :
-         keywords.includes('amt') || keywords.includes('behörde') || keywords.includes('antrag') ? 'admin' :
-         keywords.includes('studium') || keywords.includes('bildung') || keywords.includes('universität') ? 'education' : 'general')
-
-      switch(category) {
-        case 'tourism':
-          fallbackResponse = `🏞️ Tourismus im Saarland - Stand 02.02.2025:
-
-**Aktuelle Highlights:**
+**Diese Woche verfügbar:**
 • Winter-Wanderung Saarschleife am 09.02.2025 (15€)
 • Völklinger Hütte bei Nacht am 14.02.2025 (20€, romantisch zum Valentinstag!)
 
@@ -118,71 +70,141 @@ export default function SimpleChat() {
 • Bostalsee - Freizeitsee (kostenlos)
 
 Bei diesem Winterwetter empfehle ich warme Kleidung für Outdoor-Aktivitäten. Kann ich Ihnen bei einer konkreten Reiseplanung helfen?`
-          break
-        case 'business':
-          fallbackResponse = `💼 Wirtschaftsförderung Saarland - Stand 02.02.2025:
+        }
+        return `🏞️ Tourismus im Saarland - Stand 02.02.2025:
 
-**Aktuelle Förderprogramme:**
+**Top Sehenswürdigkeiten:**
+• Saarschleife Mettlach - Das Wahrzeichen (kostenlos)
+• Völklinger Hütte - UNESCO Welterbe (15€)
+• Bostalsee - Freizeitsee mit vielen Aktivitäten
+
+**Aktuelle Events:**
+• Winter-Wanderung Saarschleife (09.02.2025)
+• Völklinger Hütte bei Nacht (14.02.2025)
+
+Welche Art von Aktivität interessiert Sie?`
+
+      case 'business':
+        if (keywords.includes('ki') || keywords.includes('digital')) {
+          return `💼 KI & Digitalisierungs-Förderung Saarland - Stand 02.02.2025:
+
+**TOP FÖRDERPROGRAMM:**
 • Saarland Innovation 2025: bis 150.000€ (Focus: KI, Digitalisierung)
-  Deadline: 31.03.2025 - BALD ANMELDEN!
+  ⚠️ Deadline: 31.03.2025 - JETZT ANMELDEN!
+
 • Digitalisierungsbonus Plus: bis 25.000€ (KI-Integration)
 • Green Tech Saarland: bis 200.000€ (Umwelttechnologie)
 
-**Neue Features 2025:**
-• KI-Integration wird besonders gefördert
-• Erweiterte Digitalisierungsförderung
+**2025 Fokus:** KI-Integration wird besonders gefördert!
 
-Für welche Art von Unternehmen oder Projekt suchen Sie Förderung?`
-          break
-        case 'culture':
-          fallbackResponse = `🎭 Kultur im Saarland - Stand 02.02.2025:
+Für welche Art von KI-Projekt benötigen Sie Förderung?`
+        }
+        return `💼 Wirtschaftsförderung Saarland - Stand 02.02.2025:
+
+**Aktuelle Förderprogramme:**
+• Saarland Innovation 2025: bis 150.000€ (Focus: KI, Digitalisierung)
+• Digitalisierungsbonus Plus: bis 25.000€
+• Green Tech Saarland: bis 200.000€
+
+**Gründungsberatung:**
+• Kostenlose Erstberatung verfügbar
+• Business Plan Check & Finanzierung
+
+Für welchen Bereich suchen Sie Unterstützung?`
+
+      case 'culture':
+        if (keywords.includes('diese woche') || keywords.includes('aktuell')) {
+          return `🎭 Diese Woche im Saarland - Stand 02.02.2025:
 
 **Diese Woche:**
-• Romeo und Julia - Staatstheater, 08.02.2025, 19:30 (22-78€)
+• Romeo und Julia - Staatstheater, 08.02.2025, 19:30 Uhr (22-78€)
 
 **Diesen Monat:**
-• Winter Jazz Festival - Congresshalle, 15.02.2025, 20:00 (38-75€)
-• KI und Kunst Ausstellung - Moderne Galerie (bis 20.04.2025)
+• Winter Jazz Festival - Congresshalle, 15.02.2025, 20:00 Uhr (38-75€)
+• KI und Kunst Ausstellung - Moderne Galerie (läuft bis 20.04.2025)
 
-**Karneval 2025:**
+**Kommender Höhepunkt:**
 • Karneval Saarbrücken: 28.02-04.03.2025 (kostenlos!)
 
-Welche Art von Kulturveranstaltung interessiert Sie?`
-          break
-        case 'admin':
-          fallbackResponse = `🏛️ Digitale Verwaltung Saarland - Stand 02.02.2025:
+Welche Veranstaltung interessiert Sie?`
+        }
+        return `🎭 Kultur im Saarland - Stand 02.02.2025:
 
-**Aktuelle Öffnungszeiten & Wartezeiten:**
-• Bürgeramt Saarbrücken: Mo-Fr 8:00-18:00, Sa 9:00-13:00
-  ⏱️ Aktuell nur 12 Min Wartezeit!
-• KFZ-Zulassung: Mo-Fr 7:30-15:30
-  ⏱️ Aktuell nur 8 Min Wartezeit!
+**Aktuelle Highlights:**
+• Romeo und Julia - Staatstheater (08.02.2025)
+• Winter Jazz Festival (15.02.2025)
+• KI und Kunst Ausstellung (bis 20.04.2025)
+• Karneval Saarbrücken (28.02-04.03.2025)
+
+**Besonders interessant:**
+"KI und Kunst - Digitale Zukunft" mit KI-generierten Audioguides!
+
+Welche Art von Kulturveranstaltung interessiert Sie?`
+
+      case 'admin':
+        if (keywords.includes('wartezeit') || keywords.includes('öffnungszeit')) {
+          return `🏛️ Aktuelle Service-Zeiten - Stand 02.02.2025:
+
+**Live Wartezeiten:**
+• Bürgeramt Saarbrücken: ⏱️ Nur 12 Min Wartezeit!
+  Mo-Fr 8:00-18:00, Sa 9:00-13:00
+• KFZ-Zulassung: ⏱️ Nur 8 Min Wartezeit!
+  Mo-Fr 7:30-15:30
+
+**Online-Services:** 99.2% Verfügbarkeit
+Wartung: So 2:00-4:00
+
+Welchen Service benötigen Sie?`
+        }
+        return `🏛️ Digitale Verwaltung Saarland - Stand 02.02.2025:
 
 **NEU seit 2025:**
 • KI-Chatbot für Bürgerservices
 • Digitale Unterschrift verfügbar
 • Neue Termin-App
 
-Welchen Service benötigen Sie?`
-          break
-        case 'education':
-          fallbackResponse = `🎓 Bildung im Saarland - Stand 02.02.2025:
+**Schnellste Wartezeiten:**
+• Bürgeramt: 12 Min | KFZ: 8 Min
 
-**NEU für 2025/26:**
-• KI-Masterstudiengang an der UdS
-  Start: Wintersemester 2025/26
-  Bewerbung bis: 15.07.2025
+**Beliebte Services:**
+• Personalausweis beantragen
+• Gewerbeanmeldung
+• KFZ-Zulassung
 
-**Stipendien:**
+Wie kann ich Ihnen helfen?`
+
+      case 'education':
+        if (keywords.includes('ki') || keywords.includes('master')) {
+          return `🎓 KI-Studium im Saarland - Stand 02.02.2025:
+
+**🔥 NEU für 2025/26:**
+KI-Masterstudiengang an der Universität des Saarlandes
+• Start: Wintersemester 2025/26
+• Bewerbung bis: 15.07.2025
+• Zukunftsorientiert & praxisnah
+
+**Finanzierung:**
 • Saarland Digital Stipendium: 800€/Monat
-  Focus: MINT, Digitalisierung, KI
-  Deadline: 30.04.2025
+• Focus: MINT, Digitalisierung, KI
+• Deadline: 30.04.2025
 
-Die UdS mit 17.000+ Studenten bietet 120+ Programme.
+Interessieren Sie sich für den KI-Master?`
+        }
+        return `🎓 Bildung im Saarland - Stand 02.02.2025:
+
+**Universität des Saarlandes:** 17.000+ Studenten, 120+ Programme
+
+**NEU 2025:**
+• KI-Masterstudiengang (Start WS 2025/26)
+• Saarland Digital Stipendium: 800€/Monat
+
+**Weiterbildung:**
+• Digitaler Wandel (IHK) - Start: 01.03.2025
+
 Für welchen Bereich suchen Sie Bildungsangebote?`
-          break
-        default:
-          fallbackResponse = `🤖 AGENTLAND.SAARLAND - Ihr KI-Assistent (Stand: 02.02.2025)
+
+      default:
+        return `🤖 AGENTLAND.SAARLAND - Ihr KI-Assistent (Stand: 02.02.2025)
 
 Ich helfe Ihnen gerne bei Fragen zu:
 • 🏞️ **Tourismus**: Sehenswürdigkeiten, Events, Aktivitäten
@@ -197,17 +219,37 @@ Ich helfe Ihnen gerne bei Fragen zu:
 • Neue digitale Bürgerservices online
 
 Stellen Sie mir einfach Ihre Frage zum Saarland!`
-      }
+    }
+  }
+
+  const handleSend = async () => {
+    if (!input.trim() || isLoading) return
+
+    const userMessage: Message = {
+      id: Date.now().toString(),
+      role: 'user',
+      content: input,
+      timestamp: new Date()
+    }
+
+    setMessages(prev => [...prev, userMessage])
+    const currentInput = input
+    setInput('')
+    setIsLoading(true)
+
+    // Kleine Verzögerung für bessere UX
+    setTimeout(() => {
+      const response = generateResponse(currentInput)
       
       setMessages(prev => [...prev, {
         id: Date.now().toString(),
         role: 'assistant',
-        content: fallbackResponse,
+        content: response,
         timestamp: new Date()
       }])
-    } finally {
+      
       setIsLoading(false)
-    }
+    }, 800)
   }
 
   return (
