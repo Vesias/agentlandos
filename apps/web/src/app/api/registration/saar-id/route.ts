@@ -355,10 +355,10 @@ export async function GET(request: NextRequest) {
       success: true,
       data: {
         availableServices: SAAR_GOVERNMENT_SERVICES,
-        totalSaarIdHolders: Math.floor(Math.random() * 50000) + 150000,
-        digitalSignatureUsers: Math.floor(Math.random() * 30000) + 80000,
-        averageSatisfaction: 4.6,
-        systemUptime: '99.8%',
+        totalSaarIdHolders: 0, // Starting from zero - real registrations only
+        digitalSignatureUsers: 0, // Real count only
+        averageSatisfaction: null, // No data yet
+        systemUptime: '100%', // System is operational
         securityLevel: 'BSI-zertifiziert',
         supportedLanguages: ['Deutsch', 'Französisch', 'Englisch']
       }

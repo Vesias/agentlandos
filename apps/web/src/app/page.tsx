@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion'
 import Link from 'next/link'
-import { ArrowRight, Bot, Shield, Users, Sparkles, Globe, Database, MessageSquare, MapPin, Building2, GraduationCap, Crown, Zap, Star } from 'lucide-react'
+import { ArrowRight, Bot, Shield, Users, Sparkles, Globe, Database, MessageSquare, MapPin, Building2, GraduationCap, Crown, Zap, Star, User } from 'lucide-react'
 import RealTimeUserCounter from '@/components/RealTimeUserCounter'
 
 /**
@@ -86,29 +86,28 @@ export default function HomePage() {
 
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-              <Link href="/test-business-registration">
-                <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="w-full sm:w-auto text-white px-8 py-4 rounded-xl font-bold text-lg shadow-lg hover:shadow-xl transition-all flex items-center justify-center"
-                  style={{ backgroundColor: '#003399' }}
-                >
-                  <Building2 className="w-5 h-5 mr-2" />
-                  <span>Business-ID Premium</span>
-                  <Crown className="w-5 h-5 ml-2" style={{ color: '#FDB913' }} />
-                </motion.button>
-              </Link>
-              
-              <Link href="/services">
+              <Link href="/register">
                 <motion.button
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   className="w-full sm:w-auto text-white px-8 py-4 rounded-xl font-bold text-lg shadow-lg hover:shadow-xl transition-all flex items-center justify-center"
                   style={{ backgroundColor: '#009FE3' }}
                 >
-                  <Star className="w-5 h-5 mr-2" />
-                  SAAR-ID Premium
-                  <span className="ml-2 text-xs px-2 py-1 rounded-full font-bold text-black" style={{ backgroundColor: '#FDB913' }}>€10</span>
+                  <User className="w-5 h-5 mr-2" />
+                  <span>Jetzt registrieren</span>
+                  <ArrowRight className="w-5 h-5 ml-2" />
+                </motion.button>
+              </Link>
+              
+              <Link href="/chat">
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="w-full sm:w-auto text-white px-8 py-4 rounded-xl font-bold text-lg shadow-lg hover:shadow-xl transition-all flex items-center justify-center"
+                  style={{ backgroundColor: '#003399' }}
+                >
+                  <MessageSquare className="w-5 h-5 mr-2" />
+                  KI-Chat starten
                 </motion.button>
               </Link>
             </div>
@@ -336,8 +335,8 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Enhanced Features - Mobile Optimized */}
-      <section className="px-4 py-12 bg-slate-800/30 backdrop-blur-sm">
+      {/* Features */}
+      <section className="px-4 py-12 bg-white">
         <div className="max-w-6xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -345,11 +344,11 @@ export default function HomePage() {
             transition={{ delay: 0.8, duration: 0.6 }}
             className="text-center mb-12"
           >
-            <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
-              Warum GODMODE Agentland.Saarland?
+            <h2 className="text-3xl sm:text-4xl font-bold mb-4" style={{ color: '#003399' }}>
+              Warum Agentland.Saarland?
             </h2>
-            <p className="text-gray-300 max-w-2xl mx-auto text-lg">
-              Autonome KI für echte Saarländer – revenue-optimiert, präzise, vertrauenswürdig
+            <p className="text-gray-600 max-w-2xl mx-auto text-lg">
+              KI für echte Saarländer – revenue-optimiert, präzise, vertrauenswürdig
             </p>
           </motion.div>
 
@@ -379,15 +378,15 @@ export default function HomePage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.9 + index * 0.1, duration: 0.5 }}
-                className="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700 hover:border-purple-500/30 transition-all"
+                className="bg-gray-50 rounded-xl p-6 border border-gray-200 hover:border-gray-300 transition-all"
               >
-                <div className={`w-12 h-12 bg-gradient-to-br ${feature.color} rounded-lg flex items-center justify-center mb-4`}>
+                <div className="w-12 h-12 rounded-lg flex items-center justify-center mb-4" style={{ backgroundColor: '#003399' }}>
                   <feature.icon className="w-6 h-6 text-white" />
                 </div>
-                <h3 className="font-semibold text-white mb-2 text-lg">
+                <h3 className="font-semibold mb-2 text-lg" style={{ color: '#003399' }}>
                   {feature.title}
                 </h3>
-                <p className="text-gray-400 text-sm leading-relaxed">
+                <p className="text-gray-600 text-sm leading-relaxed">
                   {feature.description}
                 </p>
               </motion.div>
@@ -396,8 +395,8 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Enhanced CTA Section - Premium Focus */}
-      <section className="px-4 py-12 bg-gradient-to-r from-purple-600 via-blue-600 to-cyan-500">
+      {/* CTA Section */}
+      <section className="px-4 py-12 text-white" style={{ backgroundColor: '#003399' }}>
         <div className="max-w-4xl mx-auto text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -405,7 +404,7 @@ export default function HomePage() {
             transition={{ delay: 1.0, duration: 0.6 }}
           >
             <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
-              Bereit für GODMODE Premium?
+              Bereit für Premium Services?
             </h2>
             <p className="text-blue-100 mb-8 text-xl">
               Starte jetzt mit deinen €10 Premium Services und hilf uns €25k+ MRR zu erreichen
@@ -439,9 +438,9 @@ export default function HomePage() {
 
             <div className="mt-8 text-blue-100 text-sm">
               <div className="flex items-center justify-center gap-6 flex-wrap">
-                <div>🧠 GODMODE v2.0-ULTIMATE</div>
+                <div>🤖 KI-Plattform Saarland</div>
                 <div>•</div>
-                <div>12 Subagents ACTIVE</div>
+                <div>Premium Services</div>
                 <div>•</div>
                 <div>€25k+ MRR Target</div>
                 <div>•</div>
