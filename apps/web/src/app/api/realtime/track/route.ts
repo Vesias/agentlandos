@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
     activityLog.push({
       ...activity,
       timestamp: new Date().toISOString(),
-      ip: request.ip || 'unknown'
+      ip: request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown'
     });
     
     // Keep only last 1000 entries to prevent memory issues
