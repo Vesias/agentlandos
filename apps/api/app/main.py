@@ -10,7 +10,8 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.config import settings
 from app.db.database import create_db_and_tables, engine
-from app.api import agents_router, auth, health, users, enhanced_agents, realtime
+from app.api import agents_router, auth, health, users, enhanced_agents, realtime, performance
+from app.middleware.performance import PerformanceMiddleware, MemoryOptimizationMiddleware
 
 
 @asynccontextmanager
@@ -39,14 +40,31 @@ app = FastAPI(
     redoc_url="/api/redoc",
 )
 
-# CORS-Konfiguration für regionale Zugriffe
+# SICHERHEITS-KONFIGURATION für regionale Zugriffe
+# KRITISCH: Restriktive CORS-Policy für Produktionsumgebung
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.BACKEND_CORS_ORIGINS,
+    allow_origins=[
+        "https://agentland.saarland",
+        "https://www.agentland.saarland",
+        "http://localhost:3000"  # Nur für Entwicklung
+    ] if settings.BACKEND_CORS_ORIGINS else ["https://agentland.saarland"],
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],  # Spezifische Methoden
+    allow_headers=[
+        "Accept",
+        "Accept-Language",
+        "Content-Language", 
+        "Content-Type",
+        "Authorization",
+        "X-Requested-With"
+    ],  # Spezifische Headers
+    expose_headers=["X-RateLimit-Remaining", "X-RateLimit-Reset"]
 )
+
+# PERFORMANCE MIDDLEWARE - OPTIMIERT FÜR 200K USERS
+app.add_middleware(PerformanceMiddleware)
+app.add_middleware(MemoryOptimizationMiddleware)
 
 # API-Router einbinden
 app.include_router(health.router, prefix="/api/health", tags=["Gesundheit"])
@@ -55,6 +73,7 @@ app.include_router(users.router, prefix="/api/users", tags=["Benutzer"])
 app.include_router(agents_router.router, prefix="/api/v1", tags=["KI-Agenten"])
 app.include_router(enhanced_agents.router, tags=["Enhanced KI-Agenten"])
 app.include_router(realtime.router, tags=["Echtzeit-Daten"])
+app.include_router(performance.router, tags=["Performance-Monitoring"])
 
 
 @app.get("/", tags=["Root"])

@@ -20,7 +20,11 @@ const universities = [
     programs: '120+',
     specialties: ['Informatik', 'Materialwissenschaften', 'Europastudien'],
     campus: 'Saarbrücken & Homburg',
-    international: true
+    international: true,
+    website: 'https://www.uni-saarland.de',
+    phone: '+49 681 302-0',
+    email: 'studienberatung@uni-saarland.de',
+    address: 'Campus Saarbrücken, 66123 Saarbrücken'
   },
   {
     id: 2,
@@ -30,7 +34,11 @@ const universities = [
     programs: '50+',
     specialties: ['Ingenieurwesen', 'Wirtschaft', 'Sozialwissenschaften'],
     campus: 'Saarbrücken',
-    international: true
+    international: true,
+    website: 'https://www.htwsaar.de',
+    phone: '+49 681 5867-0',
+    email: 'studienberatung@htwsaar.de',
+    address: 'Goebenstraße 40, 66117 Saarbrücken'
   },
   {
     id: 3,
@@ -40,7 +48,11 @@ const universities = [
     programs: '20+',
     specialties: ['Klassische Musik', 'Jazz', 'Musikpädagogik'],
     campus: 'Saarbrücken',
-    international: true
+    international: true,
+    website: 'https://www.hfmsaar.de',
+    phone: '+49 681 96731-0',
+    email: 'info@hfmsaar.de',
+    address: 'Bismarckstraße 1, 66111 Saarbrücken'
   },
   {
     id: 4,
@@ -50,7 +62,11 @@ const universities = [
     programs: '15+',
     specialties: ['Freie Kunst', 'Design', 'Medienkunst'],
     campus: 'Saarbrücken',
-    international: true
+    international: true,
+    website: 'https://www.hbksaar.de',
+    phone: '+49 681 92652-0',
+    email: 'info@hbksaar.de',
+    address: 'Keplerstraße 3-5, 66117 Saarbrücken'
   }
 ]
 
@@ -219,14 +235,39 @@ export default function EducationPage() {
                       </div>
                     </div>
                     
-                    <div className="flex items-center text-sm text-gray-500">
-                      <MapPin className="w-4 h-4 mr-1" />
-                      {uni.campus}
+                    <div className="space-y-2 text-sm text-gray-500 mb-4">
+                      <div className="flex items-center">
+                        <MapPin className="w-4 h-4 mr-2" />
+                        {uni.address}
+                      </div>
+                      <div className="flex items-center">
+                        <span className="w-4 h-4 mr-2">📞</span>
+                        <a href={`tel:${uni.phone}`} className="hover:text-orange-600">
+                          {uni.phone}
+                        </a>
+                      </div>
+                      <div className="flex items-center">
+                        <span className="w-4 h-4 mr-2">✉️</span>
+                        <a href={`mailto:${uni.email}`} className="hover:text-orange-600">
+                          {uni.email}
+                        </a>
+                      </div>
                     </div>
                     
-                    <Button className="w-full mt-4 bg-orange-600 hover:bg-orange-700">
-                      Mehr erfahren
-                    </Button>
+                    <div className="flex gap-2">
+                      <Button 
+                        className="flex-1 bg-orange-600 hover:bg-orange-700"
+                        onClick={() => window.open(uni.website, '_blank')}
+                      >
+                        Website besuchen
+                      </Button>
+                      <Button 
+                        variant="outline"
+                        onClick={() => window.open(`mailto:${uni.email}`, '_blank')}
+                      >
+                        Kontakt
+                      </Button>
+                    </div>
                   </Card>
                 </motion.div>
               ))}

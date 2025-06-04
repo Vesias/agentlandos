@@ -1,0 +1,107 @@
+# .clauderules für AGENTLAND.SAARLAND
+
+## PROJEKT-KONTEXT
+Du arbeitest am KI-Flagship-Projekt für das Saarland - einer souveränen, regionalen KI-Plattform für 1M+ Nutzer. Dies ist ein produktives System mit echten Nutzern und Profitabilitäts-Zielen.
+
+## BUSINESS RULES
+1. **Profitabilität first**: Jede Implementierung muss zu den 50.000€/Monat Q3 2025 Zielen beitragen
+2. **200.000 Grenzpendler zuerst**: Priorisiere Cross-Border Services über allgemeine Features
+3. **DeepSeek-R1 als KI-Brain**: Nutze Context Caching für <30€/Monat bei 10k Interaktionen
+4. **100% echte Daten**: Keine Simulationen oder Mock-Daten mehr
+5. **DSGVO-first**: Alle Features müssen datenschutzkonform sein
+
+## TECHNISCHE ARCHITEKTUR-REGELN
+
+### Multi-Agent System
+- NavigatorAgent = zentrale Orchestrierung mit DeepSeek-R1
+- Spezialisierte Agenten für: Tourism, Business, Education, Culture, Admin, CrossBorder
+- Agent-zu-Agent Kommunikation über event-driven architecture
+- Transparente reasoning chains für alle AI-Entscheidungen
+
+### Code-Standards
+- TypeScript strict mode überall
+- Async/await für alle API calls
+- Pydantic validation in Python
+- Zod validation in TypeScript
+- Comprehensive error handling mit user-friendly messages
+
+### Performance-Anforderungen
+- <2s Response-Zeit für Chat
+- <300ms für API endpoints
+- 99.9% uptime SLA
+- Context caching für 74% AI-Kostenersparnis
+
+## REGIONALE INTEGRATION
+- Deutsch primary, Französisch secondary, English fallback
+- Saarländischer Dialekt support
+- Cross-border services für DE/FR/LU
+- GTFS-RT für saarVV integration
+- Live-Daten von GeoPortal Saarland
+
+## SICHERHEIT & DATENSCHUTZ
+- AES-256 encryption at rest
+- Differential privacy für Analytics
+- Anonymisierung aller PII
+- Kaskadierende Löschung für DSGVO-Anfragen
+- Audit-Logs für alle Datenverarbeitungen
+
+## DEPLOYMENT-REGELN
+- Vercel für Frontend
+- PostgreSQL + pgvector für Daten
+- Qdrant für Vector Search
+- Redis für Caching
+- Docker für lokale Entwicklung
+
+## VERBOTENE PATTERNS
+- Keine simulierten/fake Daten
+- Keine blocking synchrone API calls
+- Keine hardcoded Strings (i18n required)
+- Keine unverschlüsselte PII storage
+- Keine API calls ohne retry logic
+
+## REQUIRED FEATURES FÜR JEDEN COMMIT
+- Error boundaries in React components
+- Loading states für alle async operations
+- Accessibility (WCAG AA minimum)
+- Mobile-first responsive design
+- SEO optimization für alle public pages
+
+## CODE REVIEW CHECKLISTE
+□ Performance impact analysiert
+□ DSGVO compliance überprüft
+□ Tests geschrieben (unit + integration)
+□ Documentation aktualisiert
+□ Mobile usability getestet
+□ Cross-browser compatibility
+□ Cost impact bei AI features berechnet
+
+## MONETIZATION FOCUS
+Jede Feature-Entwicklung muss einem Revenue Stream zugeordnet sein:
+- Premium Pendler Services (9.99€/Monat)
+- Business Services (99€/Monat)  
+- Government Licensing (5.000€/Monat)
+- API Marketplace (0.001€/Call)
+- Data Intelligence (50.000€/Jahr)
+
+## ERFOLGS-METRIKEN
+- 50.000 aktive User bis Q3 2025
+- 25.000€ MRR bis Q3 2025
+- NPS Score >70
+- <30€/Monat AI costs bei 10k interactions
+- 40% adoption rate der Grenzpendler
+
+## NEUE REGELN - GELERNT 2025-01-06
+- **Mobile-First Development**: Alle neuen Features müssen zuerst für mobile optimiert werden
+- **Real Data Only**: Keine Entwicklung ohne echte Saarland-Datenvalidierung
+- **Multi-Subagent Architecture**: Komplexe Tasks werden in spezialisierte Subagenten aufgeteilt
+- **QA-Gated Deployments**: Kein Deployment ohne vollständige QA-Pipeline
+- **Link Health Monitoring**: Alle externen Links werden kontinuierlich überwacht
+- **PWA-Ready**: Alle Features müssen offline-fähig implementiert werden
+- **Security-First**: Hardcoded Credentials sind absolut verboten
+- **Performance Budget**: Build-Size <100MB, Response-Zeit <300ms API
+- **GDPR by Design**: Datenschutz wird von Anfang an mitgedacht, nicht nachträglich
+
+## EMERGENCY CONTACTS
+Bei kritischen Fehlern: Sofort alle Services prüfen, Rollback vorbereiten, Monitoring alerts aktivieren.
+
+Das Saarland verlässt sich auf uns - liefere professionelle, skalierbare Software!

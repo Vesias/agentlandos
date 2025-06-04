@@ -17,17 +17,24 @@ class Settings(BaseSettings):
     API_V1_STR: str = "/api/v1"
     PROJECT_NAME: str = "AGENTLAND.SAARLAND"
     
-    # Sicherheit
-    SECRET_KEY: str = "YOUR-SECRET-KEY-CHANGE-IN-PRODUCTION"
+    # Sicherheit - KRITISCH: Niemals Standardwerte in Produktion verwenden
+    SECRET_KEY: str = "MUST-BE-CHANGED-IN-PRODUCTION-GENERATE-WITH-OPENSSL"
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
+    REFRESH_TOKEN_EXPIRE_DAYS: int = 7
     
-    # Datenbank
+    # Rate Limiting - Schutz vor DoS-Attacken
+    MAX_REQUESTS_PER_MINUTE: int = 100
+    MAX_LOGIN_ATTEMPTS: int = 5
+    LOGIN_LOCKOUT_MINUTES: int = 15
+    
+    # Datenbank - WARNUNG: Schwache Standardpasswörter in Produktion ändern
     POSTGRES_SERVER: str = "localhost"
     POSTGRES_USER: str = "agentland"
-    POSTGRES_PASSWORD: str = "saarland2024"
+    POSTGRES_PASSWORD: str = "CHANGE-WEAK-PASSWORD-IN-PRODUCTION"  # SICHERHEITSRISIKO
     POSTGRES_DB: str = "agentland_saarland"
     DATABASE_URL: str = ""
+    DATABASE_SSL: bool = True  # Verschlüsselung für Produktionsumgebung
     
     # CORS
     BACKEND_CORS_ORIGINS: List[AnyHttpUrl] = []

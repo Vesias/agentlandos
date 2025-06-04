@@ -13,6 +13,7 @@ import json
 
 from app.db.database import get_async_session, async_session_maker
 from app.core.config import settings
+from app.core.cache import cached, cache
 
 
 class AnalyticsService:
@@ -25,11 +26,16 @@ class AnalyticsService:
         self._init_redis()
         
     def _init_redis(self):
-        """Redis-Verbindung initialisieren"""
+        """Redis-Verbindung mit optimierten Einstellungen initialisieren"""
         try:
             self.redis_client = redis.from_url(
                 settings.REDIS_URL,
-                decode_responses=True
+                decode_responses=True,
+                max_connections=20,  # Connection Pool
+                retry_on_timeout=True,
+                socket_connect_timeout=5,
+                socket_keepalive=True,
+                health_check_interval=30
             )
         except Exception as e:
             print(f"Redis connection failed: {e}")
@@ -92,6 +98,7 @@ class AnalyticsService:
             print(f"Error tracking activity: {e}")
             return False
     
+    @cached(prefix="analytics", ttl=60, key_params=[])  # Cache für 1 Minute
     async def get_real_time_stats(self) -> Dict[str, Any]:
         """
         Holt echte Echtzeit-Statistiken
@@ -268,6 +275,7 @@ class AnalyticsService:
         
         return analytics
     
+    @cached(prefix="regional_analytics", ttl=3600, key_params=[])  # Cache für 1 Stunde
     async def get_regional_analytics(self) -> Dict[str, Any]:
         """
         Regionale Analysen für das Saarland

@@ -9,7 +9,7 @@ export default function HomePage() {
   return (
     <div style={{ position: 'relative', minHeight: '100vh', backgroundColor: '#f9fafb' }}>
       {/* Hero Section */}
-      <section style={{ position: 'relative', minHeight: '90vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem' }}>
+      <section style={{ position: 'relative', minHeight: '100dvh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }} className="safe-area">
         {/* Background Gradient */}
         <div style={{
           position: 'absolute',
@@ -98,12 +98,12 @@ export default function HomePage() {
             </motion.div>
 
             {/* CTA Buttons */}
-            <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-              <Link href="/chat" style={{
+            <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap', width: '100%', maxWidth: '400px', margin: '0 auto' }}>
+              <Link href="/chat" className="touch-target touch-smooth" style={{
                 display: 'inline-flex',
                 alignItems: 'center',
-                padding: '1rem 2rem',
-                fontSize: '1.125rem',
+                padding: 'clamp(0.75rem, 4vw, 1rem) clamp(1.5rem, 6vw, 2rem)',
+                fontSize: 'clamp(1rem, 3.5vw, 1.125rem)',
                 fontWeight: 500,
                 color: 'white',
                 background: 'linear-gradient(to right, #003399, #009FE3)',
@@ -111,16 +111,20 @@ export default function HomePage() {
                 textDecoration: 'none',
                 boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05)',
                 transition: 'all 0.3s',
+                minHeight: '48px',
+                flex: '1',
+                justifyContent: 'center',
+                maxWidth: '200px',
               }}>
                 KI-Agenten erkunden
-                <ArrowRight size={20} style={{ marginLeft: '0.5rem' }} />
+                <ArrowRight size={20} style={{ marginLeft: '0.5rem', flexShrink: 0 }} />
               </Link>
               
-              <button style={{
+              <button className="touch-target touch-smooth" style={{
                 display: 'inline-flex',
                 alignItems: 'center',
-                padding: '1rem 2rem',
-                fontSize: '1.125rem',
+                padding: 'clamp(0.75rem, 4vw, 1rem) clamp(1.5rem, 6vw, 2rem)',
+                fontSize: 'clamp(1rem, 3.5vw, 1.125rem)',
                 fontWeight: 500,
                 color: '#003399',
                 backgroundColor: 'white',
@@ -129,9 +133,13 @@ export default function HomePage() {
                 cursor: 'pointer',
                 boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05)',
                 transition: 'all 0.3s',
+                minHeight: '48px',
+                flex: '1',
+                justifyContent: 'center',
+                maxWidth: '200px',
               }}>
                 Über das Projekt
-                <Sparkles size={20} color="#FDB913" style={{ marginLeft: '0.5rem' }} />
+                <Sparkles size={20} color="#FDB913" style={{ marginLeft: '0.5rem', flexShrink: 0 }} />
               </button>
             </div>
           </motion.div>
@@ -177,8 +185,8 @@ export default function HomePage() {
 
           <div style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))',
-            gap: '2rem'
+            gridTemplateColumns: 'repeat(auto-fit, minmax(min(350px, 100%), 1fr))',
+            gap: 'clamp(1rem, 4vw, 2rem)'
           }}>
             {features.map((feature, index) => (
               <motion.div
@@ -187,8 +195,9 @@ export default function HomePage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
                 viewport={{ once: true }}
+                className="touch-smooth"
                 style={{
-                  padding: '2rem',
+                  padding: 'clamp(1.5rem, 4vw, 2rem)',
                   backgroundColor: 'white',
                   borderRadius: '16px',
                   boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05)',
@@ -270,26 +279,30 @@ export default function HomePage() {
             Werden Sie Teil der regionalen KI-Revolution und gestalten Sie mit uns 
             die digitale Zukunft des Saarlandes.
           </p>
-          <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-            <Link href="/chat" style={{
+          <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap', width: '100%', maxWidth: '400px', margin: '0 auto' }}>
+            <Link href="/chat" className="touch-target touch-smooth" style={{
               display: 'inline-flex',
               alignItems: 'center',
-              padding: '1rem 2rem',
-              fontSize: '1.125rem',
+              padding: 'clamp(0.75rem, 4vw, 1rem) clamp(1.5rem, 6vw, 2rem)',
+              fontSize: 'clamp(1rem, 3.5vw, 1.125rem)',
               fontWeight: 500,
               color: '#003399',
               backgroundColor: 'white',
               borderRadius: '9999px',
               textDecoration: 'none',
               boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05)',
+              minHeight: '48px',
+              flex: '1',
+              justifyContent: 'center',
+              maxWidth: '200px',
             }}>
               Jetzt loslegen
             </Link>
-            <button style={{
+            <button className="touch-target touch-smooth" style={{
               display: 'inline-flex',
               alignItems: 'center',
-              padding: '1rem 2rem',
-              fontSize: '1.125rem',
+              padding: 'clamp(0.75rem, 4vw, 1rem) clamp(1.5rem, 6vw, 2rem)',
+              fontSize: 'clamp(1rem, 3.5vw, 1.125rem)',
               fontWeight: 500,
               color: 'white',
               backgroundColor: 'rgba(255,255,255,0.1)',
@@ -297,6 +310,10 @@ export default function HomePage() {
               border: '2px solid rgba(255,255,255,0.3)',
               borderRadius: '9999px',
               cursor: 'pointer',
+              minHeight: '48px',
+              flex: '1',
+              justifyContent: 'center',
+              maxWidth: '200px',
             }}>
               Kontakt aufnehmen
             </button>

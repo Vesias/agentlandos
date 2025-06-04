@@ -356,7 +356,7 @@ Ich helfe Ihnen gerne bei Fragen zu:
   }
 
   return (
-    <div className="flex flex-col h-[calc(100vh-4rem)] max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="flex flex-col h-screen-safe max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mobile-scroll safe-area">
       {/* Chat Header */}
       <div className="py-4 sm:py-6 border-b">
         {currentContext ? (
@@ -455,7 +455,7 @@ Ich helfe Ihnen gerne bei Fragen zu:
                 onClick={() => {
                   setInput(question)
                 }}
-                className="text-xs px-3 py-1 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-full transition-colors"
+                className="text-xs px-3 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-full transition-colors touch-target-sm touch-smooth"
               >
                 {question}
               </button>
@@ -473,13 +473,19 @@ Ich helfe Ihnen gerne bei Fragen zu:
             onChange={(e) => setInput(e.target.value)}
             onKeyPress={(e) => e.key === 'Enter' && handleSend()}
             placeholder="Ihre Nachricht..."
-            className="flex-1 px-4 py-2 sm:py-3 text-sm sm:text-base bg-gray-50 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+            className="flex-1 px-4 py-3 text-mobile-safe bg-gray-50 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent touch-manipulation"
             disabled={isLoading}
+            inputMode="text"
+            autoComplete="off"
+            autoCorrect="off"
+            autoCapitalize="sentences"
           />
           <Button
             onClick={handleSend}
             disabled={isLoading || !input.trim()}
-            className="bg-gradient-to-r from-blue-600 to-cyan-500 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            size="icon"
+            className="bg-gradient-to-r from-blue-600 to-cyan-500 text-white rounded-lg hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed touch-target"
+            aria-label="Nachricht senden"
           >
             {isLoading ? (
               <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />

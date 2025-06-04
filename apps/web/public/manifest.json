@@ -1,0 +1,139 @@
+{
+  "name": "AGENTLAND.SAARLAND - KI für das Saarland",
+  "short_name": "AGENTLAND",
+  "description": "Souveräne KI-Plattform mit regionaler Expertise für Bürger, Unternehmen und Verwaltung im Saarland",
+  "theme_color": "#003399",
+  "background_color": "#ffffff",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "start_url": "/",
+  "lang": "de-DE",
+  "categories": ["productivity", "utilities", "government"],
+  "screenshots": [
+    {
+      "src": "/pwa/screenshot-desktop.jpg",
+      "sizes": "1280x720",
+      "type": "image/jpeg",
+      "form_factor": "wide",
+      "label": "Desktop Ansicht"
+    },
+    {
+      "src": "/pwa/screenshot-mobile.jpg", 
+      "sizes": "390x844",
+      "type": "image/jpeg",
+      "form_factor": "narrow",
+      "label": "Mobile Ansicht"
+    }
+  ],
+  "icons": [
+    {
+      "src": "/pwa/icon-72x72.png",
+      "sizes": "72x72",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/pwa/icon-96x96.png", 
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/pwa/icon-128x128.png",
+      "sizes": "128x128", 
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/pwa/icon-144x144.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/pwa/icon-152x152.png",
+      "sizes": "152x152",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/pwa/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png", 
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/pwa/icon-384x384.png",
+      "sizes": "384x384",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/pwa/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Chat starten",
+      "short_name": "Chat",
+      "description": "Direkt zum KI-Chat",
+      "url": "/chat",
+      "icons": [
+        {
+          "src": "/pwa/icon-chat-96x96.png",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "Services",
+      "short_name": "Services", 
+      "description": "Alle Services anzeigen",
+      "url": "/services",
+      "icons": [
+        {
+          "src": "/pwa/icon-services-96x96.png",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "Tourismus",
+      "short_name": "Tourismus",
+      "description": "Tourismus-Beratung",
+      "url": "/services/tourism",
+      "icons": [
+        {
+          "src": "/pwa/icon-tourism-96x96.png",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "Verwaltung",
+      "short_name": "Verwaltung",
+      "description": "Verwaltungs-Services",
+      "url": "/services/admin",
+      "icons": [
+        {
+          "src": "/pwa/icon-admin-96x96.png",
+          "sizes": "96x96"
+        }
+      ]
+    }
+  ],
+  "prefer_related_applications": false,
+  "edge_side_panel": {
+    "preferred_width": 350
+  },
+  "protocol_handlers": [
+    {
+      "protocol": "web+agentland",
+      "url": "/chat?query=%s"
+    }
+  ]
+}

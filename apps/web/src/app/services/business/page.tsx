@@ -20,7 +20,10 @@ const fundingPrograms = [
     description: 'Unterstützung für innovative Startups und Gründer im Saarland',
     requirements: ['Innovatives Geschäftsmodell', 'Hauptsitz im Saarland', 'Nachhaltigkeit'],
     icon: Rocket,
-    deadline: 'Laufend'
+    deadline: 'Laufend',
+    website: 'https://www.invest-in-saarland.com/foerderung',
+    contact: 'foerderung@invest-in-saarland.com',
+    phone: '+49 681 9520-0'
   },
   {
     id: 2,
@@ -30,7 +33,10 @@ const fundingPrograms = [
     description: 'Förderung digitaler Transformation für KMUs',
     requirements: ['KMU mit Sitz im Saarland', 'Digitalisierungsprojekt', 'Eigenanteil 50%'],
     icon: Globe,
-    deadline: '31.12.2024'
+    deadline: '31.12.2024',
+    website: 'https://www.saarland.de/digitalisierungsbonus',
+    contact: 'digitalisierung@saarland.de',
+    phone: '+49 681 501-1234'
   },
   {
     id: 3,
@@ -40,7 +46,10 @@ const fundingPrograms = [
     description: 'Unterstützung bei der Einstellung qualifizierter Fachkräfte',
     requirements: ['Neue Arbeitsplätze', 'Langfristige Beschäftigung', 'Qualifizierung'],
     icon: Users,
-    deadline: 'Quartalsweise'
+    deadline: 'Quartalsweise',
+    website: 'https://www.arbeitsagentur.de/unternehmen/finanziell/foerderung-arbeitnehmer',
+    contact: 'service@arbeitsagentur.de',
+    phone: '+49 681 944-0'
   },
   {
     id: 4,
@@ -50,7 +59,10 @@ const fundingPrograms = [
     description: 'Unterstützung beim Markteintritt in neue Länder',
     requirements: ['Exportorientierung', 'Marktanalyse', 'Messeteilnahme'],
     icon: Globe,
-    deadline: 'Jederzeit'
+    deadline: 'Jederzeit',
+    website: 'https://www.gtai.de/gtai-de/invest/service/foerdermittel',
+    contact: 'info@gtai.de',
+    phone: '+49 681 9520-100'
   }
 ]
 
@@ -176,12 +188,37 @@ export default function BusinessPage() {
                     </ul>
                   </div>
                   
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-500">
-                      Deadline: <span className="font-medium">{program.deadline}</span>
-                    </span>
-                    <Button size="sm" className="bg-blue-600 hover:bg-blue-700">
+                  <div className="border-t pt-4 space-y-2 text-sm text-gray-500">
+                    <div className="flex items-center">
+                      <span className="w-4 h-4 mr-2">📞</span>
+                      <a href={`tel:${program.phone}`} className="hover:text-blue-600">
+                        {program.phone}
+                      </a>
+                    </div>
+                    <div className="flex items-center">
+                      <span className="w-4 h-4 mr-2">✉️</span>
+                      <a href={`mailto:${program.contact}`} className="hover:text-blue-600">
+                        {program.contact}
+                      </a>
+                    </div>
+                    <div className="flex items-center">
+                      <span className="w-4 h-4 mr-2">📅</span>
+                      <span>Deadline: {program.deadline}</span>
+                    </div>
+                  </div>
+                  
+                  <div className="flex gap-2 mt-4">
+                    <Button 
+                      className="flex-1 bg-blue-600 hover:bg-blue-700"
+                      onClick={() => window.open(program.website, '_blank')}
+                    >
                       Jetzt beantragen
+                    </Button>
+                    <Button 
+                      variant="outline"
+                      onClick={() => window.open(`mailto:${program.contact}`, '_blank')}
+                    >
+                      Kontakt
                     </Button>
                   </div>
                 </Card>

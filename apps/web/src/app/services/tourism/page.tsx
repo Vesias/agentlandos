@@ -22,8 +22,12 @@ const attractions = [
     icon: Mountain,
     image: '/api/placeholder/400/300',
     highlights: ['Baumwipfelpfad', 'Aussichtspunkt Cloef', 'Wanderwege'],
-    openingHours: 'Täglich geöffnet',
-    price: 'Kostenlos'
+    openingHours: 'Täglich 24h geöffnet',
+    price: 'Kostenlos (Baumwipfelpfad: 9,50€)',
+    website: 'https://www.urlaub.saarland/saarschleife',
+    phone: '+49 6864 7909055',
+    address: 'Cloef-Atrium, 66693 Mettlach',
+    email: 'info@tourismus-mettlach.de'
   },
   {
     id: 2,
@@ -35,8 +39,12 @@ const attractions = [
     icon: Building,
     image: '/api/placeholder/400/300',
     highlights: ['Industriekultur', 'Ausstellungen', 'Lichtinstallationen'],
-    openingHours: 'Di-So 10:00-18:00',
-    price: 'Erwachsene: 15€'
+    openingHours: 'Di-So 10:00-19:00',
+    price: 'Erwachsene: 17€, Ermäßigt: 15€',
+    website: 'https://www.voelklinger-huette.org',
+    phone: '+49 6898 9100100',
+    address: 'Rathausstraße 75-79, 66333 Völklingen',
+    email: 'besucherdienst@voelklinger-huette.org'
   },
   {
     id: 3,
@@ -48,8 +56,12 @@ const attractions = [
     icon: Trees,
     image: '/api/placeholder/400/300',
     highlights: ['Wassersport', 'Strandbad', 'Radwege', 'Gastronomie'],
-    openingHours: 'Immer zugänglich',
-    price: 'Eintritt frei'
+    openingHours: 'Immer zugänglich (Strandbad: 9:00-19:00)',
+    price: 'Eintritt frei (Strandbad kostenpflichtig)',
+    website: 'https://www.bostalsee.de',
+    phone: '+49 6852 8888',
+    address: 'Am Bostalsee, 66625 Nohfelden',
+    email: 'info@bostalsee.de'
   },
   {
     id: 4,
@@ -62,7 +74,11 @@ const attractions = [
     image: '/api/placeholder/400/300',
     highlights: ['Historisches Museum', 'Schlossplatz', 'Veranstaltungen'],
     openingHours: 'Di-So 10:00-18:00',
-    price: 'Erwachsene: 5€'
+    price: 'Erwachsene: 6€, Ermäßigt: 4€',
+    website: 'https://www.saarbruecken.de/schloss',
+    phone: '+49 681 506-1402',
+    address: 'Schlossplatz 16, 66119 Saarbrücken',
+    email: 'info.museum@saarbruecken.de'
   }
 ]
 
@@ -198,6 +214,40 @@ export default function TourismPage() {
                           {highlight}
                         </span>
                       ))}
+                    </div>
+                    
+                    <div className="border-t pt-4 mt-4 space-y-2 text-sm text-gray-500">
+                      <div className="flex items-center">
+                        <MapPin className="w-4 h-4 mr-2" />
+                        {attraction.address}
+                      </div>
+                      <div className="flex items-center">
+                        <span className="w-4 h-4 mr-2">📞</span>
+                        <a href={`tel:${attraction.phone}`} className="hover:text-green-600">
+                          {attraction.phone}
+                        </a>
+                      </div>
+                      <div className="flex items-center">
+                        <span className="w-4 h-4 mr-2">✉️</span>
+                        <a href={`mailto:${attraction.email}`} className="hover:text-green-600">
+                          {attraction.email}
+                        </a>
+                      </div>
+                    </div>
+                    
+                    <div className="flex gap-2 mt-4">
+                      <Button 
+                        className="flex-1 bg-green-600 hover:bg-green-700"
+                        onClick={() => window.open(attraction.website, '_blank')}
+                      >
+                        Website besuchen
+                      </Button>
+                      <Button 
+                        variant="outline"
+                        onClick={() => window.open(`tel:${attraction.phone}`, '_blank')}
+                      >
+                        Anrufen
+                      </Button>
                     </div>
                   </div>
                 </Card>

@@ -5,11 +5,14 @@ Provides integration with DeepSeek's latest API for AGENT_LAND_SAARLAND
 
 import aiohttp
 import asyncio
-from typing import Dict, List, Optional, Any, Union
+from typing import Dict, List, Optional, Any, Union, AsyncGenerator
 import json
 import logging
 from datetime import datetime
 import backoff
+import time
+
+from app.core.cache import ai_cache, cached, performance_monitor
 
 logger = logging.getLogger(__name__)
 
@@ -27,7 +30,19 @@ class DeepSeekService:
             "Authorization": f"Bearer {api_key}",
             "Content-Type": "application/json"
         }
+        # Optimierte Session-Konfiguration für hohe Last
         self.session = None
+        self.session_timeout = aiohttp.ClientTimeout(
+            total=60,
+            connect=10,
+            sock_read=30
+        )
+        self.connector = aiohttp.TCPConnector(
+            limit=100,  # Maximale Verbindungen
+            limit_per_host=50,  # Pro Host
+            keepalive_timeout=30,
+            enable_cleanup_closed=True
+        )
         
         # Model configurations
         self.models = {
@@ -47,13 +62,19 @@ class DeepSeekService:
         
     async def __aenter__(self):
         """Async context manager entry"""
-        self.session = aiohttp.ClientSession()
+        self.session = aiohttp.ClientSession(
+            connector=self.connector,
+            timeout=self.session_timeout,
+            headers=self.headers
+        )
         return self
         
     async def __aexit__(self, exc_type, exc_val, exc_tb):
         """Async context manager exit"""
         if self.session:
             await self.session.close()
+        if self.connector:
+            await self.connector.close()
             
     @backoff.on_exception(
         backoff.expo,
@@ -70,10 +91,11 @@ class DeepSeekService:
         temperature: float = None,
         max_tokens: int = None,
         stream: bool = False,
+        use_cache: bool = True,
         **kwargs
     ) -> Union[str, AsyncGenerator]:
         """
-        Generate a response using DeepSeek V3
+        Generate a response using DeepSeek V3 with intelligent caching
         
         Args:
             system_prompt: System instructions for the model
@@ -83,11 +105,25 @@ class DeepSeekService:
             temperature: Sampling temperature (0-2)
             max_tokens: Maximum tokens to generate
             stream: Whether to stream the response
+            use_cache: Whether to use AI response caching
             **kwargs: Additional parameters
             
         Returns:
             Generated response text or async generator if streaming
         """
+        
+        start_time = time.time()
+        
+        # Check cache for similar responses (nicht für Streaming)
+        if use_cache and not stream:
+            cached_response = await ai_cache.get_similar_response(
+                user_prompt, 
+                context or system_prompt
+            )
+            if cached_response:
+                response_time = time.time() - start_time
+                performance_monitor.record_response_time(response_time)
+                return cached_response
         
         # Prepare messages
         messages = [
@@ -120,14 +156,16 @@ class DeepSeekService:
         
         # Make request
         if not self.session:
-            self.session = aiohttp.ClientSession()
+            self.session = aiohttp.ClientSession(
+                connector=self.connector,
+                timeout=self.session_timeout,
+                headers=self.headers
+            )
             
         try:
             async with self.session.post(
                 f"{self.base_url}/chat/completions",
-                headers=self.headers,
-                json=params,
-                timeout=aiohttp.ClientTimeout(total=60)
+                json=params
             ) as response:
                 if response.status != 200:
                     error_data = await response.text()
@@ -138,10 +176,27 @@ class DeepSeekService:
                     return self._handle_stream(response)
                 else:
                     data = await response.json()
-                    return data["choices"][0]["message"]["content"]
+                    result = data["choices"][0]["message"]["content"]
+                    
+                    # Cache successful response
+                    if use_cache:
+                        await ai_cache.store_response(
+                            user_prompt,
+                            result,
+                            context or system_prompt,
+                            ttl=86400  # 24 Stunden
+                        )
+                    
+                    # Record performance
+                    response_time = time.time() - start_time
+                    performance_monitor.record_response_time(response_time)
+                    
+                    return result
                     
         except Exception as e:
             logger.error(f"Error calling DeepSeek API: {str(e)}")
+            response_time = time.time() - start_time
+            performance_monitor.record_response_time(response_time)
             raise
             
     async def _handle_stream(self, response):

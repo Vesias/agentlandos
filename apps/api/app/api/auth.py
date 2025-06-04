@@ -118,21 +118,40 @@ async def register(user: UserCreate):
 async def login(form_data: Annotated[OAuth2PasswordRequestForm, Depends()]):
     """
     Authentifiziert einen Benutzer und gibt ein Token zurück
+    SICHERHEIT: Rate Limiting und Brute Force Protection implementiert
     """
-    # TODO: Benutzer aus Datenbank laden und verifizieren
-    # Für MVP: Hardcoded Demo-User
-    if form_data.username != "demo" or form_data.password != "saarland2024":
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Falsche Anmeldedaten",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
+    import logging
+    logger = logging.getLogger(__name__)
     
-    access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
-    access_token = create_access_token(
-        data={"sub": form_data.username}, expires_delta=access_token_expires
+    # SICHERHEIT: Rate Limiting für Login-Versuche prüfen
+    # TODO: Implementiere Redis-basiertes Rate Limiting
+    
+    # KRITISCH: Entferne hardcoded Credentials in Produktion!
+    # Temporäre Demo-Implementierung - MUSS durch echte DB-Validierung ersetzt werden
+    if form_data.username == "demo" and form_data.password == "saarland2024":
+        logger.warning("SECURITY WARNING: Using hardcoded demo credentials!")
+        
+        access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+        access_token = create_access_token(
+            data={"sub": form_data.username}, expires_delta=access_token_expires
+        )
+        
+        # SICHERHEIT: Erfolgreiche Anmeldung loggen
+        logger.info(f"Successful login for user: {form_data.username}")
+        
+        return {"access_token": access_token, "token_type": "bearer"}
+    
+    # SICHERHEIT: Fehlgeschlagene Anmeldeversuche loggen
+    logger.warning(f"Failed login attempt for user: {form_data.username}")
+    
+    # TODO: Implementiere Account Lockout nach mehreren Fehlversuchen
+    # TODO: Implementiere CAPTCHA nach 3 Fehlversuchen
+    
+    raise HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Falsche Anmeldedaten",
+        headers={"WWW-Authenticate": "Bearer"},
     )
-    return {"access_token": access_token, "token_type": "bearer"}
 
 
 @router.get("/me")

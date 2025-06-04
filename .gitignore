@@ -29,12 +29,38 @@ yarn-error.log*
 lerna-debug.log*
 .pnpm-debug.log*
 
-# Env files
+# SECURITY CRITICAL - Environment files with secrets
 .env
+.env.*
+!.env.example
+!.env.example.secure
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
+
+# Security sensitive files
+ssl/
+*.key
+*.pem
+*.p12
+*.pfx
+*.crt
+*.cer
+secrets/
+credentials/
+keys/
+
+# Backup files (may contain sensitive data)
+backups/
+*.backup
+*.bak
+*.old
+
+# Security logs and reports
+security-logs/
+vulnerability-reports/
+audit-logs/
 
 # Vercel
 .vercel

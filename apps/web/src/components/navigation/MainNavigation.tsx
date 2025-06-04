@@ -82,7 +82,7 @@ export default function MainNavigation() {
   return (
     <>
       {/* Desktop Navigation */}
-      <nav className="hidden lg:block fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-200 shadow-sm">
+      <nav className="hidden md:block fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-200 shadow-sm safe-top">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
@@ -175,7 +175,7 @@ export default function MainNavigation() {
       </nav>
 
       {/* Mobile Navigation */}
-      <nav className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-200 shadow-sm">
+      <nav className="md:hidden fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-200 shadow-sm safe-top">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
@@ -189,9 +189,10 @@ export default function MainNavigation() {
             {/* Mobile Menu Button */}
             <Button
               variant="ghost"
-              size="sm"
+              size="icon"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="relative z-50"
+              className="relative z-50 touch-target"
+              aria-label={mobileMenuOpen ? "Menü schließen" : "Menü öffnen"}
             >
               {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </Button>
@@ -219,7 +220,7 @@ export default function MainNavigation() {
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-              className="fixed top-16 right-0 bottom-0 w-4/5 max-w-sm bg-white shadow-xl z-40 overflow-y-auto"
+              className="fixed top-16 right-0 bottom-0 w-4/5 max-w-sm bg-white shadow-xl z-40 overflow-y-auto mobile-scroll safe-bottom"
             >
               <div className="p-6 space-y-4">
                 {navigationItems.map((item) => (
