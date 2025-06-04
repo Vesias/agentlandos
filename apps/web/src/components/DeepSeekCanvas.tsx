@@ -1,9 +1,10 @@
 'use client'
 
 import React, { useState, useRef, useEffect } from 'react'
-import { Pen, Eraser, Square, Circle, Type, ArrowRight, Download, Trash2, Settings, Lightbulb, Target, CheckCircle } from 'lucide-react'
+import { Pen, Eraser, Square, Circle, Type, ArrowRight, Download, Trash2, Settings, Lightbulb, Target, CheckCircle, Users, Wifi } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
+import collaborationManager from '@/lib/collaboration'
 
 interface CanvasElement {
   id: string
@@ -38,18 +39,76 @@ export default function DeepSeekCanvas({ planningPrompt, serviceCategory, onPlan
   const [planningSteps, setPlanningSteps] = useState<string[]>([])
   const [hoveredElement, setHoveredElement] = useState<string | null>(null)
   const [animatingElements, setAnimatingElements] = useState<Set<string>>(new Set())
+  const [collaborativeUsers, setCollaborativeUsers] = useState<any[]>([])
+  const [isCollaborationActive, setIsCollaborationActive] = useState(false)
+  const [sessionId, setSessionId] = useState<string | null>(null)
+  const [userCursors, setUserCursors] = useState<{ [userId: string]: { x: number; y: number; name: string; color: string } }>({})
 
   const colors = ['#003399', '#009FE3', '#FDB913', '#dc2626', '#16a34a', '#9333ea', '#ea580c']
 
   useEffect(() => {
     drawCanvas()
-  }, [elements])
+  }, [elements, userCursors])
 
   useEffect(() => {
     if (planningPrompt) {
       generateInitialPlan()
+      initializeCollaboration()
     }
   }, [planningPrompt, serviceCategory])
+
+  // Initialize collaboration session
+  const initializeCollaboration = async () => {
+    try {
+      const sessionId = collaborationManager.generateSessionId(planningPrompt, serviceCategory)
+      setSessionId(sessionId)
+
+      const joined = await collaborationManager.joinSession(sessionId, planningPrompt, serviceCategory)
+      if (joined) {
+        setIsCollaborationActive(true)
+        
+        // Set up collaboration event listeners
+        collaborationManager.on('elementAdded', (data: any) => {
+          setElements(prev => [...prev, data])
+        })
+
+        collaborationManager.on('elementUpdated', (data: any) => {
+          setElements(prev => prev.map(el => el.id === data.id ? { ...el, ...data } : el))
+        })
+
+        collaborationManager.on('elementDeleted', (data: any) => {
+          setElements(prev => prev.filter(el => el.id !== data.elementId))
+        })
+
+        collaborationManager.on('cursorMoved', (data: any) => {
+          setUserCursors(prev => ({
+            ...prev,
+            [data.userId]: {
+              x: data.x,
+              y: data.y,
+              name: data.userName,
+              color: data.userColor
+            }
+          }))
+        })
+
+        collaborationManager.on('userJoined', (data: any) => {
+          setCollaborativeUsers(prev => [...prev.filter(u => u.id !== data.id), data])
+        })
+
+        collaborationManager.on('userLeft', (data: any) => {
+          setCollaborativeUsers(prev => prev.filter(u => u.id !== data.id))
+          setUserCursors(prev => {
+            const newCursors = { ...prev }
+            delete newCursors[data.id]
+            return newCursors
+          })
+        })
+      }
+    } catch (error) {
+      console.error('Collaboration initialization failed:', error)
+    }
+  }
 
   const generateInitialPlan = async () => {
     setIsGeneratingPlan(true)
@@ -368,6 +427,52 @@ export default function DeepSeekCanvas({ planningPrompt, serviceCategory, onPlan
     elements.forEach(element => {
       drawElement(ctx, element)
     })
+
+    // Draw collaborative cursors
+    drawCollaborativeCursors(ctx)
+  }
+
+  const drawCollaborativeCursors = (ctx: CanvasRenderingContext2D) => {
+    Object.entries(userCursors).forEach(([userId, cursor]) => {
+      const { x, y, name, color } = cursor
+      
+      // Draw cursor pointer
+      ctx.fillStyle = color
+      ctx.beginPath()
+      ctx.moveTo(x, y)
+      ctx.lineTo(x + 12, y + 4)
+      ctx.lineTo(x + 8, y + 8)
+      ctx.lineTo(x + 4, y + 12)
+      ctx.closePath()
+      ctx.fill()
+      
+      // Draw cursor outline
+      ctx.strokeStyle = '#ffffff'
+      ctx.lineWidth = 1
+      ctx.stroke()
+      
+      // Draw user name label
+      ctx.fillStyle = color
+      ctx.fillRect(x + 15, y - 8, name.length * 8 + 12, 20)
+      
+      // Label text
+      ctx.fillStyle = '#ffffff'
+      ctx.font = '12px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif'
+      ctx.fillText(name, x + 21, y + 6)
+      
+      // Subtle pulse animation
+      const time = Date.now() / 1000
+      const pulse = Math.sin(time * 3) * 0.1 + 0.9
+      ctx.globalAlpha = pulse
+      
+      // Cursor dot
+      ctx.fillStyle = color
+      ctx.beginPath()
+      ctx.arc(x + 2, y + 2, 3, 0, 2 * Math.PI)
+      ctx.fill()
+      
+      ctx.globalAlpha = 1
+    })
   }
 
   const drawGrid = (ctx: CanvasRenderingContext2D) => {
@@ -678,11 +783,19 @@ export default function DeepSeekCanvas({ planningPrompt, serviceCategory, onPlan
 
       // Toggle task completion with animation
       setTimeout(() => {
+        const updatedElement: CanvasElement = { 
+          ...clickedElement, 
+          status: (clickedElement.status === 'completed' ? 'pending' : 'completed') as "pending" | "completed" | "in-progress"
+        }
+        
         setElements(prev => prev.map(el => 
-          el.id === clickedElement.id 
-            ? { ...el, status: el.status === 'completed' ? 'pending' : 'completed' }
-            : el
+          el.id === clickedElement.id ? updatedElement : el
         ))
+        
+        // Broadcast to collaborators
+        if (isCollaborationActive) {
+          collaborationManager.broadcastElementUpdated(updatedElement)
+        }
       }, 150)
       return
     }
@@ -699,6 +812,11 @@ export default function DeepSeekCanvas({ planningPrompt, serviceCategory, onPlan
         text: 'Neue Idee'
       }
       setElements(prev => [...prev, newElement])
+      
+      // Broadcast to collaborators
+      if (isCollaborationActive) {
+        collaborationManager.broadcastElementAdded(newElement)
+      }
     }
 
     if (currentTool === 'goal') {
@@ -714,6 +832,11 @@ export default function DeepSeekCanvas({ planningPrompt, serviceCategory, onPlan
         status: 'pending'
       }
       setElements(prev => [...prev, newElement])
+      
+      // Broadcast to collaborators
+      if (isCollaborationActive) {
+        collaborationManager.broadcastElementAdded(newElement)
+      }
     }
 
     if (currentTool === 'task') {
@@ -729,6 +852,11 @@ export default function DeepSeekCanvas({ planningPrompt, serviceCategory, onPlan
         status: 'pending'
       }
       setElements(prev => [...prev, newElement])
+      
+      // Broadcast to collaborators
+      if (isCollaborationActive) {
+        collaborationManager.broadcastElementAdded(newElement)
+      }
     }
   }
 
@@ -767,10 +895,45 @@ export default function DeepSeekCanvas({ planningPrompt, serviceCategory, onPlan
       {/* Header */}
       <div className="p-4 border-b border-gray-200">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-bold" style={{ color: '#003399' }}>
-            🎯 DeepSeek Planner - {serviceCategory.charAt(0).toUpperCase() + serviceCategory.slice(1)}
-          </h3>
+          <div className="flex items-center gap-3">
+            <h3 className="text-lg font-bold" style={{ color: '#003399' }}>
+              🎯 DeepSeek Planner - {serviceCategory.charAt(0).toUpperCase() + serviceCategory.slice(1)}
+            </h3>
+            
+            {/* Collaboration Status */}
+            <div className="flex items-center gap-2">
+              {isCollaborationActive ? (
+                <div className="flex items-center gap-1 px-2 py-1 bg-green-50 rounded-full border border-green-200">
+                  <Wifi className="w-3 h-3 text-green-600" />
+                  <span className="text-xs text-green-700 font-medium">Live</span>
+                </div>
+              ) : (
+                <div className="flex items-center gap-1 px-2 py-1 bg-gray-50 rounded-full border border-gray-200">
+                  <Wifi className="w-3 h-3 text-gray-400" />
+                  <span className="text-xs text-gray-500">Offline</span>
+                </div>
+              )}
+              
+              {/* User Count */}
+              {(collaborativeUsers.length > 0 || Object.keys(userCursors).length > 0) && (
+                <div className="flex items-center gap-1 px-2 py-1 bg-blue-50 rounded-full border border-blue-200">
+                  <Users className="w-3 h-3 text-blue-600" />
+                  <span className="text-xs text-blue-700 font-medium">
+                    {Math.max(collaborativeUsers.length, Object.keys(userCursors).length + 1)}
+                  </span>
+                </div>
+              )}
+            </div>
+          </div>
+          
           <div className="flex items-center gap-2">
+            {/* Session ID for sharing */}
+            {sessionId && (
+              <div className="text-xs text-gray-500 font-mono bg-gray-50 px-2 py-1 rounded border">
+                Session: {sessionId.split('-').pop()?.substring(0, 8)}
+              </div>
+            )}
+            
             <Button onClick={clearCanvas} variant="outline" size="sm">
               <Trash2 className="w-4 h-4 mr-1" />
               Löschen
@@ -859,6 +1022,16 @@ export default function DeepSeekCanvas({ planningPrompt, serviceCategory, onPlan
             } else {
               canvas.style.cursor = currentTool === 'pen' ? 'crosshair' : 'default'
               setHoveredElement(null)
+            }
+            
+            // Broadcast cursor position to collaborators (throttled)
+            if (isCollaborationActive) {
+              // Throttle cursor updates to avoid spam
+              if (!canvas.dataset.lastCursorUpdate || 
+                  Date.now() - parseInt(canvas.dataset.lastCursorUpdate) > 100) {
+                collaborationManager.broadcastCursorMoved(x, y)
+                canvas.dataset.lastCursorUpdate = Date.now().toString()
+              }
             }
           }}
         />
