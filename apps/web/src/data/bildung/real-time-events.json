@@ -1,0 +1,19 @@
+{
+  "service": "bildung",
+  "events": [
+    {
+      "id": "education_1",
+      "title": "Universität des Saarlandes",
+      "description": "Informatik, Medizin, Wirtschaftswissenschaften",
+      "status": "enrollment_open",
+      "nextDeadline": "2025-07-04T17:56:59.643Z",
+      "programs": [
+        "Bachelor Informatik",
+        "Master Data Science",
+        "MBA"
+      ]
+    }
+  ],
+  "lastUpdate": "2025-06-04T17:56:59.643Z",
+  "totalEvents": 1
+}

@@ -1,0 +1,20 @@
+{
+  "service": "wirtschaft",
+  "events": [
+    {
+      "id": "business_1",
+      "title": "IHK Saarland Beratung",
+      "description": "Gründungsberatung und Fördermittel",
+      "status": "available",
+      "nextAppointment": "2025-06-05T17:56:59.642Z",
+      "contact": "beratung@saarland.ihk.de",
+      "services": [
+        "Gründungsberatung",
+        "Fördermittel",
+        "Exportberatung"
+      ]
+    }
+  ],
+  "lastUpdate": "2025-06-04T17:56:59.642Z",
+  "totalEvents": 1
+}

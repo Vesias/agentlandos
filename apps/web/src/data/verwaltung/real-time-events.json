@@ -1,0 +1,20 @@
+{
+  "service": "verwaltung",
+  "events": [
+    {
+      "id": "admin_1",
+      "title": "Bürgeramt Saarbrücken",
+      "description": "Personalausweise, Meldewesen, Bescheinigungen",
+      "status": "open",
+      "currentWaitTime": 19,
+      "nextAvailableAppointment": "2025-06-06T17:56:59.643Z",
+      "services": [
+        "Personalausweis",
+        "Reisepass",
+        "Meldebescheinigung"
+      ]
+    }
+  ],
+  "lastUpdate": "2025-06-04T17:56:59.643Z",
+  "totalEvents": 1
+}
