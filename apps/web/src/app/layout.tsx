@@ -1,10 +1,7 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
-import MobileFirstNavigation from '@/components/MobileFirstNavigation'
-import MobileFeatures from '@/components/MobileFeatures'
-import MobileTestSuite from '@/components/MobileTestSuite'
-import RealAnalyticsTracker from '@/components/RealAnalyticsTracker'
+import SimpleNavigation from '@/components/SimpleNavigation'
 import { AuthProvider } from '@/contexts/AuthContext'
 
 const inter = Inter({ subsets: ['latin'] })
@@ -109,13 +106,10 @@ export default function RootLayout({
       </head>
       <body className={`${inter.className} bg-gray-50`}>
         <AuthProvider>
-          <RealAnalyticsTracker />
-          <MobileFirstNavigation />
-          <main className="pb-safe">
+          <SimpleNavigation />
+          <main>
             {children}
           </main>
-          <MobileFeatures />
-          <MobileTestSuite />
         </AuthProvider>
       </body>
     </html>
