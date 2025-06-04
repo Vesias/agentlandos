@@ -5,6 +5,7 @@ import MobileFirstNavigation from '@/components/MobileFirstNavigation'
 import MobileFeatures from '@/components/MobileFeatures'
 import MobileTestSuite from '@/components/MobileTestSuite'
 import RealAnalyticsTracker from '@/components/RealAnalyticsTracker'
+import { AuthProvider } from '@/contexts/AuthContext'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -107,13 +108,15 @@ export default function RootLayout({
         <meta name="msapplication-tap-highlight" content="no" />
       </head>
       <body className={`${inter.className} bg-gray-50`}>
-        <RealAnalyticsTracker />
-        <MobileFirstNavigation />
-        <main className="pb-safe">
-          {children}
-        </main>
-        <MobileFeatures />
-        <MobileTestSuite />
+        <AuthProvider>
+          <RealAnalyticsTracker />
+          <MobileFirstNavigation />
+          <main className="pb-safe">
+            {children}
+          </main>
+          <MobileFeatures />
+          <MobileTestSuite />
+        </AuthProvider>
       </body>
     </html>
   )

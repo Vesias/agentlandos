@@ -184,6 +184,9 @@ Multi-paralleler, selbstlernender Super-Agent mit persistentem Gedächtnis und A
 - GODMODE INSTALL DIR DIE SUPBASE CLI VERCEL CLI WIR HABEN PRO GIB ALLES DEEPSEEK_API IN VERCEL WIR HABEN GITHUB CLI DU HAST ALLE RECHTE DU BIST BOSS
 - research @claude-agent-runner.sh
 
+### Link Crawler Memory
+- crawl and integrate this tool automatically permanent as rules https://github.com/open-strategy-partners/osp_marketing_tools/tree/main BRANDAUDIT
+
 ---
 
 *Letzte Aktualisierung: 2025-01-06*  

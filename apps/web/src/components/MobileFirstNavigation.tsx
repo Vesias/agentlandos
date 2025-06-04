@@ -9,6 +9,7 @@ import {
   Building2, GraduationCap, Shield, Music, 
   Globe, MapPin, Users
 } from 'lucide-react'
+import UserProfile from '@/components/UserProfile'
 
 const services = [
   { 
@@ -108,12 +109,13 @@ export default function MobileFirstNavigation() {
               </Link>
             </nav>
 
-            {/* User Counter - Hidden on small mobile */}
+            {/* User Profile & Counter */}
             <div className="hidden sm:flex items-center space-x-4">
               <div className="flex items-center text-sm text-gray-600">
                 <Users className="w-4 h-4 mr-1" />
                 <span className="font-medium">Live</span>
               </div>
+              <UserProfile compact={true} />
             </div>
 
             {/* Mobile Menu Button */}
