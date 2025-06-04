@@ -400,19 +400,22 @@ Ich helfe Ihnen gerne bei Fragen zu:
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="flex flex-col h-screen-safe max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mobile-scroll safe-area">
-        {/* Chat Header */}
-        <div className="py-4 sm:py-6 border-b bg-white rounded-t-lg shadow-sm">
-          <div className="flex items-center justify-between mb-4">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800">
+      <div className="flex flex-col h-screen-safe max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mobile-scroll safe-area">
+        {/* Modern Chat Header */}
+        <div className="py-6 sm:py-8 border-b border-white/10 bg-white/5 backdrop-blur-xl rounded-t-2xl shadow-2xl">
+          <div className="flex items-center justify-between mb-6">
             <div className="flex-1">
               {currentContext ? (
-                <div className="flex items-center space-x-3">
+                <div className="flex items-center space-x-4">
                   <div 
-                    className="w-10 h-10 rounded-lg flex items-center justify-center"
-                    style={{ backgroundColor: '#003399' }}
+                    className="w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg ring-2 ring-white/20"
+                    style={{ 
+                      background: 'linear-gradient(135deg, #0066cc 0%, #003d7a 100%)',
+                      boxShadow: '0 10px 25px rgba(0, 51, 153, 0.3)'
+                    }}
                   >
-                    <div className="text-lg text-white">
+                    <div className="text-2xl text-white">
                       {currentContext.icon === 'Sparkles' ? '✨' : 
                        currentContext.icon === 'Calendar' ? '📅' :
                        currentContext.icon === 'Euro' ? '💶' :
@@ -426,9 +429,9 @@ Ich helfe Ihnen gerne bei Fragen zu:
                     </div>
                   </div>
                   <div>
-                    <h1 className="text-2xl sm:text-3xl font-bold" style={{ color: '#003399' }}>{currentContext.title}</h1>
-                    <p className="text-sm sm:text-base text-gray-600 mt-1">
-                      Spezialisierte Beratung für {currentContext.category === 'tourism' ? 'Tourismus' :
+                    <h1 className="text-3xl sm:text-4xl font-bold text-white mb-2">{currentContext.title}</h1>
+                    <p className="text-lg text-blue-200">
+                      Spezialisierte KI für {currentContext.category === 'tourism' ? 'Tourismus' :
                       currentContext.category === 'business' ? 'Wirtschaft' :
                       currentContext.category === 'education' ? 'Bildung' :
                       currentContext.category === 'admin' ? 'Verwaltung' :
@@ -438,39 +441,47 @@ Ich helfe Ihnen gerne bei Fragen zu:
                 </div>
               ) : (
                 <div className="text-center">
-                  <div className="w-16 h-16 mx-auto mb-4 rounded-2xl flex items-center justify-center" style={{ backgroundColor: '#003399' }}>
-                    <Bot className="w-8 h-8 text-white" />
+                  <div className="w-20 h-20 mx-auto mb-6 rounded-3xl flex items-center justify-center shadow-2xl ring-4 ring-white/20"
+                       style={{ 
+                         background: 'linear-gradient(135deg, #0066cc 0%, #003d7a 100%)',
+                         boxShadow: '0 15px 35px rgba(0, 51, 153, 0.4)'
+                       }}>
+                    <Bot className="w-10 h-10 text-white" />
                   </div>
-                  <h1 className="text-2xl sm:text-3xl font-bold mb-2" style={{ color: '#003399' }}>KI-Chat Saarland</h1>
-                  <p className="text-sm sm:text-base text-gray-600">Ihre Premium KI-Assistenz für das Saarland • €10/Monat</p>
-                  <div className="mt-4 flex items-center justify-center gap-4 text-sm">
-                    <span className="flex items-center gap-1">
-                      <span className="w-2 h-2 rounded-full" style={{ backgroundColor: '#009FE3' }}></span>
-                      Real-time Daten
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <span className="w-2 h-2 rounded-full" style={{ backgroundColor: '#FDB913' }}></span>
-                      Premium Features
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <span className="w-2 h-2 rounded-full bg-green-500"></span>
-                      GDPR-konform
-                    </span>
+                  <h1 className="text-4xl sm:text-5xl font-bold mb-4 text-white">SAAR-GPT Premium</h1>
+                  <p className="text-lg text-blue-200 mb-6">Die fortschrittlichste KI für das Saarland • Powered by DeepSeek R1</p>
+                  <div className="flex flex-wrap items-center justify-center gap-6 text-sm">
+                    <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full">
+                      <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></div>
+                      <span className="text-white font-medium">Live Daten</span>
+                    </div>
+                    <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full">
+                      <div className="w-2 h-2 rounded-full bg-yellow-400 animate-pulse"></div>
+                      <span className="text-white font-medium">RAG System</span>
+                    </div>
+                    <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full">
+                      <div className="w-2 h-2 rounded-full bg-blue-400 animate-pulse"></div>
+                      <span className="text-white font-medium">Autonome Agents</span>
+                    </div>
                   </div>
                 </div>
               )}
             </div>
 
-            {/* Canvas Toggle Button */}
-            <div className="flex items-center gap-2">
+            {/* Modern Canvas Toggle Button */}
+            <div className="flex items-center gap-3">
               <Button
                 onClick={() => setShowCanvas(!showCanvas)}
                 variant={showCanvas ? "default" : "outline"}
-                size="sm"
-                className="flex items-center gap-2"
+                size="lg"
+                className={`flex items-center gap-3 font-semibold transition-all duration-300 ${
+                  showCanvas 
+                    ? 'bg-white text-blue-900 hover:bg-blue-50 shadow-xl' 
+                    : 'border-white/30 text-white hover:bg-white/10 backdrop-blur-sm'
+                }`}
               >
-                <PenTool className="w-4 h-4" />
-                {showCanvas ? 'Chat' : 'Canvas'}
+                <PenTool className="w-5 h-5" />
+                {showCanvas ? 'Chat Modus' : 'Canvas AI'}
               </Button>
               {showCanvas && (
                 <Button
@@ -479,10 +490,11 @@ Ich helfe Ihnen gerne bei Fragen zu:
                     setCanvasServiceCategory('general')
                   }}
                   variant="outline"
-                  size="sm"
+                  size="lg"
+                  className="border-white/30 text-white hover:bg-white/10 backdrop-blur-sm font-medium"
                 >
-                  <Layout className="w-4 h-4 mr-1" />
-                  Neu
+                  <Layout className="w-5 h-5 mr-2" />
+                  Neues Canvas
                 </Button>
               )}
             </div>
@@ -492,7 +504,7 @@ Ich helfe Ihnen gerne bei Fragen zu:
         {/* Main Content Area */}
         {showCanvas ? (
           /* Canvas View */
-          <div className="flex-1 p-4">
+          <div className="flex-1 p-6 bg-white/5 backdrop-blur-xl rounded-2xl margin-2">
             <OpenCanvas 
               initialPrompt={planningPrompt}
               serviceCategory={canvasServiceCategory}
@@ -510,38 +522,44 @@ Ich helfe Ihnen gerne bei Fragen zu:
             />
           </div>
         ) : (
-          /* Chat Messages Area */
-          <div className="flex-1 overflow-y-auto py-4 sm:py-6 space-y-4">
+          /* Premium Chat Messages Area */
+          <div className="flex-1 overflow-y-auto py-6 sm:py-8 space-y-6">
             {messages.length === 0 ? (
-            <div className="text-center py-8 sm:py-12 bg-white rounded-lg shadow-sm">
-              <div className="w-20 h-20 sm:w-24 sm:h-24 mx-auto mb-6 rounded-2xl flex items-center justify-center" style={{ backgroundColor: '#003399' }}>
-                <Bot className="w-10 h-10 sm:w-12 sm:h-12 text-white" />
+            <div className="text-center py-12 sm:py-16 bg-white/10 backdrop-blur-xl rounded-3xl border border-white/20 shadow-2xl">
+              <div className="w-24 h-24 sm:w-28 sm:h-28 mx-auto mb-8 rounded-3xl flex items-center justify-center shadow-2xl ring-4 ring-white/20"
+                   style={{ 
+                     background: 'linear-gradient(135deg, #009FE3 0%, #0066cc 100%)',
+                     boxShadow: '0 20px 40px rgba(0, 159, 227, 0.3)'
+                   }}>
+                <Bot className="w-12 h-12 sm:w-14 sm:h-14 text-white" />
               </div>
-              <h2 className="text-xl sm:text-2xl font-bold mb-4" style={{ color: '#003399' }}>Willkommen bei SAAR-ID Premium!</h2>
-              <p className="text-sm sm:text-base text-gray-600 max-w-md mx-auto mb-6">
-                Ihr persönlicher KI-Assistent für alle Saarland-Services. Premium Features für nur €10/Monat.
+              <h2 className="text-2xl sm:text-3xl font-bold mb-6 text-white">Willkommen bei SAAR-GPT Premium!</h2>
+              <p className="text-lg text-blue-100 max-w-lg mx-auto mb-8 leading-relaxed">
+                Ihre fortschrittlichste KI-Assistenz für das Saarland. Premium Features mit DeepSeek R1 Reasoning.
               </p>
               
-              {/* Quick Action Cards */}
-              <div className="grid grid-cols-2 md:grid-cols-5 gap-3 max-w-4xl mx-auto mb-6">
+              {/* Modern Quick Action Cards */}
+              <div className="grid grid-cols-2 md:grid-cols-5 gap-4 max-w-5xl mx-auto mb-8">
                 {[
-                  { emoji: '🏰', label: 'Tourismus', desc: 'Ausflüge & Events' },
-                  { emoji: '💼', label: 'Business', desc: 'Förderungen & Gründung' },
-                  { emoji: '🏛️', label: 'Verwaltung', desc: 'Ämter & Services' },
-                  { emoji: '🎓', label: 'Bildung', desc: 'Studium & Kurse' },
-                  { emoji: '🎭', label: 'Kultur', desc: 'Theater & Musik' }
+                  { emoji: '🏰', label: 'Tourismus', desc: 'Live Events & Ausflüge', color: 'from-emerald-500 to-teal-600' },
+                  { emoji: '💼', label: 'Business', desc: 'KI-Förderungen & Startups', color: 'from-blue-500 to-indigo-600' },
+                  { emoji: '🏛️', label: 'Verwaltung', desc: 'Express-Services', color: 'from-purple-500 to-violet-600' },
+                  { emoji: '🎓', label: 'Bildung', desc: 'KI-Master & Stipendien', color: 'from-orange-500 to-red-600' },
+                  { emoji: '🎭', label: 'Kultur', desc: 'Digital Art & Events', color: 'from-pink-500 to-rose-600' }
                 ].map((item) => (
-                  <div key={item.label} className="p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer"
+                  <div key={item.label} 
+                       className={`group p-4 bg-gradient-to-br ${item.color} rounded-2xl hover:scale-105 transition-all duration-300 cursor-pointer shadow-lg hover:shadow-2xl backdrop-blur-sm border border-white/20`}
                        onClick={() => setInput(`Was gibt es Neues im Bereich ${item.label}?`)}>
-                    <div className="text-2xl mb-2">{item.emoji}</div>
-                    <div className="text-sm font-semibold" style={{ color: '#003399' }}>{item.label}</div>
-                    <div className="text-xs text-gray-500">{item.desc}</div>
+                    <div className="text-3xl mb-3 group-hover:scale-110 transition-transform duration-300">{item.emoji}</div>
+                    <div className="text-sm font-bold text-white mb-1">{item.label}</div>
+                    <div className="text-xs text-white/80 leading-tight">{item.desc}</div>
                   </div>
                 ))}
               </div>
               
-              <div className="text-xs text-gray-500">
-                💡 Klicken Sie auf eine Kategorie oder stellen Sie direkt eine Frage
+              <div className="text-sm text-blue-200 bg-white/10 inline-flex items-center gap-2 px-4 py-2 rounded-full backdrop-blur-sm">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                Powered by DeepSeek R1 • RAG System aktiv • Autonome Agents verfügbar
               </div>
             </div>
             ) : (
@@ -550,26 +568,40 @@ Ich helfe Ihnen gerne bei Fragen zu:
                   key={message.id}
                   className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
                 >
-                  <div className={`flex ${message.role === 'user' ? 'flex-row-reverse' : 'flex-row'} items-start gap-2 max-w-[90%] sm:max-w-[80%] lg:max-w-[70%]`}>
-                    <div className={`flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center ${
+                  <div className={`flex ${message.role === 'user' ? 'flex-row-reverse' : 'flex-row'} items-start gap-4 max-w-[90%] sm:max-w-[85%] lg:max-w-[75%]`}>
+                    <div className={`flex-shrink-0 w-10 h-10 sm:w-12 sm:h-12 rounded-2xl flex items-center justify-center shadow-lg ${
                       message.role === 'user' 
-                        ? 'bg-gray-200' 
+                        ? 'bg-white/20 backdrop-blur-sm border border-white/30' 
                         : ''
                     }`}
-                    style={{ backgroundColor: message.role === 'assistant' ? '#003399' : undefined }}>
+                    style={{ 
+                      background: message.role === 'assistant' 
+                        ? 'linear-gradient(135deg, #0066cc 0%, #003d7a 100%)' 
+                        : undefined,
+                      boxShadow: message.role === 'assistant' 
+                        ? '0 8px 20px rgba(0, 51, 153, 0.3)' 
+                        : undefined
+                    }}>
                       {message.role === 'user' ? (
-                        <User className="w-4 h-4 sm:w-5 sm:h-5 text-gray-700" />
+                        <User className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                       ) : (
-                        <Bot className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+                        <Bot className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                       )}
                     </div>
-                    <Card className={`p-3 sm:p-4 ${
+                    <Card className={`p-4 sm:p-6 border-0 shadow-xl backdrop-blur-xl ${
                       message.role === 'user' 
-                        ? 'bg-gray-100 border-gray-200' 
-                        : 'bg-white border-gray-200'
-                    }`}>
-                      <p className="text-sm sm:text-base text-gray-800 whitespace-pre-wrap">{message.content}</p>
-                      <p className="text-xs text-gray-400 mt-1">
+                        ? 'bg-white/15 text-white' 
+                        : 'bg-white/95 text-gray-800'
+                    }`}
+                    style={{
+                      borderRadius: '1.5rem',
+                      backdropFilter: 'blur(20px)',
+                      boxShadow: message.role === 'user' 
+                        ? '0 8px 25px rgba(255, 255, 255, 0.1)' 
+                        : '0 8px 25px rgba(0, 0, 0, 0.1)'
+                    }}>
+                      <p className="text-sm sm:text-base leading-relaxed whitespace-pre-wrap font-medium">{message.content}</p>
+                      <p className={`text-xs mt-3 ${message.role === 'user' ? 'text-white/60' : 'text-gray-400'}`}>
                         {message.timestamp.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })}
                       </p>
                     </Card>
@@ -581,18 +613,18 @@ Ich helfe Ihnen gerne bei Fragen zu:
           </div>
         )}
 
-        {/* Suggested Questions - Only in Chat Mode */}
+        {/* Premium Suggested Questions - Only in Chat Mode */}
         {!showCanvas && currentContext && currentContext.suggestedQuestions && (
-            <div className="border-t border-gray-200 py-3">
-              <p className="text-xs text-gray-500 mb-2 px-1">💡 Häufige Fragen:</p>
-              <div className="flex flex-wrap gap-2">
+            <div className="border-t border-white/10 py-4 bg-white/5 backdrop-blur-xl">
+              <p className="text-sm text-blue-200 mb-3 px-2 font-medium">💡 Beliebte Anfragen:</p>
+              <div className="flex flex-wrap gap-3">
                 {currentContext.suggestedQuestions.map((question: string, index: number) => (
                   <button
                     key={index}
                     onClick={() => {
                       setInput(question)
                     }}
-                    className="text-xs px-3 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-full transition-colors touch-target-sm touch-smooth"
+                    className="text-sm px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-full border border-white/20 hover:border-white/40 transition-all duration-200 backdrop-blur-sm hover:scale-105 font-medium"
                   >
                     {question}
                   </button>
@@ -601,49 +633,81 @@ Ich helfe Ihnen gerne bei Fragen zu:
             </div>
           )}
 
-        {/* Canvas Instructions */}
+        {/* Modern Canvas Instructions */}
         {showCanvas && (
-          <div className="border-t border-gray-200 py-3 bg-blue-50">
-            <div className="flex items-center gap-2 text-sm text-blue-800">
-              <PenTool className="w-4 h-4" />
-              <span className="font-semibold">Canvas-Modus aktiv:</span>
-              <span>Verwenden Sie die Tools zum Zeichnen und Planen.</span>
-              <span className="text-blue-600">💡 Tipp: Fügen Sie Ziele, Ideen und Aufgaben hinzu!</span>
+          <div className="border-t border-white/10 py-4 bg-gradient-to-r from-blue-600/20 to-cyan-500/20 backdrop-blur-xl">
+            <div className="flex items-center gap-3 text-white">
+              <div className="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center">
+                <PenTool className="w-4 h-4" />
+              </div>
+              <div>
+                <span className="font-bold text-base">Canvas AI aktiv</span>
+                <span className="text-blue-200 ml-2">• Nutzen Sie die Tools zum visuellen Planen</span>
+              </div>
+              <div className="ml-auto text-cyan-300 font-medium">
+                💡 Tipp: Drag & Drop für Objekte
+              </div>
             </div>
           </div>
         )}
 
-        {/* Input Area - Only in Chat Mode */}
+        {/* Premium Input Area - Only in Chat Mode */}
         {!showCanvas && (
-          <div className="border-t py-4">
-            <div className="flex items-center gap-2">
-              <input
-                type="text"
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && handleSend()}
-                placeholder="Ihre Nachricht... (Tipp: 'Plan erstellen' für Canvas-Modus)"
-                className="flex-1 px-4 py-3 text-mobile-safe bg-gray-50 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent touch-manipulation"
-                disabled={isLoading}
-                inputMode="text"
-                autoComplete="off"
-                autoCorrect="off"
-                autoCapitalize="sentences"
-              />
+          <div className="border-t border-white/10 py-6 bg-white/5 backdrop-blur-xl">
+            <div className="flex items-center gap-4">
+              <div className="flex-1 relative">
+                <input
+                  type="text"
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  onKeyPress={(e) => e.key === 'Enter' && handleSend()}
+                  placeholder="Fragen Sie SAAR-GPT alles über das Saarland..."
+                  className="w-full px-6 py-4 text-base bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 focus:border-white/40 focus:bg-white/15 text-white placeholder-white/60 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-cyan-400/50"
+                  disabled={isLoading}
+                  inputMode="text"
+                  autoComplete="off"
+                  autoCorrect="off"
+                  autoCapitalize="sentences"
+                />
+                <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-white/40 text-sm font-medium">
+                  {input.length > 0 && `${input.length}/1000`}
+                </div>
+              </div>
               <Button
                 onClick={handleSend}
                 disabled={isLoading || !input.trim()}
-                size="icon"
-                className="text-white rounded-lg hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed touch-target"
-                style={{ backgroundColor: '#003399' }}
+                size="lg"
+                className="w-14 h-14 rounded-2xl text-white transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 shadow-xl"
+                style={{ 
+                  background: isLoading 
+                    ? 'linear-gradient(135deg, #6b7280 0%, #4b5563 100%)' 
+                    : 'linear-gradient(135deg, #009FE3 0%, #0066cc 100%)',
+                  boxShadow: '0 10px 25px rgba(0, 159, 227, 0.3)'
+                }}
                 aria-label="Nachricht senden"
               >
                 {isLoading ? (
-                  <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
+                  <Loader2 className="w-6 h-6 animate-spin" />
                 ) : (
-                  <Send className="w-4 h-4 sm:w-5 sm:h-5" />
+                  <Send className="w-6 h-6" />
                 )}
               </Button>
+            </div>
+            
+            {/* Quick Actions */}
+            <div className="flex items-center justify-center gap-4 mt-4">
+              <div className="flex items-center gap-2 text-white/60 text-sm">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span>DeepSeek R1 aktiv</span>
+              </div>
+              <div className="flex items-center gap-2 text-white/60 text-sm">
+                <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+                <span>RAG System bereit</span>
+              </div>
+              <div className="flex items-center gap-2 text-white/60 text-sm">
+                <span className="w-2 h-2 rounded-full bg-yellow-400 animate-pulse"></span>
+                <span>4 Agents online</span>
+              </div>
             </div>
           </div>
         )}
