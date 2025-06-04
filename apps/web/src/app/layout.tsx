@@ -9,10 +9,10 @@ const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://agentland.saarland'),
-  title: 'AGENT_LAND_SAARLAND - Souveräne KI für das Saarland',
+  title: 'AGENTLAND.SAARLAND - Souveräne KI für das Saarland',
   description: 'KI-Plattform mit regionaler Expertise für Bürger, Unternehmen und Verwaltung im Saarland',
   keywords: 'Saarland, KI, Künstliche Intelligenz, Tourismus, Verwaltung, Wirtschaft',
-  authors: [{ name: 'AGENT_LAND_SAARLAND Team' }],
+  authors: [{ name: 'AGENTLAND.SAARLAND Team' }],
   icons: {
     icon: '/favicon.svg',
     shortcut: '/favicon.ico',
@@ -52,7 +52,7 @@ export const metadata: Metadata = {
   },
   manifest: '/manifest.json',
   openGraph: {
-    title: 'AGENT_LAND_SAARLAND',
+    title: 'AGENTLAND.SAARLAND',
     description: 'Souveräne KI-Technologie aus dem Saarland – für ein intelligentes Morgen',
     type: 'website',
     locale: 'de_DE',
@@ -69,7 +69,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'AGENT_LAND_SAARLAND',
+    title: 'AGENTLAND.SAARLAND',
     description: 'Souveräne KI-Technologie aus dem Saarland – für ein intelligentes Morgen',
     images: ['/og-image.jpg'],
   },
