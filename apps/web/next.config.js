@@ -1,19 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  transpilePackages: ["@agentland-saarland/ui", "@agentland-saarland/shared"],
   images: {
-    domains: ['localhost', 'agentland.saarland', 'vercel.app'],
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: '*.vercel.app',
-      },
-      {
-        protocol: 'https',
-        hostname: 'agentland.saarland',
-      }
-    ]
+    domains: ['localhost', 'agentland.saarland'],
+    unoptimized: true
   },
   async headers() {
     return [
@@ -27,10 +17,8 @@ const nextConfig = {
       },
     ]
   },
-  experimental: {
-    optimizeCss: true,
-    optimizePackageImports: ['lucide-react', 'framer-motion']
-  }
+  staticPageGenerationTimeout: 60,
+  output: 'standalone'
 }
 
 module.exports = nextConfig
