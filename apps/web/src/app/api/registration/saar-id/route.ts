@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { emailService } from '@/lib/email-service'
 
 export const dynamic = 'force-dynamic'
 
@@ -253,6 +254,20 @@ export async function POST(request: NextRequest) {
       mobileFriendly: 'Vollständig mobile Nutzung möglich'
     }
     
+    // Send email confirmation
+    try {
+      await emailService.sendSaarIdCreated({
+        saarId,
+        firstName: saarIdProfile.personalInfo.firstName,
+        lastName: saarIdProfile.personalInfo.lastName,
+        email: saarIdProfile.contact.email,
+        authorizedServices: saarIdProfile.authorizedServices.map(s => s.serviceName)
+      })
+    } catch (emailError) {
+      console.error('Failed to send SAAR-ID email:', emailError)
+      // Don't fail the registration if email fails
+    }
+
     console.log('🆔 New SAAR-ID Registration:', {
       saarId,
       name: saarIdProfile.personalInfo.firstName + ' ' + saarIdProfile.personalInfo.lastName,
