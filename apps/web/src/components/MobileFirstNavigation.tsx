@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { 
   Menu, X, Home, MessageSquare, Sparkles, 
   Building2, GraduationCap, Shield, Music, 
-  Globe, MapPin, Users
+  Globe, MapPin, Users, Edit3
 } from 'lucide-react'
 import UserProfile from '@/components/UserProfile'
 
@@ -106,6 +106,18 @@ export default function MobileFirstNavigation() {
               >
                 <MapPin className="w-4 h-4 mr-2" />
                 Services
+              </Link>
+
+              <Link 
+                href="/canvas" 
+                className={`flex items-center px-3 py-2 rounded-lg transition-all ${
+                  pathname.startsWith('/canvas') 
+                    ? 'bg-blue-50 text-blue-700' 
+                    : 'text-gray-600 hover:text-blue-700 hover:bg-gray-50'
+                }`}
+              >
+                <Edit3 className="w-4 h-4 mr-2" />
+                Canvas
               </Link>
             </nav>
 

@@ -6,7 +6,7 @@ import { Send, Bot, User, Loader2, PenTool, Layout } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { getChatContextById } from '@/lib/chat-contexts'
-import DeepSeekCanvas from '@/components/DeepSeekCanvas'
+import OpenCanvas from '@/components/OpenCanvas'
 
 interface Message {
   id: string
@@ -493,19 +493,19 @@ Ich helfe Ihnen gerne bei Fragen zu:
         {showCanvas ? (
           /* Canvas View */
           <div className="flex-1 p-4">
-            <DeepSeekCanvas 
-              planningPrompt={planningPrompt}
+            <OpenCanvas 
+              initialPrompt={planningPrompt}
               serviceCategory={canvasServiceCategory}
-              onPlanGenerated={(plan) => {
-                console.log('Plan generated:', plan)
-                // Add plan result to chat messages
-                const planMessage = {
+              onArtifactGenerated={(artifact) => {
+                console.log('Artifact generated:', artifact)
+                // Add artifact result to chat messages
+                const artifactMessage = {
                   id: Date.now().toString(),
                   role: 'assistant' as const,
-                  content: `🎯 **Plan erstellt**: ${plan.steps.length} Schritte für ${plan.category}\n\n${plan.steps.map((step: string, index: number) => `${index + 1}. ${step}`).join('\n')}`,
+                  content: `🎨 **${artifact.type === 'code' ? 'Code' : 'Dokument'} erstellt**: ${artifact.title}\n\nType: ${artifact.type}\n${artifact.language ? `Language: ${artifact.language}\n` : ''}Content Length: ${artifact.content.length} characters`,
                   timestamp: new Date()
                 }
-                setMessages(prev => [...prev, planMessage])
+                setMessages(prev => [...prev, artifactMessage])
               }}
             />
           </div>
