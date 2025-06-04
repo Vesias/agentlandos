@@ -2,10 +2,11 @@
 
 import React, { useState, useRef, useEffect } from 'react'
 import { useSearchParams } from 'next/navigation'
-import { Send, Bot, User, Loader2 } from 'lucide-react'
+import { Send, Bot, User, Loader2, PenTool, Layout } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { getChatContextById } from '@/lib/chat-contexts'
+import DeepSeekCanvas from '@/components/DeepSeekCanvas'
 
 interface Message {
   id: string
@@ -21,6 +22,9 @@ export default function SimpleChat() {
   const [currentContext, setCurrentContext] = useState<any>(null)
   const [conversationHistory, setConversationHistory] = useState<string[]>([])
   const [userInterests, setUserInterests] = useState<{[key: string]: number}>({})
+  const [showCanvas, setShowCanvas] = useState(false)
+  const [planningPrompt, setPlanningPrompt] = useState('')
+  const [canvasServiceCategory, setCanvasServiceCategory] = useState<'tourism' | 'business' | 'education' | 'admin' | 'culture' | 'general'>('general')
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const searchParams = useSearchParams()
 
@@ -101,10 +105,50 @@ export default function SimpleChat() {
     return 'general'
   }
 
+  const checkForPlanningTrigger = (userInput: string, category: string): boolean => {
+    const planningKeywords = [
+      'plan', 'planen', 'planer', 'planung',
+      'organisieren', 'organisation', 'vorbereiten',
+      'strategie', 'vorgehen', 'schritte',
+      'canvas', 'visual', 'zeichnen', 'skizze'
+    ]
+    
+    return planningKeywords.some(keyword => userInput.toLowerCase().includes(keyword))
+  }
+
   const generateResponse = (userInput: string): string => {
     const keywords = userInput.toLowerCase()
     const interests = analyzeUserInterests(userInput)
     const category = determineCategory(userInput, interests)
+    
+    // Check if user wants to use planning canvas
+    if (checkForPlanningTrigger(userInput, category)) {
+      setPlanningPrompt(userInput)
+      setCanvasServiceCategory(category as any)
+      setShowCanvas(true)
+      
+      return `🎯 **Planning Canvas aktiviert!**
+
+Ich habe ein interaktives Planning Canvas für Sie erstellt, um "${userInput}" zu planen.
+
+**Canvas Features:**
+• 🎨 Visuelles Planen & Zeichnen
+• 📋 Automatische Schritte für ${category === 'tourism' ? 'Tourismus' : 
+                                     category === 'business' ? 'Business' :
+                                     category === 'education' ? 'Bildung' :
+                                     category === 'admin' ? 'Verwaltung' :
+                                     category === 'culture' ? 'Kultur' : 'Allgemein'}
+• ✅ Task-Management mit Status
+• 💡 Ideenfindung & Brainstorming
+• 📥 Export als PNG
+
+**Bedienung:**
+- Klicken Sie auf Canvas-Tools oben rechts
+- Zeichnen Sie, fügen Sie Ziele & Aufgaben hinzu
+- Klicken Sie auf Elemente, um Status zu ändern
+
+Das Canvas ist bereits mit intelligenten Planungsschritten für Ihre Anfrage vorgefüllt!`
+    }
     
     // Aktualisiere Gesprächshistorie
     setConversationHistory(prev => [...prev.slice(-4), userInput]) // Keep last 5 messages
@@ -360,64 +404,115 @@ Ich helfe Ihnen gerne bei Fragen zu:
       <div className="flex flex-col h-screen-safe max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mobile-scroll safe-area">
         {/* Chat Header */}
         <div className="py-4 sm:py-6 border-b bg-white rounded-t-lg shadow-sm">
-          {currentContext ? (
-            <div className="flex items-center space-x-3">
-              <div 
-                className="w-10 h-10 rounded-lg flex items-center justify-center"
-                style={{ backgroundColor: '#003399' }}
-              >
-                <div className="text-lg text-white">
-                  {currentContext.icon === 'Sparkles' ? '✨' : 
-                   currentContext.icon === 'Calendar' ? '📅' :
-                   currentContext.icon === 'Euro' ? '💶' :
-                   currentContext.icon === 'Rocket' ? '🚀' :
-                   currentContext.icon === 'GraduationCap' ? '🎓' :
-                   currentContext.icon === 'Award' ? '🏆' :
-                   currentContext.icon === 'FileText' ? '📄' :
-                   currentContext.icon === 'Building2' ? '🏢' :
-                   currentContext.icon === 'Theater' ? '🎭' :
-                   currentContext.icon === 'PartyPopper' ? '🎉' : '🤖'}
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex-1">
+              {currentContext ? (
+                <div className="flex items-center space-x-3">
+                  <div 
+                    className="w-10 h-10 rounded-lg flex items-center justify-center"
+                    style={{ backgroundColor: '#003399' }}
+                  >
+                    <div className="text-lg text-white">
+                      {currentContext.icon === 'Sparkles' ? '✨' : 
+                       currentContext.icon === 'Calendar' ? '📅' :
+                       currentContext.icon === 'Euro' ? '💶' :
+                       currentContext.icon === 'Rocket' ? '🚀' :
+                       currentContext.icon === 'GraduationCap' ? '🎓' :
+                       currentContext.icon === 'Award' ? '🏆' :
+                       currentContext.icon === 'FileText' ? '📄' :
+                       currentContext.icon === 'Building2' ? '🏢' :
+                       currentContext.icon === 'Theater' ? '🎭' :
+                       currentContext.icon === 'PartyPopper' ? '🎉' : '🤖'}
+                    </div>
+                  </div>
+                  <div>
+                    <h1 className="text-2xl sm:text-3xl font-bold" style={{ color: '#003399' }}>{currentContext.title}</h1>
+                    <p className="text-sm sm:text-base text-gray-600 mt-1">
+                      Spezialisierte Beratung für {currentContext.category === 'tourism' ? 'Tourismus' :
+                      currentContext.category === 'business' ? 'Wirtschaft' :
+                      currentContext.category === 'education' ? 'Bildung' :
+                      currentContext.category === 'admin' ? 'Verwaltung' :
+                      currentContext.category === 'culture' ? 'Kultur' : 'Services'}
+                    </p>
+                  </div>
                 </div>
-              </div>
-              <div>
-                <h1 className="text-2xl sm:text-3xl font-bold" style={{ color: '#003399' }}>{currentContext.title}</h1>
-                <p className="text-sm sm:text-base text-gray-600 mt-1">
-                  Spezialisierte Beratung für {currentContext.category === 'tourism' ? 'Tourismus' :
-                  currentContext.category === 'business' ? 'Wirtschaft' :
-                  currentContext.category === 'education' ? 'Bildung' :
-                  currentContext.category === 'admin' ? 'Verwaltung' :
-                  currentContext.category === 'culture' ? 'Kultur' : 'Services'}
-                </p>
-              </div>
+              ) : (
+                <div className="text-center">
+                  <div className="w-16 h-16 mx-auto mb-4 rounded-2xl flex items-center justify-center" style={{ backgroundColor: '#003399' }}>
+                    <Bot className="w-8 h-8 text-white" />
+                  </div>
+                  <h1 className="text-2xl sm:text-3xl font-bold mb-2" style={{ color: '#003399' }}>KI-Chat Saarland</h1>
+                  <p className="text-sm sm:text-base text-gray-600">Ihre Premium KI-Assistenz für das Saarland • €10/Monat</p>
+                  <div className="mt-4 flex items-center justify-center gap-4 text-sm">
+                    <span className="flex items-center gap-1">
+                      <span className="w-2 h-2 rounded-full" style={{ backgroundColor: '#009FE3' }}></span>
+                      Real-time Daten
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <span className="w-2 h-2 rounded-full" style={{ backgroundColor: '#FDB913' }}></span>
+                      Premium Features
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <span className="w-2 h-2 rounded-full bg-green-500"></span>
+                      GDPR-konform
+                    </span>
+                  </div>
+                </div>
+              )}
             </div>
-          ) : (
-            <div className="text-center">
-              <div className="w-16 h-16 mx-auto mb-4 rounded-2xl flex items-center justify-center" style={{ backgroundColor: '#003399' }}>
-                <Bot className="w-8 h-8 text-white" />
-              </div>
-              <h1 className="text-2xl sm:text-3xl font-bold mb-2" style={{ color: '#003399' }}>KI-Chat Saarland</h1>
-              <p className="text-sm sm:text-base text-gray-600">Ihre Premium KI-Assistenz für das Saarland • €10/Monat</p>
-              <div className="mt-4 flex items-center justify-center gap-4 text-sm">
-                <span className="flex items-center gap-1">
-                  <span className="w-2 h-2 rounded-full" style={{ backgroundColor: '#009FE3' }}></span>
-                  Real-time Daten
-                </span>
-                <span className="flex items-center gap-1">
-                  <span className="w-2 h-2 rounded-full" style={{ backgroundColor: '#FDB913' }}></span>
-                  Premium Features
-                </span>
-                <span className="flex items-center gap-1">
-                  <span className="w-2 h-2 rounded-full bg-green-500"></span>
-                  GDPR-konform
-                </span>
-              </div>
+
+            {/* Canvas Toggle Button */}
+            <div className="flex items-center gap-2">
+              <Button
+                onClick={() => setShowCanvas(!showCanvas)}
+                variant={showCanvas ? "default" : "outline"}
+                size="sm"
+                className="flex items-center gap-2"
+              >
+                <PenTool className="w-4 h-4" />
+                {showCanvas ? 'Chat' : 'Canvas'}
+              </Button>
+              {showCanvas && (
+                <Button
+                  onClick={() => {
+                    setPlanningPrompt('Neue Planung erstellen')
+                    setCanvasServiceCategory('general')
+                  }}
+                  variant="outline"
+                  size="sm"
+                >
+                  <Layout className="w-4 h-4 mr-1" />
+                  Neu
+                </Button>
+              )}
             </div>
-          )}
+          </div>
         </div>
 
-        {/* Messages Area */}
-        <div className="flex-1 overflow-y-auto py-4 sm:py-6 space-y-4">
-          {messages.length === 0 ? (
+        {/* Main Content Area */}
+        {showCanvas ? (
+          /* Canvas View */
+          <div className="flex-1 p-4">
+            <DeepSeekCanvas 
+              planningPrompt={planningPrompt}
+              serviceCategory={canvasServiceCategory}
+              onPlanGenerated={(plan) => {
+                console.log('Plan generated:', plan)
+                // Add plan result to chat messages
+                const planMessage = {
+                  id: Date.now().toString(),
+                  role: 'assistant' as const,
+                  content: `🎯 **Plan erstellt**: ${plan.steps.length} Schritte für ${plan.category}\n\n${plan.steps.map((step: string, index: number) => `${index + 1}. ${step}`).join('\n')}`,
+                  timestamp: new Date()
+                }
+                setMessages(prev => [...prev, planMessage])
+              }}
+            />
+          </div>
+        ) : (
+          /* Chat Messages Area */
+          <div className="flex-1 overflow-y-auto py-4 sm:py-6 space-y-4">
+            {messages.length === 0 ? (
             <div className="text-center py-8 sm:py-12 bg-white rounded-lg shadow-sm">
               <div className="w-20 h-20 sm:w-24 sm:h-24 mx-auto mb-6 rounded-2xl flex items-center justify-center" style={{ backgroundColor: '#003399' }}>
                 <Bot className="w-10 h-10 sm:w-12 sm:h-12 text-white" />
@@ -449,44 +544,45 @@ Ich helfe Ihnen gerne bei Fragen zu:
                 💡 Klicken Sie auf eine Kategorie oder stellen Sie direkt eine Frage
               </div>
             </div>
-          ) : (
-            messages.map((message) => (
-              <div
-                key={message.id}
-                className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
-              >
-                <div className={`flex ${message.role === 'user' ? 'flex-row-reverse' : 'flex-row'} items-start gap-2 max-w-[90%] sm:max-w-[80%] lg:max-w-[70%]`}>
-                  <div className={`flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center ${
-                    message.role === 'user' 
-                      ? 'bg-gray-200' 
-                      : ''
-                  }`}
-                  style={{ backgroundColor: message.role === 'assistant' ? '#003399' : undefined }}>
-                    {message.role === 'user' ? (
-                      <User className="w-4 h-4 sm:w-5 sm:h-5 text-gray-700" />
-                    ) : (
-                      <Bot className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
-                    )}
+            ) : (
+              messages.map((message) => (
+                <div
+                  key={message.id}
+                  className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                >
+                  <div className={`flex ${message.role === 'user' ? 'flex-row-reverse' : 'flex-row'} items-start gap-2 max-w-[90%] sm:max-w-[80%] lg:max-w-[70%]`}>
+                    <div className={`flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center ${
+                      message.role === 'user' 
+                        ? 'bg-gray-200' 
+                        : ''
+                    }`}
+                    style={{ backgroundColor: message.role === 'assistant' ? '#003399' : undefined }}>
+                      {message.role === 'user' ? (
+                        <User className="w-4 h-4 sm:w-5 sm:h-5 text-gray-700" />
+                      ) : (
+                        <Bot className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+                      )}
+                    </div>
+                    <Card className={`p-3 sm:p-4 ${
+                      message.role === 'user' 
+                        ? 'bg-gray-100 border-gray-200' 
+                        : 'bg-white border-gray-200'
+                    }`}>
+                      <p className="text-sm sm:text-base text-gray-800 whitespace-pre-wrap">{message.content}</p>
+                      <p className="text-xs text-gray-400 mt-1">
+                        {message.timestamp.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })}
+                      </p>
+                    </Card>
                   </div>
-                  <Card className={`p-3 sm:p-4 ${
-                    message.role === 'user' 
-                      ? 'bg-gray-100 border-gray-200' 
-                      : 'bg-white border-gray-200'
-                  }`}>
-                    <p className="text-sm sm:text-base text-gray-800 whitespace-pre-wrap">{message.content}</p>
-                    <p className="text-xs text-gray-400 mt-1">
-                      {message.timestamp.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })}
-                    </p>
-                  </Card>
                 </div>
-              </div>
-            ))
-          )}
-          <div ref={messagesEndRef} />
-        </div>
+              ))
+            )}
+            <div ref={messagesEndRef} />
+          </div>
+        )}
 
-        {/* Suggested Questions */}
-        {currentContext && currentContext.suggestedQuestions && (
+        {/* Suggested Questions - Only in Chat Mode */}
+        {!showCanvas && currentContext && currentContext.suggestedQuestions && (
             <div className="border-t border-gray-200 py-3">
               <p className="text-xs text-gray-500 mb-2 px-1">💡 Häufige Fragen:</p>
               <div className="flex flex-wrap gap-2">
@@ -505,38 +601,52 @@ Ich helfe Ihnen gerne bei Fragen zu:
             </div>
           )}
 
-        {/* Input Area */}
-        <div className="border-t py-4">
-          <div className="flex items-center gap-2">
-            <input
-              type="text"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && handleSend()}
-              placeholder="Ihre Nachricht..."
-              className="flex-1 px-4 py-3 text-mobile-safe bg-gray-50 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent touch-manipulation"
-              disabled={isLoading}
-              inputMode="text"
-              autoComplete="off"
-              autoCorrect="off"
-              autoCapitalize="sentences"
-            />
-            <Button
-              onClick={handleSend}
-              disabled={isLoading || !input.trim()}
-              size="icon"
-              className="text-white rounded-lg hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed touch-target"
-              style={{ backgroundColor: '#003399' }}
-              aria-label="Nachricht senden"
-            >
-              {isLoading ? (
-                <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
-              ) : (
-                <Send className="w-4 h-4 sm:w-5 sm:h-5" />
-              )}
-            </Button>
+        {/* Canvas Instructions */}
+        {showCanvas && (
+          <div className="border-t border-gray-200 py-3 bg-blue-50">
+            <div className="flex items-center gap-2 text-sm text-blue-800">
+              <PenTool className="w-4 h-4" />
+              <span className="font-semibold">Canvas-Modus aktiv:</span>
+              <span>Verwenden Sie die Tools zum Zeichnen und Planen.</span>
+              <span className="text-blue-600">💡 Tipp: Fügen Sie Ziele, Ideen und Aufgaben hinzu!</span>
+            </div>
           </div>
-        </div>
+        )}
+
+        {/* Input Area - Only in Chat Mode */}
+        {!showCanvas && (
+          <div className="border-t py-4">
+            <div className="flex items-center gap-2">
+              <input
+                type="text"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyPress={(e) => e.key === 'Enter' && handleSend()}
+                placeholder="Ihre Nachricht... (Tipp: 'Plan erstellen' für Canvas-Modus)"
+                className="flex-1 px-4 py-3 text-mobile-safe bg-gray-50 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent touch-manipulation"
+                disabled={isLoading}
+                inputMode="text"
+                autoComplete="off"
+                autoCorrect="off"
+                autoCapitalize="sentences"
+              />
+              <Button
+                onClick={handleSend}
+                disabled={isLoading || !input.trim()}
+                size="icon"
+                className="text-white rounded-lg hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed touch-target"
+                style={{ backgroundColor: '#003399' }}
+                aria-label="Nachricht senden"
+              >
+                {isLoading ? (
+                  <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
+                ) : (
+                  <Send className="w-4 h-4 sm:w-5 sm:h-5" />
+                )}
+              </Button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   )
