@@ -409,7 +409,7 @@ Antworte NUR mit dem JSON Structure für die Canvas-Darstellung:`
 // Helper function to extract planning steps from text response
 function extractPlanningStepsFromText(text: string, service: string) {
   const lines = text.split('\n').filter(line => line.trim())
-  const steps = []
+  const steps: string[] = []
   
   for (const line of lines) {
     if (line.match(/^\d+\.|^-|^•/) && line.length > 10) {

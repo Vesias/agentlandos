@@ -36,6 +36,8 @@ export default function DeepSeekCanvas({ planningPrompt, serviceCategory, onPlan
   const [textPosition, setTextPosition] = useState({ x: 0, y: 0 })
   const [isGeneratingPlan, setIsGeneratingPlan] = useState(false)
   const [planningSteps, setPlanningSteps] = useState<string[]>([])
+  const [hoveredElement, setHoveredElement] = useState<string | null>(null)
+  const [animatingElements, setAnimatingElements] = useState<Set<string>>(new Set())
 
   const colors = ['#003399', '#009FE3', '#FDB913', '#dc2626', '#16a34a', '#9333ea', '#ea580c']
 
@@ -133,61 +135,95 @@ export default function DeepSeekCanvas({ planningPrompt, serviceCategory, onPlan
     // Intelligente Analyse des Prompts für spezifische Planung
     const keywords = prompt.toLowerCase()
     
-    // Tourism-spezifische Planung
+    // Tourism-spezifische Planung mit intelligenter Keyword-Analyse
     if (serviceCategory === 'tourism') {
-      if (keywords.includes('sommer') || keywords.includes('wetter') || keywords.includes('outdoor')) {
+      if (keywords.includes('sommer') || keywords.includes('wetter') || keywords.includes('outdoor') || keywords.includes('juni')) {
         return [
-          'Wetter & beste Tageszeit prüfen',
-          'Outdoor-Aktivitäten in der Nähe finden',
-          'Sommer-Events & Open Air recherchieren',
-          'Transport & Anfahrt planen',
-          'Backup bei schlechtem Wetter'
+          '☀️ Aktuelle Wetterprognose für Juni 2025 checken',
+          '🏞️ Saarschleife & Baumwipfelpfad: Tickets vorab buchen',
+          '🏊 Bostalsee Wassersport & Strandbad: Anfahrt planen',
+          '🎪 Saarland Open Air Festival (07.-09.06.) - Tickets sichern',
+          '🍽️ Outdoor-Terrassen & Biergärten reservieren',
+          '🚗 Parkplätze für Sommer-Hotspots recherchieren',
+          '🏛️ Indoor-Backup: Völklinger Hütte & Museen bei Regen'
         ]
       }
-      if (keywords.includes('familie') || keywords.includes('kinder')) {
+      if (keywords.includes('familie') || keywords.includes('kinder') || keywords.includes('kind')) {
         return [
-          'Familienfreundliche Attraktionen finden',
-          'Altersgerechte Aktivitäten auswählen',
-          'Kosten für Familie kalkulieren',
-          'Pausenplätze & Restaurants einplanen',
-          'Alternative bei schlechtem Wetter'
+          '👨‍👩‍👧‍👦 Familienfreundliche Saarland-Attraktionen auswählen',
+          '🎯 Altersgerechte Aktivitäten (3-16 Jahre) planen',
+          '💰 Familientickets & Gruppentarife kalkulieren',
+          '🍕 Kinderfreundliche Restaurants & Pausenplätze',
+          '🎪 Spielplätze & Abenteuerparks einplanen',
+          '🚌 ÖPNV-Familientageskarten organisieren',
+          '☔ Schlechtwetter-Alternativen: Indoor-Spielplätze'
+        ]
+      }
+      if (keywords.includes('romantik') || keywords.includes('paar') || keywords.includes('zweit')) {
+        return [
+          '💕 Romantische Spots: Saarschleife bei Sonnenuntergang',
+          '🍷 Weinwanderung & Verkostung an der Saar',
+          '🏰 Schloss Saarbrücken & historische Stadtkerne',
+          '🛶 Bootsfahrt auf der Saar zu zweit',
+          '🍽️ Fine Dining: Sternerestaurants reservieren',
+          '🌙 Übernachtung: Boutique-Hotels & Wellness',
+          '📸 Foto-Spots für unvergessliche Erinnerungen'
         ]
       }
       return [
-        'Reiseziele & Sehenswürdigkeiten recherchieren',
-        'Termine & Öffnungszeiten prüfen',
-        'Kosten & Buchungen kalkulieren',
-        'Route & Transport planen',
-        'Backup-Optionen definieren'
+        '🗺️ Top Saarland-Highlights nach Interesse auswählen',
+        '⏰ Öffnungszeiten & saisonale Besonderheiten prüfen',
+        '💳 Kosten kalkulieren: Eintritt, Transport, Verpflegung',
+        '🚗 Optimale Route mit Parkplätzen planen',
+        '🎫 Tickets & Reservierungen vorab sichern',
+        '☂️ Wetter-Backup: Indoor-Alternativen definieren',
+        '📱 Saarland-App & lokale Event-Kalender checken'
       ]
     }
 
-    // Business-spezifische Planung
+    // Business-spezifische Planung mit erweiterten Szenarien
     if (serviceCategory === 'business') {
-      if (keywords.includes('ki') || keywords.includes('digital') || keywords.includes('tech')) {
+      if (keywords.includes('ki') || keywords.includes('digital') || keywords.includes('tech') || keywords.includes('ai')) {
         return [
-          'KI-Förderprogramme mit 50% Bonus prüfen',
-          'Digitalisierungsbonus Plus beantragen',
-          'Green Tech & KI Hybrid Förderung',
-          'Deadline 31.08.2025 im Kalender',
-          'Schnellverfahren für KI-Projekte nutzen'
+          '🚀 KI-Förderprogramme mit 50% Bonus identifizieren',
+          '💰 Saarland Innovation 2025: bis 150.000€ (Deadline: 31.08.2025)',
+          '🌱 Green Tech & KI Hybrid: bis 250.000€ beantragen',
+          '⚡ Schnellverfahren: 4 statt 8 Wochen für KI-Projekte',
+          '🏢 DFKI Saarbrücken: Praxispartnerschaft anfragen',
+          '📋 Business Plan mit KI-Marktanalyse erstellen',
+          '🎯 Digitalisierungsbonus Plus: bis 35.000€ sichern'
         ]
       }
-      if (keywords.includes('gründ') || keywords.includes('startup')) {
+      if (keywords.includes('gründ') || keywords.includes('startup') || keywords.includes('selbst')) {
         return [
-          'Startup Saarland Boost beantragen',
-          'Kostenlose Erstberatung buchen',
-          'Business Plan mit KI-Marktanalyse',
-          'Rechtsform & Gewerbeanmeldung',
-          'Finanzierung & Fördermittel'
+          '💼 IHK Saarland: Kostenlose Erstberatung buchen',
+          '📊 Business Model Canvas für Saarland entwickeln',
+          '⚖️ Rechtsform wählen: GmbH, UG, GbR im Vergleich',
+          '🏛️ Gewerbeanmeldung: Online-Service nutzen',
+          '💳 Startup Saarland Boost: bis 75.000€ (unter 30 Jahre)',
+          '🌍 Cross-Border: DE/FR/LU Geschäftschancen prüfen',
+          '👥 Team & Fachkräfte: Saarland Recruiting-Strategien'
+        ]
+      }
+      if (keywords.includes('förder') || keywords.includes('geld') || keywords.includes('finanz')) {
+        return [
+          '📋 Fördermittel-Check: EU, Bund, Land, Regional',
+          '🏦 WIBank Saarland: ERP-Gründerkredit prüfen',
+          '🎓 EXIST Gründerstipendium: Uni-Ausgründung',
+          '🔬 WIPANO Programme für Innovation',
+          '🌱 Nachhaltigkeit: Green Tech Förderungen',
+          '💼 saar.is Innovation: Beratung & Vernetzung',
+          '📊 Finanzierungsplan: Eigenkapital vs. Fremdkapital'
         ]
       }
       return [
-        'Förderprogramme identifizieren',
-        'Antragsvoraussetzungen prüfen',
-        'Business Plan erstellen',
-        'Termine & Deadlines planen',
-        'Umsetzung & Monitoring'
+        '🎯 Geschäftsidee & Zielgruppe präzisieren',
+        '🏛️ Zuständige Beratungsstellen kontaktieren',
+        '📄 Businessplan mit lokalen Besonderheiten',
+        '💰 Finanzierung: Förderungen, Kredite, Investoren',
+        '🏗️ Standort & Infrastruktur im Saarland',
+        '👥 Netzwerk: Unternehmerverbände & Events',
+        '📈 Marketing: Regionale & grenzüberschreitende Strategien'
       ]
     }
 
@@ -431,60 +467,179 @@ export default function DeepSeekCanvas({ planningPrompt, serviceCategory, onPlan
   const drawGoalBox = (ctx: CanvasRenderingContext2D, element: CanvasElement) => {
     const { x, y, width = 300, height = 60, text, status } = element
     
-    // Box background
-    ctx.fillStyle = status === 'completed' ? '#16a34a' : status === 'in-progress' ? '#009FE3' : '#003399'
-    ctx.fillRect(x, y, width, height)
+    // Enhanced shadow effect
+    ctx.shadowColor = 'rgba(0, 0, 0, 0.2)'
+    ctx.shadowBlur = 8
+    ctx.shadowOffsetX = 2
+    ctx.shadowOffsetY = 2
     
-    // Border
-    ctx.strokeStyle = '#fff'
-    ctx.lineWidth = 2
-    ctx.strokeRect(x, y, width, height)
+    // Gradient background based on status
+    const gradient = ctx.createLinearGradient(x, y, x, y + height)
+    if (status === 'completed') {
+      gradient.addColorStop(0, '#22c55e')
+      gradient.addColorStop(1, '#16a34a')
+    } else if (status === 'in-progress') {
+      gradient.addColorStop(0, '#3b82f6')
+      gradient.addColorStop(1, '#1d4ed8')
+    } else {
+      gradient.addColorStop(0, '#4f46e5')
+      gradient.addColorStop(1, '#3730a3')
+    }
     
-    // Text
+    ctx.fillStyle = gradient
+    
+    // Rounded corners
+    ctx.beginPath()
+    ctx.roundRect(x, y, width, height, 8)
+    ctx.fill()
+    
+    // Reset shadow
+    ctx.shadowColor = 'transparent'
+    ctx.shadowBlur = 0
+    ctx.shadowOffsetX = 0
+    ctx.shadowOffsetY = 0
+    
+    // Enhanced border with glow effect
+    ctx.strokeStyle = status === 'completed' ? '#22c55e' : 
+                     status === 'in-progress' ? '#3b82f6' : '#4f46e5'
+    ctx.lineWidth = 3
+    ctx.stroke()
+    
+    // Progress indicator for in-progress items
+    if (status === 'in-progress') {
+      const progressWidth = width * 0.7 // 70% progress example
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.3)'
+      ctx.fillRect(x, y + height - 4, progressWidth, 4)
+    }
+    
+    // Text with better typography
     ctx.fillStyle = '#fff'
-    ctx.font = 'bold 14px Arial'
-    const textX = x + 40
-    const textY = y + height / 2 + 5
+    ctx.font = 'bold 16px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif'
+    ctx.textBaseline = 'middle'
+    const textX = x + 50
+    const textY = y + height / 2
+    
+    // Text shadow for better readability
+    ctx.shadowColor = 'rgba(0, 0, 0, 0.5)'
+    ctx.shadowBlur = 2
     ctx.fillText(text || '', textX, textY)
+    ctx.shadowColor = 'transparent'
+    ctx.shadowBlur = 0
     
-    // Status icon
+    // Enhanced status icon with animation-ready design
+    ctx.font = '24px Arial'
+    const iconX = x + 15
+    const iconY = y + height / 2
+    ctx.textBaseline = 'middle'
+    
+    // Icon background circle
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.2)'
+    ctx.beginPath()
+    ctx.arc(iconX + 5, iconY, 18, 0, 2 * Math.PI)
+    ctx.fill()
+    
+    // Icon
     ctx.fillStyle = '#fff'
-    ctx.font = '20px Arial'
-    const iconX = x + 10
-    const iconY = y + height / 2 + 5
-    const icon = status === 'completed' ? '✓' : status === 'in-progress' ? '⚡' : '🎯'
-    ctx.fillText(icon, iconX, iconY)
+    const icon = status === 'completed' ? '✅' : status === 'in-progress' ? '⚡' : '🎯'
+    ctx.fillText(icon, iconX - 5, iconY + 2)
+    
+    ctx.textBaseline = 'alphabetic'
   }
 
   const drawTaskBox = (ctx: CanvasRenderingContext2D, element: CanvasElement) => {
     const { x, y, width = 250, height = 50, text, status } = element
     
-    // Box background
-    ctx.fillStyle = status === 'completed' ? '#dcfce7' : '#f8fafc'
-    ctx.fillRect(x, y, width, height)
+    // Subtle shadow
+    ctx.shadowColor = 'rgba(0, 0, 0, 0.1)'
+    ctx.shadowBlur = 4
+    ctx.shadowOffsetX = 1
+    ctx.shadowOffsetY = 1
     
-    // Border
-    ctx.strokeStyle = status === 'completed' ? '#16a34a' : '#e2e8f0'
-    ctx.lineWidth = 2
-    ctx.strokeRect(x, y, width, height)
-    
-    // Text
-    ctx.fillStyle = status === 'completed' ? '#166534' : '#334155'
-    ctx.font = '12px Arial'
-    const textX = x + 30
-    const textY = y + height / 2 + 4
-    ctx.fillText(text || '', textX, textY)
-    
-    // Checkbox
-    const checkboxX = x + 8
-    const checkboxY = y + height / 2 - 8
-    ctx.strokeStyle = status === 'completed' ? '#16a34a' : '#94a3b8'
-    ctx.strokeRect(checkboxX, checkboxY, 16, 16)
-    
+    // Enhanced background with subtle gradient
+    const gradient = ctx.createLinearGradient(x, y, x, y + height)
     if (status === 'completed') {
-      ctx.fillStyle = '#16a34a'
-      ctx.fillText('✓', checkboxX + 2, checkboxY + 12)
+      gradient.addColorStop(0, '#f0fdf4')
+      gradient.addColorStop(1, '#dcfce7')
+    } else {
+      gradient.addColorStop(0, '#ffffff')
+      gradient.addColorStop(1, '#f8fafc')
     }
+    
+    ctx.fillStyle = gradient
+    
+    // Rounded corners
+    ctx.beginPath()
+    ctx.roundRect(x, y, width, height, 6)
+    ctx.fill()
+    
+    // Reset shadow
+    ctx.shadowColor = 'transparent'
+    ctx.shadowBlur = 0
+    ctx.shadowOffsetX = 0
+    ctx.shadowOffsetY = 0
+    
+    // Enhanced border
+    ctx.strokeStyle = status === 'completed' ? '#22c55e' : '#e2e8f0'
+    ctx.lineWidth = status === 'completed' ? 2 : 1
+    ctx.stroke()
+    
+    // Text with better typography
+    ctx.fillStyle = status === 'completed' ? '#166534' : '#1e293b'
+    ctx.font = '14px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif'
+    ctx.textBaseline = 'middle'
+    const textX = x + 40
+    const textY = y + height / 2
+    
+    // Strikethrough for completed tasks
+    if (status === 'completed') {
+      ctx.fillStyle = '#9ca3af'
+      ctx.fillText(text || '', textX, textY)
+      
+      // Strikethrough line
+      ctx.strokeStyle = '#9ca3af'
+      ctx.lineWidth = 1
+      ctx.beginPath()
+      ctx.moveTo(textX, textY)
+      ctx.lineTo(textX + (text?.length || 0) * 8, textY)
+      ctx.stroke()
+    } else {
+      ctx.fillText(text || '', textX, textY)
+    }
+    
+    // Enhanced checkbox with modern design
+    const checkboxX = x + 12
+    const checkboxY = y + height / 2 - 8
+    const checkboxSize = 16
+    
+    // Checkbox background
+    ctx.fillStyle = status === 'completed' ? '#22c55e' : '#ffffff'
+    ctx.beginPath()
+    ctx.roundRect(checkboxX, checkboxY, checkboxSize, checkboxSize, 3)
+    ctx.fill()
+    
+    // Checkbox border
+    ctx.strokeStyle = status === 'completed' ? '#22c55e' : '#d1d5db'
+    ctx.lineWidth = 2
+    ctx.stroke()
+    
+    // Checkmark for completed tasks
+    if (status === 'completed') {
+      ctx.strokeStyle = '#ffffff'
+      ctx.lineWidth = 2
+      ctx.lineCap = 'round'
+      ctx.lineJoin = 'round'
+      
+      ctx.beginPath()
+      ctx.moveTo(checkboxX + 4, checkboxY + 8)
+      ctx.lineTo(checkboxX + 7, checkboxY + 11)
+      ctx.lineTo(checkboxX + 12, checkboxY + 5)
+      ctx.stroke()
+      
+      ctx.lineCap = 'butt'
+      ctx.lineJoin = 'miter'
+    }
+    
+    ctx.textBaseline = 'alphabetic'
   }
 
   const handleCanvasClick = (e: React.MouseEvent<HTMLCanvasElement>) => {
@@ -511,12 +666,24 @@ export default function DeepSeekCanvas({ planningPrompt, serviceCategory, onPlan
     })
 
     if (clickedElement && (clickedElement.type === 'goal' || clickedElement.type === 'task')) {
-      // Toggle task completion
-      setElements(prev => prev.map(el => 
-        el.id === clickedElement.id 
-          ? { ...el, status: el.status === 'completed' ? 'pending' : 'completed' }
-          : el
-      ))
+      // Add click animation
+      setAnimatingElements(prev => new Set(prev).add(clickedElement.id))
+      setTimeout(() => {
+        setAnimatingElements(prev => {
+          const newSet = new Set(prev)
+          newSet.delete(clickedElement.id)
+          return newSet
+        })
+      }, 300)
+
+      // Toggle task completion with animation
+      setTimeout(() => {
+        setElements(prev => prev.map(el => 
+          el.id === clickedElement.id 
+            ? { ...el, status: el.status === 'completed' ? 'pending' : 'completed' }
+            : el
+        ))
+      }, 150)
       return
     }
 
@@ -667,8 +834,33 @@ export default function DeepSeekCanvas({ planningPrompt, serviceCategory, onPlan
           ref={canvasRef}
           width={800}
           height={600}
-          className="w-full h-full cursor-crosshair"
+          className="w-full h-full transition-all duration-200 hover:shadow-lg"
           onClick={handleCanvasClick}
+          onMouseMove={(e) => {
+            const canvas = canvasRef.current
+            if (!canvas) return
+            
+            const rect = canvas.getBoundingClientRect()
+            const x = e.clientX - rect.left
+            const y = e.clientY - rect.top
+            
+            // Check for hover on interactive elements
+            const hoveredEl = elements.find(el => {
+              if (el.type === 'goal' || el.type === 'task') {
+                return x >= el.x && x <= el.x + (el.width || 300) && 
+                       y >= el.y && y <= el.y + (el.height || 60)
+              }
+              return false
+            })
+            
+            if (hoveredEl) {
+              canvas.style.cursor = 'pointer'
+              setHoveredElement(hoveredEl.id)
+            } else {
+              canvas.style.cursor = currentTool === 'pen' ? 'crosshair' : 'default'
+              setHoveredElement(null)
+            }
+          }}
         />
 
         {/* Text Input Modal */}
