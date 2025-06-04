@@ -1,11 +1,36 @@
 import { NextRequest, NextResponse } from 'next/server'
 import SaarlandMainAgent from '@/lib/agents/saarland-main-agent'
 import { saarlandDataConnectors } from '@/lib/connectors/saarland-realtime-connectors'
+import * as path from 'path'
+import * as fs from 'fs'
+
+export const dynamic = 'force-dynamic'
 
 // DEEPSEEK AGENT API ENDPOINT
-// Intelligente Antworten mit Echtzeit-Saarland-Daten
+// Intelligente Antworten mit Echtzeit-Saarland-Daten + Service-specific Chat
 
 let mainAgent: SaarlandMainAgent | null = null;
+
+interface Message {
+  id: string
+  role: 'user' | 'assistant'
+  content: string
+  timestamp: Date
+}
+
+interface DeepSeekServiceRequest {
+  message: string
+  serviceType: 'tourismus' | 'wirtschaft' | 'verwaltung' | 'bildung'
+  sessionId: string
+  context: Message[]
+}
+
+interface CanvasData {
+  type: 'roadmap' | 'business_canvas' | 'checklist' | 'timeline' | 'map'
+  title: string
+  data: any
+  exportable: boolean
+}
 
 // Agent initialisieren
 function initializeAgent() {
@@ -24,9 +49,117 @@ function initializeAgent() {
   return mainAgent;
 }
 
+// Load service configurations
+async function loadServicePrompt(serviceType: string) {
+  try {
+    const promptPath = path.join(process.cwd(), '../../ai_docs/prompts/deepseek', `${serviceType}.json`)
+    
+    if (!fs.existsSync(promptPath)) {
+      console.warn(`Prompt file not found: ${promptPath}`)
+      return null
+    }
+    
+    const promptData = JSON.parse(fs.readFileSync(promptPath, 'utf8'))
+    return promptData
+  } catch (error) {
+    console.error(`Error loading service prompt for ${serviceType}:`, error)
+    return null
+  }
+}
+
+// Generate canvas data based on response and service type
+function generateCanvasData(content: string, serviceType: string): CanvasData | null {
+  const canvasKeywords = {
+    tourismus: ['route', 'plan', 'reise', 'tour', 'besuch'],
+    wirtschaft: ['business', 'gründung', 'förder', 'plan', 'canvas'],
+    verwaltung: ['schritt', 'antrag', 'formular', 'checkliste', 'behörde'],
+    bildung: ['lern', 'studium', 'qualifikation', 'roadmap', 'plan']
+  }
+
+  const keywords = canvasKeywords[serviceType as keyof typeof canvasKeywords] || []
+  const hasCanvasKeywords = keywords.some(keyword => 
+    content.toLowerCase().includes(keyword)
+  )
+
+  if (!hasCanvasKeywords) return null
+
+  // Generate appropriate canvas based on service type
+  switch (serviceType) {
+    case 'tourismus':
+      return {
+        type: 'roadmap',
+        title: 'Ihre Saarland-Reiseroute',
+        data: {
+          steps: [
+            { title: 'Anreise planen', description: 'Transport und Unterkunft', duration: '1 Tag' },
+            { title: 'Hauptattraktionen', description: 'Saarschleife, Völklinger Hütte', duration: '2-3 Tage' },
+            { title: 'Lokale Erlebnisse', description: 'Restaurants, Events, Kultur', duration: '1-2 Tage' }
+          ]
+        },
+        exportable: true
+      }
+
+    case 'wirtschaft':
+      return {
+        type: 'business_canvas',
+        title: 'Business Model Canvas - Saarland',
+        data: {
+          'Zielgruppen': ['KMUs', 'Startups', 'Grenzpendler'],
+          'Wertversprechen': ['Lokale Förderung', 'Cross-Border', 'Innovation'],
+          'Kanäle': ['Digital', 'Beratungsstellen', 'Events'],
+          'Einnahmequellen': ['Produkte/Services', 'Fördermittel', 'Partnerschaften'],
+          'Kostenstruktur': ['Personal', 'Marketing', 'Entwicklung'],
+          'Ressourcen': ['Team', 'Technologie', 'Netzwerk']
+        },
+        exportable: true
+      }
+
+    case 'verwaltung':
+      return {
+        type: 'checklist',
+        title: 'Behörden-Checkliste',
+        data: {
+          items: [
+            { text: 'Zuständige Behörde ermitteln', completed: false, deadline: 'sofort' },
+            { text: 'Erforderliche Dokumente sammeln', completed: false, deadline: '1 Woche' },
+            { text: 'Termin vereinbaren', completed: false, deadline: '2 Wochen' },
+            { text: 'Antrag einreichen', completed: false, deadline: '1 Monat' }
+          ]
+        },
+        exportable: true
+      }
+
+    case 'bildung':
+      return {
+        type: 'timeline',
+        title: 'Ihr Bildungsweg-Plan',
+        data: {
+          events: [
+            { title: 'Analyse der aktuellen Situation', date: 'Woche 1', description: 'Bestandsaufnahme Qualifikationen' },
+            { title: 'Recherche Bildungsmöglichkeiten', date: 'Woche 2-3', description: 'Programme und Förderungen finden' },
+            { title: 'Bewerbungen vorbereiten', date: 'Woche 4-6', description: 'Unterlagen zusammenstellen' },
+            { title: 'Start der Weiterbildung', date: 'Monat 3', description: 'Beginn des gewählten Programms' }
+          ]
+        },
+        exportable: true
+      }
+
+    default:
+      return null
+  }
+}
+
 export async function POST(request: NextRequest) {
   try {
-    const { query, userContext, agentMode } = await request.json();
+    const body = await request.json()
+    
+    // Check if this is a service-specific chat request
+    if (body.message && body.serviceType && body.sessionId) {
+      return await handleServiceChat(body, request)
+    }
+    
+    // Legacy format: general agent query
+    const { query, userContext, agentMode } = body;
 
     if (!query) {
       return NextResponse.json(
@@ -118,6 +251,114 @@ export async function GET(request: NextRequest) {
       status: 'error',
       error: error instanceof Error ? error.message : 'Unknown error'
     }, { status: 500 });
+  }
+}
+
+// Service-specific chat handler
+async function handleServiceChat(body: DeepSeekServiceRequest, request: NextRequest) {
+  const { message, serviceType, sessionId, context } = body
+
+  try {
+    // Load service configuration
+    const serviceConfig = await loadServicePrompt(serviceType)
+    if (!serviceConfig) {
+      return NextResponse.json(
+        { error: `Service configuration not found for ${serviceType}` },
+        { status: 500 }
+      )
+    }
+
+    // Initialize agent
+    const agent = initializeAgent()
+    
+    // Build context with service-specific persona
+    const systemPrompt = `${serviceConfig.persona}
+
+Kontext: ${serviceConfig.context}
+
+Du hilfst bei: ${serviceConfig.service}
+
+Capabilities:
+${serviceConfig.capabilities.map((cap: string) => `- ${cap}`).join('\n')}
+
+Aufgaben:
+${serviceConfig.tasks.map((task: string) => `- ${task}`).join('\n')}
+
+Datenquellen:
+${serviceConfig.data_sources.map((source: string) => `- ${source}`).join('\n')}
+
+Antworte im Stil: ${serviceConfig.response_style}
+Sprache: ${serviceConfig.language}
+
+WICHTIG: 
+- Verwende nur echte, verlinkte Daten aus den angegebenen Quellen
+- Erstelle Canvas-Daten wenn sinnvoll (Roadmaps, Checklisten, etc.)
+- Antworte auf Deutsch und benutze lokale saarländische Bezüge
+- Sei praktisch und handlungsorientiert`
+
+    // Get relevant data for context
+    const relevantData = await getRelevantData(message)
+
+    // Enhanced user context with service type and relevant data
+    const enhancedContext = {
+      serviceType,
+      sessionId,
+      relevantData,
+      previousMessages: context.slice(-3),
+      timestamp: new Date().toISOString()
+    }
+
+    // Process with agent
+    const startTime = Date.now()
+    const response = await agent.processUserQuery(
+      `${systemPrompt}\n\nUser Question: ${message}`, 
+      enhancedContext
+    )
+    const processingTime = Date.now() - startTime
+
+    // Generate canvas data if appropriate
+    const canvas = generateCanvasData(response, serviceType)
+
+    // Track analytics
+    try {
+      await fetch(`${request.nextUrl.origin}/api/realtime/track`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          event: 'deepseek_service_chat',
+          service: serviceType,
+          session_id: sessionId,
+          timestamp: new Date().toISOString()
+        })
+      })
+    } catch (trackingError) {
+      console.warn('Analytics tracking failed:', trackingError)
+    }
+
+    return NextResponse.json({
+      content: response,
+      canvas,
+      metadata: {
+        serviceType,
+        sessionId,
+        model: 'deepseek-r1-0528',
+        processingTime,
+        relevantData,
+        timestamp: new Date().toISOString()
+      }
+    })
+
+  } catch (error) {
+    console.error('Service chat error:', error)
+    
+    return NextResponse.json(
+      { 
+        error: 'Failed to process service chat request',
+        content: `Entschuldigung, es gab einen Fehler beim Verarbeiten deiner Anfrage zum Thema ${serviceType}. Bitte versuche es erneut.`,
+        details: error instanceof Error ? error.message : 'Unknown error'
+      },
+      { status: 500 }
+    )
   }
 }
 

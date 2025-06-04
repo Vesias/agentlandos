@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
-import MainNavigation from '@/components/navigation/MainNavigation'
+import MobileFirstNavigation from '@/components/MobileFirstNavigation'
 import MobileFeatures from '@/components/MobileFeatures'
 import MobileTestSuite from '@/components/MobileTestSuite'
 import RealAnalyticsTracker from '@/components/RealAnalyticsTracker'
@@ -106,10 +106,10 @@ export default function RootLayout({
         <meta name="msapplication-TileColor" content="#003399" />
         <meta name="msapplication-tap-highlight" content="no" />
       </head>
-      <body className={`${inter.className} bg-gray-50 safe-area`}>
+      <body className={`${inter.className} bg-gray-50`}>
         <RealAnalyticsTracker />
-        <MainNavigation />
-        <main className="min-h-screen-safe">
+        <MobileFirstNavigation />
+        <main className="pb-safe">
           {children}
         </main>
         <MobileFeatures />

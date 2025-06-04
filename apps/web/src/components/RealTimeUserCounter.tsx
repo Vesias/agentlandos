@@ -23,13 +23,13 @@ export default function RealTimeUserCounter({ className = '', showDetails = true
       console.error('Error fetching user stats:', err);
       setError('Fehler beim Laden der Statistiken');
       
-      // Fallback to realistic default values
+      // NO FAKE DATA - Real tracking starts from 0
       setStats({
-        active_users: 127,
-        daily_visitors: 1843,
-        weekly_visitors: 12456,
-        monthly_visitors: 48932,
-        total_users: 5421,
+        active_users: 0,
+        daily_visitors: 0,
+        weekly_visitors: 0,
+        monthly_visitors: 0,
+        total_users: 0,
         timestamp: new Date().toISOString()
       });
     } finally {
