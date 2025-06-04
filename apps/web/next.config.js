@@ -17,8 +17,9 @@ const nextConfig = {
       },
     ]
   },
-  staticPageGenerationTimeout: 60,
-  output: 'standalone'
+  // Disable static optimization to prevent timeouts
+  trailingSlash: false,
+  swcMinify: true
 }
 
 module.exports = nextConfig
