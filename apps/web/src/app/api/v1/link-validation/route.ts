@@ -64,7 +64,7 @@ class CardValidator {
     cards: CardValidationResult[];
     summary: any;
   }> {
-    const webDir = path.join(process.cwd(), 'apps/web/src');
+    const webDir = path.join(process.cwd(), 'src');
     
     // Scan all TSX files for cards and links
     await this.scanDirectory(webDir);
