@@ -18,8 +18,7 @@ const nextConfig = {
     ]
   },
   // Disable static optimization to prevent timeouts
-  trailingSlash: false,
-  swcMinify: true
+  trailingSlash: false
 }
 
 module.exports = nextConfig

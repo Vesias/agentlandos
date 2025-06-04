@@ -159,6 +159,15 @@ export default function HomePage() {
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
             {[
               {
+                name: 'Community',
+                icon: Shield,
+                href: '/saar-community',
+                emoji: '🏠',
+                premium: false,
+                featured: true,
+                description: 'News & Fußball'
+              },
+              {
                 name: 'Tourismus',
                 icon: Sparkles,
                 href: '/services/tourism',
@@ -195,18 +204,38 @@ export default function HomePage() {
                 transition={{ delay: 0.5 + index * 0.1, duration: 0.5 }}
               >
                 <Link href={service.href}>
-                  <div className="bg-white rounded-xl p-4 sm:p-6 border border-gray-200 hover:border-gray-300 shadow-lg hover:shadow-xl transition-all group relative overflow-hidden">
+                  <div className={`rounded-xl p-4 sm:p-6 border shadow-lg hover:shadow-xl transition-all group relative overflow-hidden ${
+                    service.featured 
+                      ? 'bg-gradient-to-br from-blue-500 to-blue-700 border-blue-300 text-white' 
+                      : 'bg-white border-gray-200 hover:border-gray-300'
+                  }`}>
                     {service.premium && (
                       <div className="absolute top-2 right-2 text-black text-xs font-bold px-2 py-1 rounded-full" style={{ backgroundColor: '#FDB913' }}>
                         {service.price}
                       </div>
                     )}
-                    <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-xl flex items-center justify-center mb-3 sm:mb-4 mx-auto text-2xl sm:text-3xl shadow-lg" style={{ backgroundColor: '#003399' }}>
+                    {service.featured && (
+                      <div className="absolute top-2 right-2 text-blue-800 text-xs font-bold px-2 py-1 rounded-full bg-white">
+                        NEU!
+                      </div>
+                    )}
+                    <div className={`w-12 h-12 sm:w-16 sm:h-16 rounded-xl flex items-center justify-center mb-3 sm:mb-4 mx-auto text-2xl sm:text-3xl shadow-lg ${
+                      service.featured ? 'bg-white/20' : ''
+                    }`} style={service.featured ? {} : { backgroundColor: '#003399' }}>
                       {service.emoji}
                     </div>
-                    <h3 className="font-semibold text-sm sm:text-base text-center transition-colors" style={{ color: '#003399' }}>
+                    <h3 className={`font-semibold text-sm sm:text-base text-center transition-colors ${
+                      service.featured ? 'text-white' : ''
+                    }`} style={service.featured ? {} : { color: '#003399' }}>
                       {service.name}
                     </h3>
+                    {service.description && (
+                      <p className={`text-xs text-center mt-1 ${
+                        service.featured ? 'text-blue-100' : 'text-gray-600'
+                      }`}>
+                        {service.description}
+                      </p>
+                    )}
                     {service.premium && (
                       <div className="text-center mt-2">
                         <span className="text-xs font-semibold" style={{ color: '#009FE3' }}>PREMIUM</span>

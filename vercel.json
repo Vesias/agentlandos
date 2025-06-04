@@ -1,17 +1,7 @@
 {
-  "framework": null,
-  "builds": [
-    {
-      "src": "apps/web/package.json",
-      "use": "@vercel/next"
-    }
-  ],
-  "rewrites": [
-    {
-      "source": "/api/:path*",
-      "destination": "/api/:path*"
-    }
-  ],
+  "buildCommand": "cd apps/web && npm run build",
+  "installCommand": "cd apps/web && npm install",
+  "outputDirectory": "apps/web/.next",
   "headers": [
     {
       "source": "/api/(.*)",
@@ -22,6 +12,5 @@
         { "key": "Access-Control-Allow-Headers", "value": "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version" }
       ]
     }
-  ],
-  "regions": ["fra1"]
+  ]
 }
