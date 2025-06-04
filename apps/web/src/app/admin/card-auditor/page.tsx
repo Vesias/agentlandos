@@ -104,7 +104,7 @@ export default function CardAuditorPage() {
           healthScore: score as number,
           issues: data.suggestedImprovements[category] || [],
           improvements: data.suggestedImprovements[category] || [],
-          priority: (score as number) < 50 ? 'high' : (score as number) < 75 ? 'medium' : 'low'
+          priority: ((score as number) < 50 ? 'high' : (score as number) < 75 ? 'medium' : 'low') as 'high' | 'medium' | 'low'
         }));
         setCardHealthData(healthData);
       }

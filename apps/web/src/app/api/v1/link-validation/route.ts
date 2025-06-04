@@ -159,13 +159,18 @@ class CardValidator {
     // Validate actual URL
     try {
       const startTime = Date.now();
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000);
+      
       const response = await fetch(url, {
         method: 'HEAD',
-        timeout: 10000,
+        signal: controller.signal,
         headers: {
           'User-Agent': 'AGENTLAND-SAARLAND-Validator/1.0'
         }
       });
+      
+      clearTimeout(timeoutId);
       
       result.responseTime = Date.now() - startTime;
       result.statusCode = response.status;

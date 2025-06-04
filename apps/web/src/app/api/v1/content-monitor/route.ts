@@ -154,10 +154,15 @@ class ContentMonitor {
 
   private async checkSource(source: ContentSource): Promise<ContentSource> {
     try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000);
+      
       const response = await fetch(source.url, {
         method: 'HEAD',
-        timeout: 10000
+        signal: controller.signal
       });
+      
+      clearTimeout(timeoutId);
 
       if (response.ok) {
         // Check if content has been updated recently
@@ -324,7 +329,7 @@ class ContentMonitor {
   }
 
   private generateRecommendations(): string[] {
-    const recommendations = [];
+    const recommendations: string[] = [];
 
     if (this.alerts.filter(a => a.type === 'stale_content').length > 0) {
       recommendations.push('Set up automated content refresh for frequently changing information');
