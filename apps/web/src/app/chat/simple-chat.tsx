@@ -356,143 +356,186 @@ Ich helfe Ihnen gerne bei Fragen zu:
   }
 
   return (
-    <div className="flex flex-col h-screen-safe max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mobile-scroll safe-area">
-      {/* Chat Header */}
-      <div className="py-4 sm:py-6 border-b">
-        {currentContext ? (
-          <div className="flex items-center space-x-3">
-            <div 
-              className="w-10 h-10 rounded-lg flex items-center justify-center"
-              style={{ backgroundColor: `${currentContext.color}20` }}
-            >
-              <div className="text-lg" style={{ color: currentContext.color }}>
-                {currentContext.icon === 'Sparkles' ? '✨' : 
-                 currentContext.icon === 'Calendar' ? '📅' :
-                 currentContext.icon === 'Euro' ? '💶' :
-                 currentContext.icon === 'Rocket' ? '🚀' :
-                 currentContext.icon === 'GraduationCap' ? '🎓' :
-                 currentContext.icon === 'Award' ? '🏆' :
-                 currentContext.icon === 'FileText' ? '📄' :
-                 currentContext.icon === 'Building2' ? '🏢' :
-                 currentContext.icon === 'Theater' ? '🎭' :
-                 currentContext.icon === 'PartyPopper' ? '🎉' : '🤖'}
-              </div>
-            </div>
-            <div>
-              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">{currentContext.title}</h1>
-              <p className="text-sm sm:text-base text-gray-600 mt-1">
-                Spezialisierte Beratung für {currentContext.category === 'tourism' ? 'Tourismus' :
-                currentContext.category === 'business' ? 'Wirtschaft' :
-                currentContext.category === 'education' ? 'Bildung' :
-                currentContext.category === 'admin' ? 'Verwaltung' :
-                currentContext.category === 'culture' ? 'Kultur' : 'Services'}
-              </p>
-            </div>
-          </div>
-        ) : (
-          <>
-            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Chat mit AGENTLAND.SAARLAND</h1>
-            <p className="text-sm sm:text-base text-gray-600 mt-1">Ihre KI-Assistenz für das Saarland</p>
-          </>
-        )}
-      </div>
-
-      {/* Messages Area */}
-      <div className="flex-1 overflow-y-auto py-4 sm:py-6 space-y-4">
-        {messages.length === 0 ? (
-          <div className="text-center py-8 sm:py-12">
-            <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-blue-600 to-cyan-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
-              <Bot className="w-8 h-8 sm:w-10 sm:h-10 text-white" />
-            </div>
-            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">Willkommen!</h2>
-            <p className="text-sm sm:text-base text-gray-600 max-w-md mx-auto">
-              Stellen Sie mir Fragen zu Tourismus, Wirtschaft, Bildung, Verwaltung oder Kultur im Saarland.
-            </p>
-          </div>
-        ) : (
-          messages.map((message) => (
-            <div
-              key={message.id}
-              className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
-            >
-              <div className={`flex ${message.role === 'user' ? 'flex-row-reverse' : 'flex-row'} items-start gap-2 max-w-[90%] sm:max-w-[80%] lg:max-w-[70%]`}>
-                <div className={`flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center ${
-                  message.role === 'user' 
-                    ? 'bg-gray-200' 
-                    : 'bg-gradient-to-br from-blue-600 to-cyan-500'
-                }`}>
-                  {message.role === 'user' ? (
-                    <User className="w-4 h-4 sm:w-5 sm:h-5 text-gray-700" />
-                  ) : (
-                    <Bot className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
-                  )}
-                </div>
-                <Card className={`p-3 sm:p-4 ${
-                  message.role === 'user' 
-                    ? 'bg-gray-100 border-gray-200' 
-                    : 'bg-white border-gray-200'
-                }`}>
-                  <p className="text-sm sm:text-base text-gray-800 whitespace-pre-wrap">{message.content}</p>
-                  <p className="text-xs text-gray-400 mt-1">
-                    {message.timestamp.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })}
-                  </p>
-                </Card>
-              </div>
-            </div>
-          ))
-        )}
-        <div ref={messagesEndRef} />
-      </div>
-
-      {/* Suggested Questions */}
-      {currentContext && currentContext.suggestedQuestions && (
-        <div className="border-t border-gray-200 py-3">
-          <p className="text-xs text-gray-500 mb-2 px-1">💡 Häufige Fragen:</p>
-          <div className="flex flex-wrap gap-2">
-            {currentContext.suggestedQuestions.map((question: string, index: number) => (
-              <button
-                key={index}
-                onClick={() => {
-                  setInput(question)
-                }}
-                className="text-xs px-3 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-full transition-colors touch-target-sm touch-smooth"
+    <div className="min-h-screen bg-gray-50">
+      <div className="flex flex-col h-screen-safe max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mobile-scroll safe-area">
+        {/* Chat Header */}
+        <div className="py-4 sm:py-6 border-b bg-white rounded-t-lg shadow-sm">
+          {currentContext ? (
+            <div className="flex items-center space-x-3">
+              <div 
+                className="w-10 h-10 rounded-lg flex items-center justify-center"
+                style={{ backgroundColor: '#003399' }}
               >
-                {question}
-              </button>
-            ))}
-          </div>
+                <div className="text-lg text-white">
+                  {currentContext.icon === 'Sparkles' ? '✨' : 
+                   currentContext.icon === 'Calendar' ? '📅' :
+                   currentContext.icon === 'Euro' ? '💶' :
+                   currentContext.icon === 'Rocket' ? '🚀' :
+                   currentContext.icon === 'GraduationCap' ? '🎓' :
+                   currentContext.icon === 'Award' ? '🏆' :
+                   currentContext.icon === 'FileText' ? '📄' :
+                   currentContext.icon === 'Building2' ? '🏢' :
+                   currentContext.icon === 'Theater' ? '🎭' :
+                   currentContext.icon === 'PartyPopper' ? '🎉' : '🤖'}
+                </div>
+              </div>
+              <div>
+                <h1 className="text-2xl sm:text-3xl font-bold" style={{ color: '#003399' }}>{currentContext.title}</h1>
+                <p className="text-sm sm:text-base text-gray-600 mt-1">
+                  Spezialisierte Beratung für {currentContext.category === 'tourism' ? 'Tourismus' :
+                  currentContext.category === 'business' ? 'Wirtschaft' :
+                  currentContext.category === 'education' ? 'Bildung' :
+                  currentContext.category === 'admin' ? 'Verwaltung' :
+                  currentContext.category === 'culture' ? 'Kultur' : 'Services'}
+                </p>
+              </div>
+            </div>
+          ) : (
+            <div className="text-center">
+              <div className="w-16 h-16 mx-auto mb-4 rounded-2xl flex items-center justify-center" style={{ backgroundColor: '#003399' }}>
+                <Bot className="w-8 h-8 text-white" />
+              </div>
+              <h1 className="text-2xl sm:text-3xl font-bold mb-2" style={{ color: '#003399' }}>KI-Chat Saarland</h1>
+              <p className="text-sm sm:text-base text-gray-600">Ihre Premium KI-Assistenz für das Saarland • €10/Monat</p>
+              <div className="mt-4 flex items-center justify-center gap-4 text-sm">
+                <span className="flex items-center gap-1">
+                  <span className="w-2 h-2 rounded-full" style={{ backgroundColor: '#009FE3' }}></span>
+                  Real-time Daten
+                </span>
+                <span className="flex items-center gap-1">
+                  <span className="w-2 h-2 rounded-full" style={{ backgroundColor: '#FDB913' }}></span>
+                  Premium Features
+                </span>
+                <span className="flex items-center gap-1">
+                  <span className="w-2 h-2 rounded-full bg-green-500"></span>
+                  GDPR-konform
+                </span>
+              </div>
+            </div>
+          )}
         </div>
-      )}
 
-      {/* Input Area */}
-      <div className="border-t py-4">
-        <div className="flex items-center gap-2">
-          <input
-            type="text"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyPress={(e) => e.key === 'Enter' && handleSend()}
-            placeholder="Ihre Nachricht..."
-            className="flex-1 px-4 py-3 text-mobile-safe bg-gray-50 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent touch-manipulation"
-            disabled={isLoading}
-            inputMode="text"
-            autoComplete="off"
-            autoCorrect="off"
-            autoCapitalize="sentences"
-          />
-          <Button
-            onClick={handleSend}
-            disabled={isLoading || !input.trim()}
-            size="icon"
-            className="bg-gradient-to-r from-blue-600 to-cyan-500 text-white rounded-lg hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed touch-target"
-            aria-label="Nachricht senden"
-          >
-            {isLoading ? (
-              <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
-            ) : (
-              <Send className="w-4 h-4 sm:w-5 sm:h-5" />
-            )}
-          </Button>
+        {/* Messages Area */}
+        <div className="flex-1 overflow-y-auto py-4 sm:py-6 space-y-4">
+          {messages.length === 0 ? (
+            <div className="text-center py-8 sm:py-12 bg-white rounded-lg shadow-sm">
+              <div className="w-20 h-20 sm:w-24 sm:h-24 mx-auto mb-6 rounded-2xl flex items-center justify-center" style={{ backgroundColor: '#003399' }}>
+                <Bot className="w-10 h-10 sm:w-12 sm:h-12 text-white" />
+              </div>
+              <h2 className="text-xl sm:text-2xl font-bold mb-4" style={{ color: '#003399' }}>Willkommen bei SAAR-ID Premium!</h2>
+              <p className="text-sm sm:text-base text-gray-600 max-w-md mx-auto mb-6">
+                Ihr persönlicher KI-Assistent für alle Saarland-Services. Premium Features für nur €10/Monat.
+              </p>
+              
+              {/* Quick Action Cards */}
+              <div className="grid grid-cols-2 md:grid-cols-5 gap-3 max-w-4xl mx-auto mb-6">
+                {[
+                  { emoji: '🏰', label: 'Tourismus', desc: 'Ausflüge & Events' },
+                  { emoji: '💼', label: 'Business', desc: 'Förderungen & Gründung' },
+                  { emoji: '🏛️', label: 'Verwaltung', desc: 'Ämter & Services' },
+                  { emoji: '🎓', label: 'Bildung', desc: 'Studium & Kurse' },
+                  { emoji: '🎭', label: 'Kultur', desc: 'Theater & Musik' }
+                ].map((item) => (
+                  <div key={item.label} className="p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer"
+                       onClick={() => setInput(`Was gibt es Neues im Bereich ${item.label}?`)}>
+                    <div className="text-2xl mb-2">{item.emoji}</div>
+                    <div className="text-sm font-semibold" style={{ color: '#003399' }}>{item.label}</div>
+                    <div className="text-xs text-gray-500">{item.desc}</div>
+                  </div>
+                ))}
+              </div>
+              
+              <div className="text-xs text-gray-500">
+                💡 Klicken Sie auf eine Kategorie oder stellen Sie direkt eine Frage
+              </div>
+            </div>
+          ) : (
+            messages.map((message) => (
+              <div
+                key={message.id}
+                className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
+              >
+                <div className={`flex ${message.role === 'user' ? 'flex-row-reverse' : 'flex-row'} items-start gap-2 max-w-[90%] sm:max-w-[80%] lg:max-w-[70%]`}>
+                  <div className={`flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center ${
+                    message.role === 'user' 
+                      ? 'bg-gray-200' 
+                      : ''
+                  }`}
+                  style={{ backgroundColor: message.role === 'assistant' ? '#003399' : undefined }}>
+                    {message.role === 'user' ? (
+                      <User className="w-4 h-4 sm:w-5 sm:h-5 text-gray-700" />
+                    ) : (
+                      <Bot className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+                    )}
+                  </div>
+                  <Card className={`p-3 sm:p-4 ${
+                    message.role === 'user' 
+                      ? 'bg-gray-100 border-gray-200' 
+                      : 'bg-white border-gray-200'
+                  }`}>
+                    <p className="text-sm sm:text-base text-gray-800 whitespace-pre-wrap">{message.content}</p>
+                    <p className="text-xs text-gray-400 mt-1">
+                      {message.timestamp.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })}
+                    </p>
+                  </Card>
+                </div>
+              </div>
+            ))
+          )}
+          <div ref={messagesEndRef} />
+        </div>
+
+        {/* Suggested Questions */}
+        {currentContext && currentContext.suggestedQuestions && (
+            <div className="border-t border-gray-200 py-3">
+              <p className="text-xs text-gray-500 mb-2 px-1">💡 Häufige Fragen:</p>
+              <div className="flex flex-wrap gap-2">
+                {currentContext.suggestedQuestions.map((question: string, index: number) => (
+                  <button
+                    key={index}
+                    onClick={() => {
+                      setInput(question)
+                    }}
+                    className="text-xs px-3 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-full transition-colors touch-target-sm touch-smooth"
+                  >
+                    {question}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+        {/* Input Area */}
+        <div className="border-t py-4">
+          <div className="flex items-center gap-2">
+            <input
+              type="text"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyPress={(e) => e.key === 'Enter' && handleSend()}
+              placeholder="Ihre Nachricht..."
+              className="flex-1 px-4 py-3 text-mobile-safe bg-gray-50 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent touch-manipulation"
+              disabled={isLoading}
+              inputMode="text"
+              autoComplete="off"
+              autoCorrect="off"
+              autoCapitalize="sentences"
+            />
+            <Button
+              onClick={handleSend}
+              disabled={isLoading || !input.trim()}
+              size="icon"
+              className="text-white rounded-lg hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed touch-target"
+              style={{ backgroundColor: '#003399' }}
+              aria-label="Nachricht senden"
+            >
+              {isLoading ? (
+                <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
+              ) : (
+                <Send className="w-4 h-4 sm:w-5 sm:h-5" />
+              )}
+            </Button>
+          </div>
         </div>
       </div>
     </div>
