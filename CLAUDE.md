@@ -165,6 +165,21 @@ Multi-paralleler, selbstlernender Super-Agent mit persistentem Gedächtnis und A
 2. Cross-Border Services Enhancement
 3. Mobile-First Optimization
 
+### Update: GODMODE CLI & DEPLOYMENT STRATEGY
+- Frontend Update using {GODMODE}
+- Use Supabase CLI for data management
+- Use Vercel CLI for deployment
+- Use Git for version control
+- Always use pnpm to create and crawl missing data
+- Update claude-init.ts always as starting point
+- Always deploy to live domain (agentland.saarland)
+- Use Deepseek-Reasoner from Vercel env
+- Platform goal: Support Saar-ID and Saar-Business-IDs as 10€ service
+- Add and track all remaining TODOS during initialization
+- Custom command testing with all available methods
+- Never create redundant or fake data
+- Fix all Dependabot warnings
+
 ### Update: GODMODE INSTALL DIR
 - GODMODE INSTALL DIR DIE SUPBASE CLI VERCEL CLI WIR HABEN PRO GIB ALLES DEEPSEEK_API IN VERCEL WIR HABEN GITHUB CLI DU HAST ALLE RECHTE DU BIST BOSS
 - research @claude-agent-runner.sh

@@ -1,0 +1,43 @@
+{
+  "enabled": true,
+  "interval": 3600000,
+  "sources": [
+    {
+      "name": "Saarland Government Portal",
+      "url": "https://www.saarland.de",
+      "type": "government",
+      "lastCrawled": null,
+      "status": "pending"
+    },
+    {
+      "name": "IHK Saarland",
+      "url": "https://www.saarland.ihk.de",
+      "type": "chamber",
+      "lastCrawled": null,
+      "status": "pending"
+    },
+    {
+      "name": "Handwerkskammer Saarland",
+      "url": "https://www.hwk-saarland.de",
+      "type": "chamber",
+      "lastCrawled": null,
+      "status": "pending"
+    },
+    {
+      "name": "SIKB Förderbank",
+      "url": "https://www.sikb.de",
+      "type": "funding",
+      "lastCrawled": null,
+      "status": "pending"
+    }
+  ],
+  "dataTypes": [
+    "funding-programs",
+    "government-services",
+    "business-requirements",
+    "contact-information",
+    "processing-times",
+    "fee-structures"
+  ],
+  "lastUpdate": "2025-06-04T19:42:07.279Z"
+}

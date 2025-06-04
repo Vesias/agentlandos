@@ -1,38 +1,70 @@
 'use client'
 
 import React, { useState } from 'react';
-import { MapPin, Building2, Calendar, Navigation } from 'lucide-react';
+import { MapPin, Building2, Calendar, Navigation, Crown, Star, Zap } from 'lucide-react';
 import PLZServiceFinder from '@/components/PLZServiceFinder';
 import InteractiveSaarlandMap from '@/components/InteractiveSaarlandMapWrapper';
 import { useRealTimeData } from '@/hooks/useRealTimeData';
+import { motion } from 'framer-motion';
+import Link from 'next/link';
 
 export default function ServicesPage() {
   const [activeTab, setActiveTab] = useState<'plz' | 'map' | 'events'>('plz');
   const { data: eventsData, loading: eventsLoading } = useRealTimeData('events', 300000);
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gray-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            Services im Saarland
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-center mb-8"
+        >
+          <h1 className="text-4xl font-bold mb-4" style={{ color: '#003399' }}>
+            SAAR-ID Premium Services
           </h1>
           <p className="text-xl text-gray-600">
-            Finden Sie Behörden, Events und Sehenswürdigkeiten - alles mit echten Daten!
+            Professionelle Saarland-Services mit KI-Power • €10/Monat für alle Premium-Features
           </p>
-        </div>
+          
+          {/* Premium Service Banner */}
+          <div className="mt-6 bg-white rounded-2xl p-6 border border-gray-200 shadow-lg">
+            <div className="flex items-center justify-center gap-4 flex-wrap text-lg">
+              <div className="flex items-center gap-2">
+                <Crown className="w-6 h-6" style={{ color: '#FDB913' }} />
+                <span className="font-bold" style={{ color: '#009FE3' }}>SAAR-ID Premium</span>
+              </div>
+              <div className="text-gray-400 hidden sm:block">|</div>
+              <div className="font-semibold" style={{ color: '#003399' }}>€10/Monat</div>
+              <div className="text-gray-400 hidden sm:block">|</div>
+              <div className="text-gray-600 font-semibold">KI-optimiert</div>
+              <div className="text-gray-400 hidden sm:block">|</div>
+              <Link href="/test-business-registration">
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="px-4 py-2 rounded-lg font-bold text-sm text-white hover:opacity-90 transition-all"
+                  style={{ backgroundColor: '#FDB913' }}
+                >
+                  Jetzt aktivieren
+                </motion.button>
+              </Link>
+            </div>
+          </div>
+        </motion.div>
 
         {/* Tab Navigation */}
         <div className="flex justify-center mb-8">
-          <div className="bg-white rounded-lg shadow-sm p-1 inline-flex">
+          <div className="bg-white rounded-lg shadow-lg p-1 inline-flex border border-gray-200">
             <button
               onClick={() => setActiveTab('plz')}
               className={`px-6 py-3 rounded-md font-medium transition-colors ${
                 activeTab === 'plz'
-                  ? 'bg-blue-600 text-white'
-                  : 'text-gray-600 hover:text-gray-900'
+                  ? 'text-white shadow-lg'
+                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
               }`}
+              style={{ backgroundColor: activeTab === 'plz' ? '#003399' : 'transparent' }}
             >
               <Building2 className="w-5 h-5 inline mr-2" />
               Behördenfinder
@@ -41,9 +73,10 @@ export default function ServicesPage() {
               onClick={() => setActiveTab('map')}
               className={`px-6 py-3 rounded-md font-medium transition-colors ${
                 activeTab === 'map'
-                  ? 'bg-blue-600 text-white'
-                  : 'text-gray-600 hover:text-gray-900'
+                  ? 'text-white shadow-lg'
+                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
               }`}
+              style={{ backgroundColor: activeTab === 'map' ? '#003399' : 'transparent' }}
             >
               <MapPin className="w-5 h-5 inline mr-2" />
               Interaktive Karte
@@ -52,9 +85,10 @@ export default function ServicesPage() {
               onClick={() => setActiveTab('events')}
               className={`px-6 py-3 rounded-md font-medium transition-colors ${
                 activeTab === 'events'
-                  ? 'bg-blue-600 text-white'
-                  : 'text-gray-600 hover:text-gray-900'
+                  ? 'text-white shadow-lg'
+                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
               }`}
+              style={{ backgroundColor: activeTab === 'events' ? '#003399' : 'transparent' }}
             >
               <Calendar className="w-5 h-5 inline mr-2" />
               Events & Tickets

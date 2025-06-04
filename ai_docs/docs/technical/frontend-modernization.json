@@ -1,0 +1,35 @@
+{
+  "designSystem": "GODMODE",
+  "theme": {
+    "primary": "#6366f1",
+    "secondary": "#8b5cf6",
+    "accent": "#06b6d4",
+    "success": "#10b981",
+    "warning": "#f59e0b",
+    "error": "#ef4444",
+    "premium": "#7c3aed"
+  },
+  "components": {
+    "enhanced": true,
+    "animations": true,
+    "darkMode": true,
+    "responsive": true,
+    "accessibility": true
+  },
+  "features": [
+    "Real-time user counter",
+    "Revenue dashboard",
+    "Premium service CTAs",
+    "SAAR-ID integration",
+    "Business registration flow",
+    "Admin dashboard",
+    "Mobile-first design",
+    "PWA capabilities"
+  ],
+  "targets": {
+    "performance": 100,
+    "accessibility": 100,
+    "seo": 100,
+    "bestPractices": 100
+  }
+}

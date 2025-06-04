@@ -1,0 +1,51 @@
+{
+  "services": {
+    "saar-id-premium": {
+      "name": "SAAR-ID Premium",
+      "description": "Enhanced digital identity with priority processing and premium support",
+      "price": 10,
+      "currency": "EUR",
+      "billing": "monthly",
+      "features": [
+        "Priority processing (24h instead of 7 days)",
+        "Premium customer support",
+        "Advanced service authorizations",
+        "API access for businesses",
+        "Mobile app premium features",
+        "Export capabilities",
+        "Custom integrations"
+      ],
+      "target": "2,500 subscriptions = €25,000 MRR"
+    },
+    "business-id-premium": {
+      "name": "Business-ID Premium",
+      "description": "Advanced business registration with AI optimization and funding matching",
+      "price": 10,
+      "currency": "EUR",
+      "billing": "monthly",
+      "features": [
+        "AI-powered business structure optimization",
+        "Automatic funding program matching",
+        "Priority government processing",
+        "Dedicated business advisor",
+        "Advanced analytics dashboard",
+        "Cross-border expansion support",
+        "Tax optimization recommendations"
+      ],
+      "target": "1,000 subscriptions = €10,000 MRR"
+    }
+  },
+  "revenueTargets": {
+    "monthly": 25000,
+    "quarterly": 75000,
+    "yearly": 300000,
+    "currency": "EUR"
+  },
+  "launched": "2025-06-04T19:42:07.278Z",
+  "tracking": {
+    "conversions": 0,
+    "churnRate": 0,
+    "avgRevenuePerUser": 10,
+    "lifetimeValue": 120
+  }
+}
