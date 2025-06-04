@@ -8,10 +8,15 @@ import MobileTestSuite from '@/components/MobileTestSuite'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://agentland.saarland'),
   title: 'AGENT_LAND_SAARLAND - Souveräne KI für das Saarland',
   description: 'KI-Plattform mit regionaler Expertise für Bürger, Unternehmen und Verwaltung im Saarland',
   keywords: 'Saarland, KI, Künstliche Intelligenz, Tourismus, Verwaltung, Wirtschaft',
   authors: [{ name: 'AGENT_LAND_SAARLAND Team' }],
+  icons: {
+    icon: '/favicon.svg',
+    shortcut: '/favicon.ico',
+  },
   viewport: {
     width: 'device-width',
     initialScale: 1,

@@ -76,7 +76,7 @@ export default function InteractiveSaarlandMap({
 
   const loadPOIs = async (map: L.Map) => {
     try {
-      const response = await fetch('/api/v1/realtime/maps/pois');
+      const response = await fetch('/api/realtime/maps/pois');
       const data = await response.json();
       
       if (data.status === 'success') {
