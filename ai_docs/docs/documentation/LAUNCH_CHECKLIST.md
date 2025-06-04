@@ -46,7 +46,7 @@ git push -u origin main
 3. **Import repository: agentland-saarland**
 4. **Set Environment Variables:**
    ```
-   DEEPSEEK_API_KEY=sk-cd5974b6ec9e414c812bb03d1b9cd208
+   DEEPSEEK_API_KEY=XXXXX-EXPOSED-KEY-SANITIZED-XXXXX
    NEXT_PUBLIC_API_URL=/api
    ```
 5. **Deploy!**

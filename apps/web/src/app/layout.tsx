@@ -4,6 +4,7 @@ import './globals.css'
 import MainNavigation from '@/components/navigation/MainNavigation'
 import MobileFeatures from '@/components/MobileFeatures'
 import MobileTestSuite from '@/components/MobileTestSuite'
+import RealAnalyticsTracker from '@/components/RealAnalyticsTracker'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -106,6 +107,7 @@ export default function RootLayout({
         <meta name="msapplication-tap-highlight" content="no" />
       </head>
       <body className={`${inter.className} bg-gray-50 safe-area`}>
+        <RealAnalyticsTracker />
         <MainNavigation />
         <main className="min-h-screen-safe">
           {children}

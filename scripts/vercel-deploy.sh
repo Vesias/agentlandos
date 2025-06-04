@@ -14,7 +14,7 @@ echo ""
 # Deploy to Vercel
 echo "🚀 Starting Vercel deployment..."
 npx vercel --prod \
-  --env DEEPSEEK_API_KEY=sk-cd5974b6ec9e414c812bb03d1b9cd208 \
+  --env DEEPSEEK_API_KEY="$DEEPSEEK_API_KEY" \
   --env NEXT_PUBLIC_API_URL=/api \
   --scope vesias \
   --force

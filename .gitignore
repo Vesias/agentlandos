@@ -132,3 +132,18 @@ tmp/
 temp/
 *.tmp
 *.temp
+# Security - Environment files
+.env.local
+.env.production
+.env.*.local
+*.key
+*.pem
+credentials.json
+
+# Revenue System
+stripe_keys.json
+payment_secrets.json
+
+# Logs with potential secrets
+*.log
+logs/

@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+export const dynamic = 'force-dynamic'
+export const runtime = 'nodejs'
+
 interface ActivityData {
   activity_type: string;
   page?: string;
