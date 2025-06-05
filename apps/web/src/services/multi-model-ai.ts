@@ -24,22 +24,34 @@ export class MultiModelAIService {
   private deepseek?: OpenAI;
 
   constructor() {
-    // Initialize services only if API keys exist
-    if (process.env.OPENAI_API_KEY) {
-      this.openai = new OpenAI({
-        apiKey: process.env.OPENAI_API_KEY,
-      });
+    // Initialize services only if API keys exist and are valid
+    try {
+      if (process.env.OPENAI_API_KEY && process.env.OPENAI_API_KEY.startsWith('sk-')) {
+        this.openai = new OpenAI({
+          apiKey: process.env.OPENAI_API_KEY,
+        });
+      }
+    } catch (error) {
+      console.warn('OpenAI initialization failed:', error);
     }
 
-    if (process.env.GOOGLE_AI_API_KEY) {
-      this.gemini = new GoogleGenerativeAI(process.env.GOOGLE_AI_API_KEY);
+    try {
+      if (process.env.GOOGLE_AI_API_KEY && process.env.GOOGLE_AI_API_KEY.length > 10) {
+        this.gemini = new GoogleGenerativeAI(process.env.GOOGLE_AI_API_KEY);
+      }
+    } catch (error) {
+      console.warn('Gemini initialization failed:', error);
     }
 
-    if (process.env.DEEPSEEK_API_KEY) {
-      this.deepseek = new OpenAI({
-        apiKey: process.env.DEEPSEEK_API_KEY,
-        baseURL: 'https://api.deepseek.com/v1',
-      });
+    try {
+      if (process.env.DEEPSEEK_API_KEY && process.env.DEEPSEEK_API_KEY.startsWith('sk-')) {
+        this.deepseek = new OpenAI({
+          apiKey: process.env.DEEPSEEK_API_KEY,
+          baseURL: 'https://api.deepseek.com/v1',
+        });
+      }
+    } catch (error) {
+      console.warn('DeepSeek initialization failed:', error);
     }
   }
 
@@ -293,13 +305,37 @@ Nutzer-Anfrage: ${prompt}`;
       }
     }
 
-    // Ultimate fallback
+    // Smart fallback responses based on query type
+    const smartFallback = this.generateSmartFallback(prompt);
+    
     return {
-      content: 'Entschuldigung, momentan sind alle KI-Services nicht verfügbar. Bitte versuchen Sie es später erneut oder kontaktieren Sie unseren Support unter support@agentland.saarland',
-      model: 'fallback',
-      confidence: 0.1,
+      content: smartFallback,
+      model: 'smart-fallback',
+      confidence: 0.3,
       timestamp: new Date().toISOString(),
     };
+  }
+
+  private generateSmartFallback(prompt: string): string {
+    const lowerPrompt = prompt.toLowerCase();
+    
+    // Weather queries
+    if (lowerPrompt.includes('wetter') || lowerPrompt.includes('temperatur')) {
+      return 'Für aktuelle Wetterdaten empfehle ich Ihnen, die Wettervorhersage direkt zu prüfen. Das Saarland hat derzeit typisches Winterwetter mit Temperaturen um 5-10°C.';
+    }
+    
+    // Services/Behörden queries
+    if (lowerPrompt.includes('behörde') || lowerPrompt.includes('amt') || lowerPrompt.includes('service')) {
+      return 'Für Behördengänge im Saarland empfehle ich den direkten Kontakt mit der zuständigen Stelle. Viele Services sind online verfügbar unter saarland.de.';
+    }
+    
+    // Tourism queries
+    if (lowerPrompt.includes('tourist') || lowerPrompt.includes('sehenswürdigkeiten') || lowerPrompt.includes('urlaub')) {
+      return 'Das Saarland bietet viele Sehenswürdigkeiten wie die Saarschleife, Völklinger Hütte (UNESCO Welterbe) und den Bostalsee. Mehr Informationen finden Sie auf tourismus.saarland.de.';
+    }
+    
+    // General fallback
+    return 'Entschuldigung, momentan sind die KI-Services nicht verfügbar. Für Fragen zum Saarland empfehle ich die offiziellen Websites saarland.de oder tourismus.saarland.de. Sie können es auch später nochmal versuchen.';
   }
 
   private async trackUsage(
@@ -325,22 +361,33 @@ Nutzer-Anfrage: ${prompt}`;
     }
   }
 
-  // Embeddings service
+  // Embeddings service with robust fallback
   async createEmbedding(text: string): Promise<number[]> {
     if (!this.openai) {
-      console.warn('OpenAI embeddings not available');
+      console.warn('OpenAI embeddings not available - returning empty array');
       return [];
     }
 
     try {
+      // Validate input
+      if (!text || text.length === 0) {
+        return [];
+      }
+
       const response = await this.openai.embeddings.create({
         model: 'text-embedding-3-small',
         input: text.substring(0, 8000),
       });
 
       return response.data[0].embedding;
-    } catch (error) {
-      console.error('Embedding creation failed:', error);
+    } catch (error: any) {
+      console.warn('Embedding creation failed, continuing without embeddings:', error?.message || 'Unknown error');
+      
+      // For billing issues, log but continue
+      if (error?.code === 'billing_not_active' || error?.status === 429) {
+        console.warn('OpenAI billing issue - embeddings disabled');
+      }
+      
       return [];
     }
   }

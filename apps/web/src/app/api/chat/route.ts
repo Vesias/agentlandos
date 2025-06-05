@@ -116,26 +116,30 @@ export async function POST(request: NextRequest) {
       language: context?.language || 'de'
     };
 
-    // Try to enhance with embeddings-based context
+    // Try to enhance with embeddings-based context (graceful degradation)
     try {
       const embedding = await multiModelAI.createEmbedding(userMessage);
       if (embedding.length > 0) {
-        // Search for similar previous conversations (if table exists)
-        const result = await supabase
-          .rpc('find_similar_chats', {
-            query_embedding: embedding,
-            similarity_threshold: 0.8,
-            match_count: 3
-          });
-        
-        const similar = result.data;
+        try {
+          // Search for similar previous conversations (if table exists)
+          const result = await supabase
+            .rpc('find_similar_chats', {
+              query_embedding: embedding,
+              similarity_threshold: 0.8,
+              match_count: 3
+            });
+          
+          const similar = result.data;
 
-        if (similar && similar.length > 0) {
-          enhancedContext.relatedTopics = similar.map((s: any) => s.topic);
+          if (similar && similar.length > 0) {
+            enhancedContext.relatedTopics = similar.map((s: any) => s.topic);
+          }
+        } catch (dbError) {
+          console.log('Database function not available, continuing without similarity search');
         }
       }
     } catch (embeddingError) {
-      console.log('Embeddings enhancement skipped:', embeddingError);
+      console.log('Embeddings not available, continuing without enhancement');
     }
 
     // Generate AI response using multi-model system
