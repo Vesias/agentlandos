@@ -595,7 +595,7 @@ export async function GET(request: NextRequest) {
     const limit = parseInt(searchParams.get('limit') || '50')
     const offset = parseInt(searchParams.get('offset') || '0')
 
-    let filteredAuthorities = SAARLAND_BEHOERDEN_MAXIMAL.authorities as Authority[]
+    let filteredAuthorities = SAARLAND_BEHOERDEN_MAXIMAL.authorities
 
     // Apply filters
     if (filters.category) {
@@ -732,7 +732,7 @@ export async function POST(request: NextRequest) {
     const authoritiesInPLZ = SAARLAND_BEHOERDEN_MAXIMAL.plzMapping[zipCode] || []
     const relevantAuthorities = SAARLAND_BEHOERDEN_MAXIMAL.authorities.filter(auth => 
       authoritiesInPLZ.includes(auth.id)
-    ) as Authority[]
+    )
 
     // If specific services requested, filter by services
     let recommendedServices = relevantAuthorities
