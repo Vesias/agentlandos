@@ -210,8 +210,13 @@ export class MultiModelAIService {
   ): Promise<AIResponse> {
     if (!this.openai) throw new Error('OpenAI not available');
 
+    // Use GPT-4o-mini as primary model for cost efficiency
+    const model = maxTokens > 1000 || this.isComplexQuery(prompt) 
+      ? 'gpt-4-turbo-preview' 
+      : 'gpt-4o-mini';
+
     const completion = await this.openai.chat.completions.create({
-      model: 'gpt-4-turbo-preview',
+      model,
       messages: [
         {
           role: 'system',
@@ -228,9 +233,9 @@ export class MultiModelAIService {
 
     return {
       content: completion.choices[0].message.content || '',
-      model: 'gpt-4-turbo-preview',
+      model,
       usage: completion.usage,
-      confidence: 0.90,
+      confidence: model === 'gpt-4o-mini' ? 0.85 : 0.90,
       timestamp: new Date().toISOString(),
     };
   }
