@@ -6,9 +6,11 @@ on:
   pull_request:
     branches: [ main, develop ]
 
-env:
-  NODE_VERSION: '18'
-  PYTHON_VERSION: '3.9'
+  env:
+    NODE_VERSION: '18'
+    PYTHON_VERSION: '3.9'
+    SUPABASE_PROJECT_ID: ${{ secrets.SUPABASE_PROJECT_ID }}
+    SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
 
 jobs:
   # Code Quality & Testing
@@ -106,7 +108,15 @@ jobs:
     steps:
       - name: 📦 Checkout Code
         uses: actions/checkout@v4
-        
+
+      - name: 🔧 Install Supabase CLI
+        run: npm install -g supabase
+
+      - name: 🐘 Run Supabase migrations
+        run: supabase db push --project-ref ${{ env.SUPABASE_PROJECT_ID }}
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ env.SUPABASE_ACCESS_TOKEN }}
+
       - name: 🎭 Deploy to Vercel Staging
         uses: amondnet/vercel-action@v25
         with:
@@ -126,7 +136,15 @@ jobs:
     steps:
       - name: 📦 Checkout Code
         uses: actions/checkout@v4
-        
+
+      - name: 🔧 Install Supabase CLI
+        run: npm install -g supabase
+
+      - name: 🐘 Run Supabase migrations
+        run: supabase db push --project-ref ${{ env.SUPABASE_PROJECT_ID }}
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ env.SUPABASE_ACCESS_TOKEN }}
+
       - name: 🌟 Deploy to Vercel Production
         uses: amondnet/vercel-action@v25
         with:
