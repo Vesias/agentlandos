@@ -1,0 +1,48 @@
+<svg width="400" height="120" viewBox="0 0 400 120" xmlns="http://www.w3.org/2000/svg">
+  <!-- Saarland Blue Background -->
+  <rect width="400" height="120" fill="#003399" rx="12"/>
+  
+  <!-- Main Logo Element - Hexagonal AI Symbol -->
+  <g transform="translate(20, 20)">
+    <!-- Hexagon with AI neural network pattern -->
+    <polygon points="40,15 55,25 55,45 40,55 25,45 25,25" 
+             fill="#009FE3" 
+             stroke="#E6E6EB" 
+             stroke-width="2"/>
+    
+    <!-- Neural network nodes -->
+    <circle cx="32" cy="22" r="2" fill="#FDB913"/>
+    <circle cx="40" cy="30" r="3" fill="#43B049"/>
+    <circle cx="48" cy="22" r="2" fill="#FDB913"/>
+    <circle cx="32" cy="38" r="2" fill="#FDB913"/>
+    <circle cx="48" cy="38" r="2" fill="#FDB913"/>
+    
+    <!-- Connecting lines -->
+    <line x1="32" y1="22" x2="40" y2="30" stroke="#E6E6EB" stroke-width="1.5"/>
+    <line x1="40" y1="30" x2="48" y2="22" stroke="#E6E6EB" stroke-width="1.5"/>
+    <line x1="40" y1="30" x2="32" y2="38" stroke="#E6E6EB" stroke-width="1.5"/>
+    <line x1="40" y1="30" x2="48" y2="38" stroke="#E6E6EB" stroke-width="1.5"/>
+  </g>
+  
+  <!-- Brand Text -->
+  <text x="90" y="45" font-family="Inter, sans-serif" font-size="24" font-weight="800" fill="#E6E6EB">
+    AGENTLAND
+  </text>
+  <text x="90" y="75" font-family="Inter, sans-serif" font-size="16" font-weight="600" fill="#009FE3">
+    SAARLAND
+  </text>
+  
+  <!-- Tagline -->
+  <text x="90" y="95" font-family="Inter, sans-serif" font-size="12" font-weight="400" fill="#929497">
+    Souveräne KI-Technologie aus dem Saarland
+  </text>
+  
+  <!-- Decorative elements -->
+  <rect x="350" y="20" width="30" height="2" fill="#009FE3" rx="1"/>
+  <rect x="350" y="30" width="25" height="2" fill="#FDB913" rx="1"/>
+  <rect x="350" y="40" width="20" height="2" fill="#43B049" rx="1"/>
+  
+  <!-- Regional marker -->
+  <circle cx="365" cy="90" r="8" fill="#E31E2D"/>
+  <text x="361" y="95" font-family="Inter, sans-serif" font-size="10" font-weight="bold" fill="white">SL</text>
+</svg>

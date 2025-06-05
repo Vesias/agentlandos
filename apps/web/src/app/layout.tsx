@@ -60,7 +60,7 @@ export const metadata: Metadata = {
     siteName: 'AGENTLAND.SAARLAND',
     images: [
       {
-        url: '/og-image.jpg',
+        url: '/og-image.svg',
         width: 1200,
         height: 630,
         alt: 'AGENTLAND.SAARLAND - KI für das Saarland',

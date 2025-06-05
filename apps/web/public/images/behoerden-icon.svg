@@ -1,0 +1,37 @@
+<svg width="120" height="120" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background circle -->
+  <circle cx="60" cy="60" r="55" fill="#003399" stroke="#009FE3" stroke-width="3"/>
+  
+  <!-- Building icon -->
+  <g transform="translate(60, 60)">
+    <!-- Main building -->
+    <rect x="-25" y="-15" width="50" height="30" fill="#E6E6EB" rx="2"/>
+    
+    <!-- Building details -->
+    <rect x="-20" y="-10" width="8" height="8" fill="#009FE3"/>
+    <rect x="-8" y="-10" width="8" height="8" fill="#009FE3"/>
+    <rect x="4" y="-10" width="8" height="8" fill="#009FE3"/>
+    <rect x="16" y="-10" width="8" height="8" fill="#009FE3"/>
+    
+    <rect x="-20" y="0" width="8" height="8" fill="#009FE3"/>
+    <rect x="-8" y="0" width="8" height="8" fill="#009FE3"/>
+    <rect x="4" y="0" width="8" height="8" fill="#009FE3"/>
+    <rect x="16" y="0" width="8" height="8" fill="#009FE3"/>
+    
+    <!-- Entrance -->
+    <rect x="-6" y="8" width="12" height="12" fill="#FDB913"/>
+    <rect x="-4" y="10" width="8" height="8" fill="#003399"/>
+    
+    <!-- Flag -->
+    <line x1="0" y1="-15" x2="0" y2="-35" stroke="#E31E2D" stroke-width="2"/>
+    <rect x="0" y="-35" width="15" height="8" fill="#E31E2D"/>
+    
+    <!-- Steps -->
+    <rect x="-30" y="15" width="60" height="3" fill="#929497"/>
+    <rect x="-32" y="18" width="64" height="3" fill="#929497"/>
+  </g>
+  
+  <!-- Badge -->
+  <circle cx="90" cy="30" r="12" fill="#43B049"/>
+  <text x="86" y="35" font-family="Inter, sans-serif" font-size="12" font-weight="bold" fill="white">25+</text>
+</svg>

@@ -88,10 +88,11 @@ export default function MainNavigation() {
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
             <Link href="/" className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-saarland-blue to-innovation-cyan rounded-lg flex items-center justify-center">
-                <Globe className="w-6 h-6 text-white" />
-              </div>
-              <span className="text-xl font-bold text-gray-900">AGENTLAND.SAARLAND</span>
+              <img 
+                src="/images/logo-agentland-saarland.svg" 
+                alt="AGENTLAND.SAARLAND Logo" 
+                className="h-10 w-auto"
+              />
             </Link>
 
             {/* Navigation Items */}
@@ -190,10 +191,11 @@ export default function MainNavigation() {
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
             <Link href="/" className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-gradient-to-br from-saarland-blue to-innovation-cyan rounded-lg flex items-center justify-center">
-                <Globe className="w-5 h-5 text-white" />
-              </div>
-              <span className="text-lg font-bold text-gray-900">AGENTLAND</span>
+              <img 
+                src="/images/logo-agentland-saarland.svg" 
+                alt="AGENTLAND.SAARLAND" 
+                className="h-8 w-auto"
+              />
             </Link>
 
             {/* Mobile Menu Button */}
