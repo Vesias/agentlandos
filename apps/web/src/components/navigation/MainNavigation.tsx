@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { 
   Menu, X, Home, MessageSquare, Sparkles, 
   Building2, GraduationCap, Shield, Music, 
-  Globe, ChevronDown, MapPin, Newspaper
+  Globe, ChevronDown, MapPin, Newspaper, Palette
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import LiveUserCounter from '@/components/ui/live-user-counter'
@@ -15,6 +15,7 @@ import LiveUserCounter from '@/components/ui/live-user-counter'
 const navigationItems = [
   { name: 'Home', href: '/', icon: Home },
   { name: 'Chat', href: '/chat', icon: MessageSquare },
+  { name: 'Canvas', href: '/canvas', icon: Palette },
   { name: 'Services', href: '/services', icon: MapPin },
   {
     name: 'Kategorien',
