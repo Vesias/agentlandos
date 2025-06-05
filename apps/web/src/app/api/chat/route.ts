@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { enhancedChatService } from '@/lib/ai/enhanced-chat-service'
+import { enhancedChatService } from '@/services/ai/enhanced-chat-service'
 
 // Alte statische Daten entfernt - wird jetzt dynamisch via getCurrentSaarlandData() geladen
 
