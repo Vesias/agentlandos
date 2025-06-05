@@ -43,7 +43,8 @@ export default function ChatPage() {
     setIsLoading(true)
 
     try {
-      const response = await fetch('/api/chat', {
+      // Use improved chat API that's faster and more reliable
+      const response = await fetch('/api/chat-improved', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -84,15 +85,30 @@ export default function ChatPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
-      {/* Header */}
-      <div className="bg-gradient-to-r from-[#003399] to-[#009FE3] py-8">
-        <div className="max-w-4xl mx-auto px-4 text-center text-white">
-          <div className="w-16 h-16 bg-[#FDB913] rounded-2xl flex items-center justify-center mx-auto mb-4">
-            <Bot className="w-10 h-10 text-[#003399]" />
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-green-50">
+      {/* Enhanced Header */}
+      <div className="bg-gradient-to-r from-[#003399] via-[#0066CC] to-[#009FE3] py-12 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-900/20 to-transparent"></div>
+        <div className="max-w-4xl mx-auto px-4 text-center text-white relative z-10">
+          <div className="w-20 h-20 bg-gradient-to-br from-[#FDB913] to-[#FFD700] rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-2xl transform hover:scale-105 transition-transform">
+            <Bot className="w-12 h-12 text-[#003399]" />
           </div>
-          <h1 className="text-4xl font-bold mb-2 font-quantum">SAAR-GPT</h1>
-          <p className="text-xl opacity-90">Ihr KI-Assistent für das Saarland</p>
+          <h1 className="text-5xl font-bold mb-3 font-quantum bg-gradient-to-r from-white to-blue-100 bg-clip-text text-transparent">SAAR-GPT</h1>
+          <p className="text-xl opacity-90 mb-4">Ihr intelligenter KI-Assistent für das Saarland</p>
+          <div className="flex justify-center space-x-6 text-sm">
+            <div className="flex items-center space-x-2">
+              <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
+              <span>Live-Daten</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <div className="w-3 h-3 bg-yellow-400 rounded-full"></div>
+              <span>Echtzeit-Wetter</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <div className="w-3 h-3 bg-blue-400 rounded-full"></div>
+              <span>Lokale Services</span>
+            </div>
+          </div>
         </div>
       </div>
 

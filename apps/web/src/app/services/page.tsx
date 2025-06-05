@@ -38,9 +38,37 @@ export default function ServicesPage() {
       features: ["Studienberatung", "Weiterbildung", "Stipendien", "DFKI-Programme"]
     },
     {
+      title: "Nachhilfe & Lernhilfe",
+      description: "Qualifizierte Nachhilfe für alle Fächer und Klassenstufen im Saarland",
+      icon: Crown,
+      color: "from-purple-600 to-purple-400",
+      href: "/services/tutoring",
+      features: ["Mathematik & Physik", "Sprachen", "Online & Vor Ort", "Alle Klassenstufen"],
+      isNew: true
+    },
+    {
+      title: "Vereine & Gemeinschaft",
+      description: "Entdecken Sie die vielfältige Vereinslandschaft des Saarlandes",
+      icon: Users,
+      color: "from-teal-600 to-teal-400",
+      href: "/services/clubs",
+      features: ["Sportvereine", "Kulturvereine", "Freizeitgruppen", "Community-Events"],
+      isNew: true
+    },
+    {
+      title: "SAARFUSSBALL",
+      description: "Alles über Fußball im Saarland - von Profi bis Amateur",
+      icon: Zap,
+      color: "from-green-600 to-green-400",
+      href: "/services/football",
+      features: ["Live-Ergebnisse", "1. FC Saarbrücken", "SV Elversberg", "Verbandsliga"],
+      isNew: true,
+      isHighlight: true
+    },
+    {
       title: "Behörden & Verwaltung",
       description: "Alle Ämter von A-Z, Express-Termine, Online-Services, Behördenfinder",
-      icon: Users,
+      icon: Building2,
       color: "from-[#003399] to-[#0052CC]",
       href: "/behoerden",
       features: ["Behördenfinder A-Z", "Express-Termine", "Online-Anträge", "Alle Kontaktdaten"]

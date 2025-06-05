@@ -14,7 +14,8 @@ import LiveUserCounter from '@/components/ui/live-user-counter'
 
 const navigationItems = [
   { name: 'Home', href: '/', icon: Home },
-  { name: 'Chat', href: '/chat', icon: MessageSquare },
+  { name: 'Chat Free', href: '/chat/free', icon: MessageSquare, badge: 'UNLIMITED' },
+  { name: 'Chat Pro', href: '/chat', icon: MessageSquare },
   { name: 'Canvas', href: '/canvas', icon: Palette },
   { name: 'Services', href: '/services', icon: MapPin },
   {
@@ -168,7 +169,7 @@ export default function MainNavigation() {
                   ) : (
                     <Link
                       href={item.href}
-                      className={`flex items-center space-x-2 transition-colors ${
+                      className={`flex items-center space-x-2 transition-colors relative ${
                         pathname === item.href
                           ? 'text-saarland-blue font-semibold'
                           : 'text-gray-700 hover:text-saarland-blue'
@@ -176,6 +177,11 @@ export default function MainNavigation() {
                     >
                       <item.icon className="w-5 h-5" />
                       <span>{item.name}</span>
+                      {item.badge && (
+                        <span className="bg-gradient-to-r from-green-500 to-green-600 text-white text-xs px-2 py-1 rounded-full font-bold animate-pulse">
+                          {item.badge}
+                        </span>
+                      )}
                     </Link>
                   )}
                 </div>
@@ -294,7 +300,7 @@ export default function MainNavigation() {
                       <Link
                         href={item.href}
                         onClick={() => setMobileMenuOpen(false)}
-                        className={`flex items-center space-x-3 p-3 rounded-lg transition-colors ${
+                        className={`flex items-center space-x-3 p-3 rounded-lg transition-colors relative ${
                           pathname === item.href
                             ? 'bg-saarland-blue/10 text-saarland-blue font-semibold'
                             : 'text-gray-700 hover:bg-gray-50'
@@ -302,6 +308,11 @@ export default function MainNavigation() {
                       >
                         <item.icon className="w-5 h-5" />
                         <span>{item.name}</span>
+                        {item.badge && (
+                          <span className="bg-gradient-to-r from-green-500 to-green-600 text-white text-xs px-2 py-1 rounded-full font-bold animate-pulse ml-auto">
+                            {item.badge}
+                          </span>
+                        )}
                       </Link>
                     )}
                   </div>
