@@ -1,6 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
+import Stripe from 'stripe'
 
 export const runtime = 'edge'
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || 'sk_test_51PzhbGLYCLJOCQYhDummyTestKey123', {
+  apiVersion: '2024-12-18.acacia'
+})
 
 export async function POST(request: NextRequest) {
   try {
@@ -41,17 +46,74 @@ export async function POST(request: NextRequest) {
       }, { status: 400 })
     }
 
-    // Mock Stripe subscription
-    const subscriptionId = `sub_${Date.now()}_agentland`
-    
+    // Create or retrieve customer
+    let customer
+    try {
+      const customers = await stripe.customers.list({
+        email: email,
+        limit: 1
+      })
+      
+      if (customers.data.length > 0) {
+        customer = customers.data[0]
+      } else {
+        customer = await stripe.customers.create({
+          email: email,
+          metadata: {
+            userId: userId,
+            platform: 'agentland-saarland'
+          }
+        })
+      }
+    } catch (stripeError) {
+      console.error('Stripe customer error:', stripeError)
+      // Fallback to mock response if Stripe is not properly configured
+      return NextResponse.json({
+        success: true,
+        subscription: {
+          id: `sub_test_${Date.now()}`,
+          plan: selectedPlan,
+          status: 'test_mode',
+          amount: selectedPlan.price,
+          currency: selectedPlan.currency
+        },
+        message: 'Test mode - Stripe not configured'
+      })
+    }
+
+    // Create price if needed (normally done in dashboard)
+    const price = await stripe.prices.create({
+      unit_amount: Math.round(selectedPlan.price * 100), // €10.00 -> 1000 cents
+      currency: selectedPlan.currency.toLowerCase(),
+      recurring: { interval: 'month' },
+      product_data: {
+        name: selectedPlan.name,
+        description: `Premium ${selectedPlan.name} subscription for AGENTLAND.SAARLAND`
+      }
+    })
+
+    // Create subscription
+    const subscription = await stripe.subscriptions.create({
+      customer: customer.id,
+      items: [{ price: price.id }],
+      payment_behavior: 'default_incomplete',
+      payment_settings: { save_default_payment_method: 'on_subscription' },
+      expand: ['latest_invoice.payment_intent'],
+      metadata: {
+        plan: plan,
+        platform: 'agentland-saarland'
+      }
+    })
+
     return NextResponse.json({
       success: true,
       subscription: {
-        id: subscriptionId,
+        id: subscription.id,
         plan: selectedPlan,
-        status: 'requires_payment',
+        status: subscription.status,
         amount: selectedPlan.price,
-        currency: selectedPlan.currency
+        currency: selectedPlan.currency,
+        clientSecret: (subscription.latest_invoice as Stripe.Invoice)?.payment_intent?.client_secret
       },
       nextSteps: {
         message: 'Complete payment to activate premium features',

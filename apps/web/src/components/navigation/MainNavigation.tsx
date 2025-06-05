@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { 
   Menu, X, Home, MessageSquare, Sparkles, 
   Building2, GraduationCap, Shield, Music, 
-  Globe, ChevronDown, MapPin
+  Globe, ChevronDown, MapPin, Newspaper
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import LiveUserCounter from '@/components/ui/live-user-counter'
@@ -96,6 +96,15 @@ export default function MainNavigation() {
             {/* Navigation Items */}
             <div className="flex items-center space-x-8">
               <LiveUserCounter />
+              
+              {/* SAARBRETT Button - Blue Background, White Text */}
+              <Link 
+                href="/saarbrett"
+                className="bg-saarland-blue text-white px-4 py-2 rounded-lg font-semibold hover:bg-saarland-blue/90 transition-colors flex items-center space-x-2"
+              >
+                <Newspaper className="w-4 h-4" />
+                <span>SAARBRETT</span>
+              </Link>
               {navigationItems.map((item) => (
                 <div key={item.name} className="relative">
                   {item.submenu ? (
@@ -223,6 +232,16 @@ export default function MainNavigation() {
               className="fixed top-16 right-0 bottom-0 w-4/5 max-w-sm bg-white shadow-xl z-40 overflow-y-auto mobile-scroll safe-bottom"
             >
               <div className="p-6 space-y-4">
+                {/* SAARBRETT Button for Mobile */}
+                <Link 
+                  href="/saarbrett"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="bg-saarland-blue text-white px-4 py-3 rounded-lg font-semibold hover:bg-saarland-blue/90 transition-colors flex items-center space-x-2 w-full"
+                >
+                  <Newspaper className="w-5 h-5" />
+                  <span>SAARBRETT</span>
+                </Link>
+                
                 {navigationItems.map((item) => (
                   <div key={item.name}>
                     {item.submenu ? (
