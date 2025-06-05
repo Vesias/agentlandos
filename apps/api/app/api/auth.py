@@ -4,14 +4,19 @@ Authentifizierungs-Endpoints
 
 from datetime import datetime, timedelta
 from typing import Annotated
+from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from jose import JWTError, jwt
 from passlib.context import CryptContext
 from pydantic import BaseModel, EmailStr
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import settings
+from app.db.database import get_async_session
+from app.models.user import User
 
 router = APIRouter()
 
@@ -47,6 +52,7 @@ class TokenData(BaseModel):
     Token Payload Schema
     """
     username: str | None = None
+    user_id: str | None = None
 
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
@@ -77,7 +83,10 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
     return encoded_jwt
 
 
-async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
+async def get_current_user(
+    token: Annotated[str, Depends(oauth2_scheme)],
+    session: AsyncSession = Depends(get_async_session)
+):
     """
     Dependency zum Abrufen des aktuellen Benutzers aus dem Token
     """
@@ -89,13 +98,33 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
     try:
         payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
         username: str = payload.get("sub")
+        user_id: str = payload.get("user_id")
         if username is None:
             raise credentials_exception
-        token_data = TokenData(username=username)
+        
+        # Load user from database for stable user_id
+        if user_id:
+            result = await session.execute(
+                select(User).where(User.id == UUID(user_id))
+            )
+            user = result.scalar_one_or_none()
+            if user and user.username == username:
+                return TokenData(username=username, user_id=str(user.id))
+        
+        # Fallback: Load by username and get stable ID
+        result = await session.execute(
+            select(User).where(User.username == username)
+        )
+        user = result.scalar_one_or_none()
+        if user:
+            return TokenData(username=username, user_id=str(user.id))
+            
+        # If user doesn't exist in DB, return with legacy approach for now
+        # TODO: Create user record for migration from username-based auth
+        return TokenData(username=username, user_id=None)
+        
     except JWTError:
         raise credentials_exception
-    # TODO: Benutzer aus Datenbank laden
-    return token_data
 
 
 @router.post("/register", response_model=dict)

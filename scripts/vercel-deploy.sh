@@ -1,11 +1,43 @@
 #!/bin/bash
 
+set -e  # Exit on any error
+
 echo "🚀 AGENTLAND.SAARLAND DEPLOYMENT SCRIPT"
 echo "========================================="
 echo ""
 
+# Function to validate environment variables
+validate_env_var() {
+    local var_name="$1"
+    local var_value="${!var_name}"
+    
+    if [ -z "${var_value}" ]; then
+        echo "❌ ERROR: ${var_name} is not set or empty"
+        echo "   Please set this environment variable before deployment"
+        return 1
+    else
+        echo "✅ ${var_name} is set"
+        return 0
+    fi
+}
+
+# Validate required environment variables
+echo "🔍 Validating environment variables..."
+validate_env_var "DEEPSEEK_API_KEY" || exit 1
+
+# Optional environment variables with warnings
+if [ -z "${NEXT_PUBLIC_SUPABASE_URL}" ]; then
+    echo "⚠️  WARNING: NEXT_PUBLIC_SUPABASE_URL not set - database features may not work"
+fi
+
+if [ -z "${NEXT_PUBLIC_SUPABASE_ANON_KEY}" ]; then
+    echo "⚠️  WARNING: NEXT_PUBLIC_SUPABASE_ANON_KEY not set - authentication may not work"
+fi
+
+echo ""
+
 # Set project directory
-cd /Users/deepsleeping/agentlandos/agentland-saarland
+cd /Users/deepsleeping/agentlandos/apps/web
 
 echo "📁 Working Directory: $(pwd)"
 echo "🌐 Target Domain: agentland.saarland"
@@ -27,7 +59,7 @@ echo "   https://agentland.saarland"
 echo ""
 echo "🧪 Test endpoints:"
 echo "   Health: https://agentland.saarland/api/health"
-echo "   SAARTASKS: https://agentland.saarland/api/saartasks"
-echo "   SAARAG: https://agentland.saarland/api/saarag"
+echo "   Chat: https://agentland.saarland/api/chat"
+echo "   Premium: https://agentland.saarland/api/premium/saarland"
 echo ""
 echo "🏛️ Das Saarland ist jetzt online! 🤖"

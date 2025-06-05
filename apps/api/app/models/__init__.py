@@ -1,6 +1,7 @@
 from .analytics import UserActivity, PageView, AgentInteraction
 from .feedback import Feedback
 from .agent import Agent
+from .user import User
 
 __all__ = [
     'UserActivity',
@@ -8,4 +9,5 @@ __all__ = [
     'AgentInteraction',
     'Feedback',
     'Agent',
+    'User',
 ]
