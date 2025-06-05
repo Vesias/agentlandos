@@ -43,13 +43,13 @@ export default function ChatPage() {
     setIsLoading(true)
 
     try {
-      const response = await fetch('/api/ai/enhanced', {
+      const response = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          prompt: input.trim(),
-          mode: 'chat',
-          category: 'general'
+          message: input.trim(),
+          language: 'de',
+          context: { category: 'general' }
         })
       })
 
@@ -57,7 +57,8 @@ export default function ChatPage() {
       
       if (response.ok) {
         const data = await response.json()
-        aiResponse = data.response || aiResponse
+        console.log('Chat API Response:', data) // Debug log
+        aiResponse = data.message || data.response || aiResponse
       }
 
       const assistantMessage: Message = {
