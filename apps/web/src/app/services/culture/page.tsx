@@ -143,7 +143,7 @@ export default function CulturePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-50">
+    <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
       <section className="relative py-20 px-4 sm:px-6 lg:px-8 overflow-hidden">
         <motion.div 
@@ -162,7 +162,7 @@ export default function CulturePage() {
           {/* Culture Categories */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-12">
             <Card className="p-6 text-center hover:shadow-lg transition-shadow cursor-pointer">
-              <Music className="w-8 h-8 mx-auto mb-3 text-purple-600" />
+              <Music className="w-8 h-8 mx-auto mb-3" style={{ color: '#003399' }} />
               <h3 className="font-semibold text-gray-900">Musik</h3>
               <p className="text-sm text-gray-600 mt-1">50+ Konzerte/Monat</p>
             </Card>
@@ -205,8 +205,8 @@ export default function CulturePage() {
                   <div className="p-6">
                     <div className="flex items-start justify-between mb-4">
                       <div className="flex items-center">
-                        <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mr-4">
-                          <venue.icon className="w-6 h-6 text-purple-600" />
+                        <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mr-4">
+                          <venue.icon className="w-6 h-6" style={{ color: '#003399' }} />
                         </div>
                         <div>
                           <h3 className="text-xl font-semibold text-gray-900">{venue.name}</h3>
@@ -224,7 +224,8 @@ export default function CulturePage() {
                         {venue.highlights.map((highlight) => (
                           <span 
                             key={highlight}
-                            className="px-2 py-1 bg-purple-100 text-purple-700 text-xs rounded-full"
+                            className="px-2 py-1 bg-blue-100 text-xs rounded-full"
+                            style={{ color: '#003399' }}
                           >
                             {highlight}
                           </span>
@@ -283,7 +284,7 @@ export default function CulturePage() {
                 <Card className="p-6 hover:shadow-lg transition-shadow">
                   <div className="mb-4">
                     <h3 className="text-lg font-semibold text-gray-900">{festival.name}</h3>
-                    <p className="text-sm text-purple-600 font-medium">{festival.period}</p>
+                    <p className="text-sm font-medium" style={{ color: '#009FE3' }}>{festival.period}</p>
                     <p className="text-xs text-gray-500">{festival.type}</p>
                   </div>
                   
@@ -300,7 +301,7 @@ export default function CulturePage() {
                     </div>
                   </div>
                   
-                  <Button className="w-full mt-4 bg-purple-600 hover:bg-purple-700">
+                  <Button className="w-full mt-4 text-white" style={{ backgroundColor: '#003399' }}>
                     Programm ansehen
                   </Button>
                 </Card>
@@ -329,7 +330,7 @@ export default function CulturePage() {
                       <h3 className="text-xl font-semibold text-gray-900">{institution.name}</h3>
                       <p className="text-sm text-gray-500">{institution.focus}</p>
                     </div>
-                    <span className="text-sm text-purple-600 font-medium">
+                    <span className="text-sm font-medium" style={{ color: '#009FE3' }}>
                       {institution.visitors}
                     </span>
                   </div>
@@ -339,7 +340,7 @@ export default function CulturePage() {
                     <ul className="space-y-1">
                       {institution.collections.map((collection, idx) => (
                         <li key={idx} className="text-sm text-gray-600 flex items-start">
-                          <BookOpen className="w-4 h-4 text-purple-600 mr-2 mt-0.5" />
+                          <BookOpen className="w-4 h-4 mr-2 mt-0.5" style={{ color: '#003399' }} />
                           {collection}
                         </li>
                       ))}
@@ -347,7 +348,7 @@ export default function CulturePage() {
                   </div>
                   
                   <div className="flex gap-2">
-                    <Button size="sm" className="bg-purple-600 hover:bg-purple-700">
+                    <Button size="sm" className="text-white" style={{ backgroundColor: '#003399' }}>
                       Besuchen
                     </Button>
                     <Button size="sm" variant="outline">
@@ -362,7 +363,7 @@ export default function CulturePage() {
       </section>
 
       {/* Cultural Calendar */}
-      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-purple-900 text-white">
+      <section className="py-16 px-4 sm:px-6 lg:px-8 text-white" style={{ backgroundColor: '#003399' }}>
         <div className="max-w-7xl mx-auto">
           <h2 className="text-3xl font-bold mb-8 text-center">Diese Woche im Saarland</h2>
           
@@ -413,7 +414,8 @@ export default function CulturePage() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button 
               size="lg" 
-              className="bg-purple-600 hover:bg-purple-700"
+              className="text-white"
+              style={{ backgroundColor: '#009FE3' }}
               onClick={() => router.push('/chat')}
             >
               <Mic className="w-5 h-5 mr-2" />

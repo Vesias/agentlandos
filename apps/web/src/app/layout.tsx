@@ -1,22 +1,27 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
-import MainNavigation from '@/components/navigation/MainNavigation'
-import MobileFeatures from '@/components/MobileFeatures'
-import MobileTestSuite from '@/components/MobileTestSuite'
+import SimpleNavigation from '@/components/SimpleNavigation'
+import { AuthProvider } from '@/contexts/AuthContext'
 
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'AGENT_LAND_SAARLAND - Souveräne KI für das Saarland',
+  metadataBase: new URL('https://agentland.saarland'),
+  title: 'AGENTLAND.SAARLAND - Souveräne KI für das Saarland',
   description: 'KI-Plattform mit regionaler Expertise für Bürger, Unternehmen und Verwaltung im Saarland',
   keywords: 'Saarland, KI, Künstliche Intelligenz, Tourismus, Verwaltung, Wirtschaft',
-  authors: [{ name: 'AGENT_LAND_SAARLAND Team' }],
+  authors: [{ name: 'AGENTLAND.SAARLAND Team' }],
+  icons: {
+    icon: '/favicon.svg',
+    shortcut: '/favicon.ico',
+  },
   viewport: {
     width: 'device-width',
     initialScale: 1,
     maximumScale: 5,
     userScalable: true,
+    viewportFit: 'cover',
   },
   themeColor: [
     { media: '(prefers-color-scheme: light)', color: '#003399' },
@@ -47,7 +52,7 @@ export const metadata: Metadata = {
   },
   manifest: '/manifest.json',
   openGraph: {
-    title: 'AGENT_LAND_SAARLAND',
+    title: 'AGENTLAND.SAARLAND',
     description: 'Souveräne KI-Technologie aus dem Saarland – für ein intelligentes Morgen',
     type: 'website',
     locale: 'de_DE',
@@ -55,7 +60,7 @@ export const metadata: Metadata = {
     siteName: 'AGENTLAND.SAARLAND',
     images: [
       {
-        url: '/og-image.jpg',
+        url: '/og-image.svg',
         width: 1200,
         height: 630,
         alt: 'AGENTLAND.SAARLAND - KI für das Saarland',
@@ -64,7 +69,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'AGENT_LAND_SAARLAND',
+    title: 'AGENTLAND.SAARLAND',
     description: 'Souveräne KI-Technologie aus dem Saarland – für ein intelligentes Morgen',
     images: ['/og-image.jpg'],
   },
@@ -100,13 +105,13 @@ export default function RootLayout({
         <meta name="msapplication-TileColor" content="#003399" />
         <meta name="msapplication-tap-highlight" content="no" />
       </head>
-      <body className={`${inter.className} bg-gray-50 safe-area`}>
-        <MainNavigation />
-        <main className="min-h-screen-safe">
-          {children}
-        </main>
-        <MobileFeatures />
-        <MobileTestSuite />
+      <body className={`${inter.className} bg-gray-50`}>
+        <AuthProvider>
+          <SimpleNavigation />
+          <main>
+            {children}
+          </main>
+        </AuthProvider>
       </body>
     </html>
   )

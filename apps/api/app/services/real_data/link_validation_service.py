@@ -598,7 +598,9 @@ async def main():
         print("🔍 Starting comprehensive link validation for AGENTLAND.SAARLAND...")
         
         # Extract links from codebase
-        base_path = "/Users/deepsleeping/agentlandos"
+        base_path = Path(
+            os.getenv("AGENTLAND_ROOT", Path(__file__).resolve().parents[5])
+        )
         print(f"📂 Extracting links from {base_path}...")
         
         links = validator.extract_links_from_codebase(base_path)

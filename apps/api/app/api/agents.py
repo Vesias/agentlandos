@@ -3,11 +3,17 @@ KI-Agenten API Endpoints
 """
 
 from typing import List
-from uuid import UUID
+from uuid import UUID, uuid4, uuid5, NAMESPACE_DNS
 
 from fastapi import APIRouter, HTTPException, Depends
 from pydantic import BaseModel
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.db.database import get_async_session
+from app.models.agent import Agent as AgentModel
+from app.models.feedback import Feedback
+from app.api.auth import get_current_user, TokenData
 from app.agents.navigator_agent import NavigatorAgent
 from app.agents.base_agent import AgentContext, AgentResponse
 
@@ -85,11 +91,27 @@ async def list_agents():
 
 
 @router.get("/{agent_id}", response_model=AgentInfo)
-async def get_agent(agent_id: str):
+async def get_agent(
+    agent_id: str,
+    session: AsyncSession = Depends(get_async_session),
+):
     """
     Gibt Informationen über einen spezifischen Agenten zurück
     """
-    # TODO: Aus Datenbank laden
+    result = await session.execute(
+        select(AgentModel).where(AgentModel.agent_id == agent_id)
+    )
+    agent_row = result.scalar_one_or_none()
+
+    if agent_row:
+        return AgentInfo(
+            agent_id=agent_row.agent_id,
+            name=agent_row.name,
+            description=agent_row.description,
+            capabilities=agent_row.capabilities,
+            is_active=agent_row.is_active,
+        )
+
     if agent_id == "navigator":
         return AgentInfo(
             agent_id="navigator",
@@ -98,19 +120,23 @@ async def get_agent(agent_id: str):
             capabilities=navigator.capabilities,
             is_active=True,
         )
-    else:
-        raise HTTPException(status_code=404, detail="Agent nicht gefunden")
+
+    raise HTTPException(status_code=404, detail="Agent nicht gefunden")
 
 
 @router.post("/chat", response_model=AgentResponse)
-async def chat_with_agent(request: ChatRequest):
+async def chat_with_agent(
+    request: ChatRequest,
+    current_user: TokenData = Depends(get_current_user),
+):
     """
     Sendet eine Nachricht an den KI-Agenten
     """
     # Kontext erstellen
+    user_uuid = uuid5(NAMESPACE_DNS, current_user.username)
     context = AgentContext(
-        user_id=UUID("00000000-0000-0000-0000-000000000000"),  # TODO: Aus Auth
-        session_id=request.session_id or UUID("00000000-0000-0000-0000-000000000001"),
+        user_id=user_uuid,
+        session_id=request.session_id or uuid4(),
         language=request.language,
         location=request.location,
     )
@@ -132,12 +158,23 @@ async def submit_feedback(
     message_id: UUID,
     rating: int,
     comment: str | None = None,
+    session: AsyncSession = Depends(get_async_session),
 ):
     """
     Feedback für eine Agent-Interaktion einreichen
     """
-    # TODO: In Datenbank speichern
+    feedback = Feedback(
+        agent_id=agent_id,
+        message_id=message_id,
+        rating=rating,
+        comment=comment,
+    )
+    session.add(feedback)
+    await session.commit()
+    await session.refresh(feedback)
+
     return {
         "status": "success",
         "message": "Vielen Dank für Ihr Feedback!",
+        "feedback_id": str(feedback.id),
     }

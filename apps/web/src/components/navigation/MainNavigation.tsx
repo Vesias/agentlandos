@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { 
   Menu, X, Home, MessageSquare, Sparkles, 
   Building2, GraduationCap, Shield, Music, 
-  Globe, ChevronDown, MapPin
+  Globe, ChevronDown, MapPin, Newspaper, Palette
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import LiveUserCounter from '@/components/ui/live-user-counter'
@@ -15,6 +15,7 @@ import LiveUserCounter from '@/components/ui/live-user-counter'
 const navigationItems = [
   { name: 'Home', href: '/', icon: Home },
   { name: 'Chat', href: '/chat', icon: MessageSquare },
+  { name: 'Canvas', href: '/canvas', icon: Palette },
   { name: 'Services', href: '/services', icon: MapPin },
   {
     name: 'Kategorien',
@@ -87,15 +88,25 @@ export default function MainNavigation() {
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
             <Link href="/" className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-saarland-blue to-innovation-cyan rounded-lg flex items-center justify-center">
-                <Globe className="w-6 h-6 text-white" />
-              </div>
-              <span className="text-xl font-bold text-gray-900">AGENTLAND.SAARLAND</span>
+              <img 
+                src="/images/logo-agentland-saarland.svg" 
+                alt="AGENTLAND.SAARLAND Logo" 
+                className="h-10 w-auto"
+              />
             </Link>
 
             {/* Navigation Items */}
             <div className="flex items-center space-x-8">
               <LiveUserCounter />
+              
+              {/* SAARBRETT Button - Blue Background, White Text */}
+              <Link 
+                href="/saarbrett"
+                className="bg-saarland-blue text-white px-4 py-2 rounded-lg font-semibold hover:bg-saarland-blue/90 transition-colors flex items-center space-x-2"
+              >
+                <Newspaper className="w-4 h-4" />
+                <span>SAARBRETT</span>
+              </Link>
               {navigationItems.map((item) => (
                 <div key={item.name} className="relative">
                   {item.submenu ? (
@@ -180,10 +191,11 @@ export default function MainNavigation() {
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
             <Link href="/" className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-gradient-to-br from-saarland-blue to-innovation-cyan rounded-lg flex items-center justify-center">
-                <Globe className="w-5 h-5 text-white" />
-              </div>
-              <span className="text-lg font-bold text-gray-900">AGENTLAND</span>
+              <img 
+                src="/images/logo-agentland-saarland.svg" 
+                alt="AGENTLAND.SAARLAND" 
+                className="h-8 w-auto"
+              />
             </Link>
 
             {/* Mobile Menu Button */}
@@ -223,6 +235,16 @@ export default function MainNavigation() {
               className="fixed top-16 right-0 bottom-0 w-4/5 max-w-sm bg-white shadow-xl z-40 overflow-y-auto mobile-scroll safe-bottom"
             >
               <div className="p-6 space-y-4">
+                {/* SAARBRETT Button for Mobile */}
+                <Link 
+                  href="/saarbrett"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="bg-saarland-blue text-white px-4 py-3 rounded-lg font-semibold hover:bg-saarland-blue/90 transition-colors flex items-center space-x-2 w-full"
+                >
+                  <Newspaper className="w-5 h-5" />
+                  <span>SAARBRETT</span>
+                </Link>
+                
                 {navigationItems.map((item) => (
                   <div key={item.name}>
                     {item.submenu ? (

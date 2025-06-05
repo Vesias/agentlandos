@@ -1,9 +1,2 @@
-requests==2.32.2
-httpx==0.25.0
-pydantic==2.5.0
-typing-extensions==4.8.0
-certifi==2024.7.4
-aiohttp==3.11.0b0
-redis[async]==5.0.1
 sqlalchemy[asyncio]==2.0.23
 asyncpg==0.29.0

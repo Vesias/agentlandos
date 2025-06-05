@@ -1,0 +1,63 @@
+<svg width="200" height="300" viewBox="0 0 200 300" xmlns="http://www.w3.org/2000/svg">
+  <!-- Simplified Saarland outline -->
+  <defs>
+    <linearGradient id="saarlandGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#009FE3;stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:#003399;stop-opacity:0.8" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Saarland shape (simplified) -->
+  <path d="M50,50 
+           L80,40 
+           L120,45 
+           L150,60 
+           L160,90 
+           L155,130 
+           L140,160 
+           L120,180 
+           L100,200 
+           L80,220 
+           L60,230 
+           L40,220 
+           L30,190 
+           L25,160 
+           L20,130 
+           L30,100 
+           L40,70 
+           Z" 
+        fill="url(#saarlandGrad)" 
+        stroke="#003399" 
+        stroke-width="2"/>
+  
+  <!-- Major cities -->
+  <circle cx="90" cy="130" r="6" fill="#E31E2D"/> <!-- Saarbrücken -->
+  <text x="100" y="135" font-family="Inter, sans-serif" font-size="12" font-weight="bold" fill="#003399">Saarbrücken</text>
+  
+  <circle cx="70" cy="110" r="4" fill="#FDB913"/> <!-- Neunkirchen -->
+  <text x="45" y="105" font-family="Inter, sans-serif" font-size="10" fill="#003399">Neunkirchen</text>
+  
+  <circle cx="110" cy="180" r="4" fill="#FDB913"/> <!-- Homburg -->
+  <text x="115" y="185" font-family="Inter, sans-serif" font-size="10" fill="#003399">Homburg</text>
+  
+  <circle cx="60" cy="150" r="4" fill="#FDB913"/> <!-- Völklingen -->
+  <text x="10" y="145" font-family="Inter, sans-serif" font-size="10" fill="#003399">Völklingen</text>
+  
+  <circle cx="50" cy="90" r="4" fill="#FDB913"/> <!-- Saarlouis -->
+  <text x="5" y="85" font-family="Inter, sans-serif" font-size="10" fill="#003399">Saarlouis</text>
+  
+  <circle cx="120" cy="80" r="4" fill="#FDB913"/> <!-- Merzig -->
+  <text x="130" y="85" font-family="Inter, sans-serif" font-size="10" fill="#003399">Merzig</text>
+  
+  <circle cx="140" cy="120" r="4" fill="#FDB913"/> <!-- St. Wendel -->
+  <text x="145" y="115" font-family="Inter, sans-serif" font-size="10" fill="#003399">St. Wendel</text>
+  
+  <!-- Regional landmarks -->
+  <path d="M75,70 Q80,65 85,70 Q80,75 75,70" fill="#43B049"/> <!-- Saarschleife -->
+  <text x="90" y="75" font-family="Inter, sans-serif" font-size="9" fill="#43B049">Saarschleife</text>
+  
+  <!-- Borders indication -->
+  <text x="10" y="30" font-family="Inter, sans-serif" font-size="12" font-weight="bold" fill="#929497">🇫🇷 FRANKREICH</text>
+  <text x="120" y="30" font-family="Inter, sans-serif" font-size="12" font-weight="bold" fill="#929497">🇱🇺 LUXEMBURG</text>
+  <text x="60" y="270" font-family="Inter, sans-serif" font-size="12" font-weight="bold" fill="#929497">🇩🇪 RHEINLAND-PFALZ</text>
+</svg>

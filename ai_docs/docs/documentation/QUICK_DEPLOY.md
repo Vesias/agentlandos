@@ -26,7 +26,7 @@ npx vercel domains add agentland.saarland
 3. **GitHub Repository**: `Vesias/agentland-saarland`
 4. **Environment Variables** setzen:
    ```
-   DEEPSEEK_API_KEY = sk-cd5974b6ec9e414c812bb03d1b9cd208
+   DEEPSEEK_API_KEY = XXXXX-EXPOSED-KEY-SANITIZED-XXXXX
    NEXT_PUBLIC_API_URL = /api
    ```
 5. **Deploy** klicken!

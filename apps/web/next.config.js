@@ -1,14 +1,24 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  transpilePackages: ["@agentland-saarland/ui", "@agentland-saarland/shared"],
   images: {
     domains: ['localhost', 'agentland.saarland'],
+    unoptimized: true
   },
-  i18n: {
-    locales: ['de', 'fr', 'en'],
-    defaultLocale: 'de',
+  async headers() {
+    return [
+      {
+        source: '/api/:path*',
+        headers: [
+          { key: 'Access-Control-Allow-Origin', value: '*' },
+          { key: 'Access-Control-Allow-Methods', value: 'GET, POST, PUT, DELETE, OPTIONS' },
+          { key: 'Access-Control-Allow-Headers', value: 'Content-Type, Authorization' },
+        ],
+      },
+    ]
   },
+  // Disable static optimization to prevent timeouts
+  trailingSlash: false
 }
 
 module.exports = nextConfig

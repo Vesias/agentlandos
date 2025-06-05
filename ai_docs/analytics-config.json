@@ -1,0 +1,38 @@
+{
+  "version": "2.0",
+  "trackingEnabled": true,
+  "realTimeUpdates": true,
+  "revenueTracking": true,
+  "premiumServiceTracking": true,
+  "dataRetention": 90,
+  "privacyCompliant": true,
+  "gdprCompliant": true,
+  "startFromZero": true,
+  "lastReset": "2025-06-04T19:42:38.713Z",
+  "targets": {
+    "users": 50000,
+    "monthlyRevenue": 25000,
+    "premiumConversion": 0.05,
+    "churnRate": 0.02
+  },
+  "metrics": {
+    "userGrowth": {
+      "daily": 0,
+      "weekly": 0,
+      "monthly": 0,
+      "target": 137
+    },
+    "revenue": {
+      "daily": 0,
+      "weekly": 0,
+      "monthly": 0,
+      "target": 833,
+      "premiumSubscriptions": 0
+    },
+    "conversion": {
+      "freeToPremium": 0,
+      "visitToSignup": 0,
+      "signupToActive": 0
+    }
+  }
+}

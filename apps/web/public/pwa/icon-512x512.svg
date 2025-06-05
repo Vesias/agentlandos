@@ -1,0 +1,88 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background with subtle gradient -->
+  <defs>
+    <linearGradient id="iconBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#003399;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#002266;stop-opacity:1" />
+    </linearGradient>
+    
+    <radialGradient id="centerGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#43B049;stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:#43B049;stop-opacity:0" />
+    </radialGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="512" height="512" fill="url(#iconBg)" rx="64"/>
+  
+  <!-- Glow effect -->
+  <circle cx="256" cy="256" r="180" fill="url(#centerGlow)"/>
+  
+  <!-- Main Icon - Large Hexagonal AI Symbol -->
+  <g transform="translate(256, 256)">
+    <!-- Outer hexagon frame -->
+    <polygon points="-120,-72 -60,-108 60,-108 120,-72 120,72 60,108 -60,108 -120,72" 
+             fill="none" 
+             stroke="#009FE3" 
+             stroke-width="4" 
+             opacity="0.6"/>
+    
+    <!-- Main hexagon -->
+    <polygon points="-80,-48 -40,-64 40,-64 80,-48 80,48 40,64 -40,64 -80,48" 
+             fill="#009FE3" 
+             stroke="#E6E6EB" 
+             stroke-width="6"/>
+    
+    <!-- Neural network nodes (larger) -->
+    <circle cx="-40" cy="-24" r="12" fill="#FDB913"/>
+    <circle cx="0" cy="0" r="16" fill="#43B049"/>
+    <circle cx="40" cy="-24" r="12" fill="#FDB913"/>
+    <circle cx="-40" cy="24" r="12" fill="#FDB913"/>
+    <circle cx="40" cy="24" r="12" fill="#FDB913"/>
+    
+    <!-- Additional network nodes -->
+    <circle cx="-60" cy="0" r="8" fill="#E31E2D"/>
+    <circle cx="60" cy="0" r="8" fill="#E31E2D"/>
+    <circle cx="0" cy="-36" r="8" fill="#E31E2D"/>
+    <circle cx="0" cy="36" r="8" fill="#E31E2D"/>
+    
+    <!-- Primary connections -->
+    <line x1="-40" y1="-24" x2="0" y2="0" stroke="#E6E6EB" stroke-width="4"/>
+    <line x1="0" y1="0" x2="40" y2="-24" stroke="#E6E6EB" stroke-width="4"/>
+    <line x1="0" y1="0" x2="-40" y2="24" stroke="#E6E6EB" stroke-width="4"/>
+    <line x1="0" y1="0" x2="40" y2="24" stroke="#E6E6EB" stroke-width="4"/>
+    
+    <!-- Secondary connections -->
+    <line x1="-60" y1="0" x2="-40" y2="-24" stroke="#E6E6EB" stroke-width="2" opacity="0.7"/>
+    <line x1="60" y1="0" x2="40" y2="-24" stroke="#E6E6EB" stroke-width="2" opacity="0.7"/>
+    <line x1="-60" y1="0" x2="-40" y2="24" stroke="#E6E6EB" stroke-width="2" opacity="0.7"/>
+    <line x1="60" y1="0" x2="40" y2="24" stroke="#E6E6EB" stroke-width="2" opacity="0.7"/>
+    <line x1="0" y1="-36" x2="0" y2="0" stroke="#E6E6EB" stroke-width="2" opacity="0.7"/>
+    <line x1="0" y1="36" x2="0" y2="0" stroke="#E6E6EB" stroke-width="2" opacity="0.7"/>
+    
+    <!-- Center pulse effects -->
+    <circle cx="0" cy="0" r="24" fill="none" stroke="#FDB913" stroke-width="3" opacity="0.6"/>
+    <circle cx="0" cy="0" r="36" fill="none" stroke="#FDB913" stroke-width="2" opacity="0.4"/>
+  </g>
+  
+  <!-- Brand elements -->
+  <g transform="translate(256, 400)">
+    <text x="0" y="0" font-family="Inter, sans-serif" font-size="32" font-weight="800" fill="#E6E6EB" text-anchor="middle">
+      AGENTLAND
+    </text>
+    <text x="0" y="35" font-family="Inter, sans-serif" font-size="20" font-weight="600" fill="#009FE3" text-anchor="middle">
+      SAARLAND
+    </text>
+  </g>
+  
+  <!-- Corner decorations -->
+  <g transform="translate(420, 80)">
+    <rect x="0" y="0" width="60" height="8" fill="#009FE3" rx="4"/>
+    <rect x="0" y="15" width="45" height="8" fill="#FDB913" rx="4"/>
+    <rect x="0" y="30" width="30" height="8" fill="#43B049" rx="4"/>
+  </g>
+  
+  <!-- Regional marker -->
+  <circle cx="80" cy="432" r="24" fill="#E31E2D"/>
+  <text x="72" y="442" font-family="Inter, sans-serif" font-size="20" font-weight="bold" fill="white">SL</text>
+</svg>

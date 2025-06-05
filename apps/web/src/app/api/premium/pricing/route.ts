@@ -26,7 +26,7 @@ export async function GET(request: NextRequest) {
       success: true,
       userProfile,
       recommendedTier,
-      allTiers: profitEngine['USER_TIERS'], // Access private property for API
+      allTiers: profitEngine.USER_TIERS,
       conversionTriggers: CONVERSION_TRIGGERS,
       analytics: {
         revenueBreakdown,

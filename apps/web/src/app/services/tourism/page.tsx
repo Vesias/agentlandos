@@ -277,33 +277,61 @@ export default function TourismPage() {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-16 px-4 sm:px-6 lg:px-8">
+      {/* Premium Tourism Service */}
+      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-emerald-600 to-green-600">
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">
-            Planen Sie Ihren Besuch
+          <div className="mb-6">
+            <span className="bg-yellow-400 text-green-900 px-4 py-2 rounded-full text-sm font-bold">
+              🌟 PREMIUM SERVICE
+            </span>
+          </div>
+          <h2 className="text-3xl font-bold text-white mb-4">
+            Tourismus Premium €10/Monat
           </h2>
-          <p className="text-xl text-gray-600 mb-8">
-            Lassen Sie sich von unserem KI-Assistenten bei der Planung Ihrer 
-            perfekten Saarland-Reise unterstützen
+          <p className="text-xl text-green-100 mb-8">
+            Exklusive Insider-Tipps, VIP-Zugang und personalisierte Reiseplanung mit KI
           </p>
+          
+          <div className="grid md:grid-cols-3 gap-6 mb-8">
+            <div className="bg-white/10 backdrop-blur rounded-lg p-6">
+              <Star className="w-8 h-8 text-yellow-400 mx-auto mb-3" />
+              <h3 className="font-semibold text-white mb-2">VIP Zugänge</h3>
+              <p className="text-green-100 text-sm">Exklusive Führungen und bevorzugter Einlass</p>
+            </div>
+            <div className="bg-white/10 backdrop-blur rounded-lg p-6">
+              <Navigation className="w-8 h-8 text-yellow-400 mx-auto mb-3" />
+              <h3 className="font-semibold text-white mb-2">KI-Reiseplaner</h3>
+              <p className="text-green-100 text-sm">Personalisierte Routen basierend auf Ihren Interessen</p>
+            </div>
+            <div className="bg-white/10 backdrop-blur rounded-lg p-6">
+              <Heart className="w-8 h-8 text-yellow-400 mx-auto mb-3" />
+              <h3 className="font-semibold text-white mb-2">Insider-Tipps</h3>
+              <p className="text-green-100 text-sm">Geheime Spots und lokale Empfehlungen</p>
+            </div>
+          </div>
+          
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button 
               size="lg" 
-              className="bg-green-600 hover:bg-green-700"
-              onClick={() => router.push('/chat')}
+              className="bg-yellow-400 text-green-900 hover:bg-yellow-300 font-bold"
+              onClick={() => router.push('/test-business-registration')}
             >
-              <Compass className="w-5 h-5 mr-2" />
-              Reise planen
+              <Star className="w-5 h-5 mr-2" />
+              Premium für €10 aktivieren
             </Button>
             <Button 
               size="lg" 
               variant="outline"
+              className="border-white text-white hover:bg-white hover:text-green-600"
               onClick={() => router.push('/chat')}
             >
               <Info className="w-5 h-5 mr-2" />
-              Mehr erfahren
+              Kostenlos testen
             </Button>
+          </div>
+          
+          <div className="mt-6 text-green-200 text-sm">
+            💰 Nur €10/Monat • 🚀 Sofort verfügbar • ⭐ 30 Tage Geld-zurück-Garantie
           </div>
         </div>
       </section>

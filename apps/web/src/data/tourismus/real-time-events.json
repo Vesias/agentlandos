@@ -1,0 +1,35 @@
+{
+  "service": "tourismus",
+  "events": [
+    {
+      "id": "tourism_1",
+      "title": "Saarschleife Baumwipfelpfad",
+      "description": "Spektakulärer Ausblick über die Saarschleife",
+      "status": "open",
+      "currentVisitors": 28,
+      "maxCapacity": 200,
+      "nextAvailableSlot": "2025-06-04T19:56:59.640Z",
+      "website": "https://www.baumwipfelpfad-saarschleife.de",
+      "location": {
+        "lat": 49.4844,
+        "lon": 6.5153
+      }
+    },
+    {
+      "id": "tourism_2",
+      "title": "Völklinger Hütte UNESCO",
+      "description": "Weltkulturerbe Industriedenkmal",
+      "status": "open",
+      "currentVisitors": 6,
+      "maxCapacity": 150,
+      "nextAvailableSlot": "2025-06-04T18:56:59.642Z",
+      "website": "https://www.voelklinger-huette.org",
+      "location": {
+        "lat": 49.2486,
+        "lon": 6.8514
+      }
+    }
+  ],
+  "lastUpdate": "2025-06-04T17:56:59.642Z",
+  "totalEvents": 2
+}

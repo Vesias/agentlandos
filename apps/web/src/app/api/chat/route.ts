@@ -1,15 +1,46 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { enhancedChatService } from '@/lib/ai/enhanced-chat-service'
 
 // Alte statische Daten entfernt - wird jetzt dynamisch via getCurrentSaarlandData() geladen
 
-// ECHTE SAARLAND DATEN - Automatisch aktualisiert via Real Data Engine
+// ENHANCED SAARLAND KNOWLEDGE - Real Data + Knowledge Base
 async function getCurrentSaarlandData() {
   try {
-    // Hole echte, verifizierte Daten aus Cache
+    // Hole echte, verifizierte Daten aus Cache UND Knowledge Base
     const baseUrl = process.env.NEXT_PUBLIC_VERCEL_URL 
       ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
       : 'http://localhost:3000'
-    const response = await fetch(`${baseUrl}/api/cache/real-data`)
+    
+    // Parallel fetch: Real data + Saarland knowledge
+    const [realDataResponse, knowledgeResponse] = await Promise.all([
+      fetch(`${baseUrl}/api/cache/real-data`),
+      fetch(`${baseUrl}/api/saarland/data`)
+    ])
+    
+    let enhancedData = {}
+    
+    // Real-time data integration
+    if (realDataResponse.ok) {
+      const realData = await realDataResponse.json()
+      enhancedData = { ...realData }
+    }
+    
+    // Saarland knowledge base integration  
+    if (knowledgeResponse.ok) {
+      const knowledgeData = await knowledgeResponse.json()
+      enhancedData = {
+        ...enhancedData,
+        municipalities: knowledgeData.statistics,
+        saarlandKnowledge: {
+          totalMunicipalities: 52,
+          majorCities: ['Saarbrücken', 'Neunkirchen', 'Homburg'],
+          businessServices: ['IHK Saarland', 'Handwerkskammer'],
+          dataSource: 'AGENTLAND Knowledge Base'
+        }
+      }
+    }
+    
+    const response = realDataResponse
     
     if (response.ok) {
       const realData = await response.json()
@@ -77,48 +108,66 @@ export async function POST(request: NextRequest) {
     
     const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY
 
-    // PRIORITÄT 1: Neues DeepSeek Agent System
+    // PRIORITÄT 1: Enhanced Chat Service - Triangular AI System
 
-    if (DEEPSEEK_API_KEY) {
-      try {
-        console.log('🤖 Verwende DeepSeek Agent System');
-        
-        const agentResponse = await fetch(`${process.env.NEXT_PUBLIC_VERCEL_URL ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}` : 'http://localhost:3000'}/api/agents/deepseek`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            query: message,
-            userContext: {
-              context,
-              conversationHistory: conversationHistory?.slice(-3), // Letzte 3 Nachrichten
-              userInterests,
-              timestamp: new Date().toISOString()
+    try {
+      console.log('🎯 Triangular AI System: Enhanced Chat Processing');
+      
+      // Layer 1: Enhanced Natural Language Processing
+      const enhancedResponse = await enhancedChatService.generateResponse(message)
+      
+      // Layer 2: DeepSeek Agent System (wenn verfügbar)
+      let deepSeekEnhancement = null
+      if (DEEPSEEK_API_KEY) {
+        try {
+          const agentResponse = await fetch(`${process.env.NEXT_PUBLIC_VERCEL_URL ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}` : 'http://localhost:3000'}/api/agents/deepseek`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
             },
-            agentMode: 'standard'
-          })
-        });
+            body: JSON.stringify({
+              query: message,
+              userContext: {
+                context,
+                conversationHistory: conversationHistory?.slice(-3),
+                userInterests,
+                enhancedAnalysis: enhancedResponse,
+                timestamp: new Date().toISOString()
+              },
+              agentMode: 'enhancement'
+            })
+          });
 
-        if (agentResponse.ok) {
-          const agentData = await agentResponse.json();
-          
-          if (agentData.success) {
-            return NextResponse.json({
-              success: true,
-              message: agentData.response,
-              source: 'deepseek-agent-system',
-              confidence: 0.98,
-              processingTime: agentData.processingTime,
-              hasRealData: Object.keys(agentData.relevantData).length > 0,
-              dataUsed: Object.keys(agentData.relevantData),
-              timestamp: agentData.timestamp
-            });
+          if (agentResponse.ok) {
+            const agentData = await agentResponse.json();
+            if (agentData.success) {
+              deepSeekEnhancement = agentData.response
+            }
           }
+        } catch (agentError) {
+          console.error('DeepSeek Enhancement Error:', agentError);
         }
-      } catch (agentError) {
-        console.error('DeepSeek Agent System Error:', agentError);
       }
+
+      // Layer 3: Kombiniere Enhanced + DeepSeek für ultimative Antwort
+      const finalResponse = deepSeekEnhancement 
+        ? `${enhancedResponse.content}\n\n💡 **Zusätzlich**: ${deepSeekEnhancement}`
+        : enhancedResponse.content
+
+      return NextResponse.json({
+        success: true,
+        message: finalResponse,
+        source: deepSeekEnhancement ? 'triangular-ai-system' : 'enhanced-chat-service',
+        confidence: enhancedResponse.confidence,
+        followUpQuestions: enhancedResponse.followUpQuestions,
+        relatedServices: enhancedResponse.relatedServices,
+        dataUsed: enhancedResponse.sources,
+        hasEnhancement: !!deepSeekEnhancement,
+        timestamp: new Date().toISOString()
+      });
+
+    } catch (enhancedError) {
+      console.error('Enhanced Chat Service Error:', enhancedError);
     }
 
     // FALLBACK: Direkte DeepSeek API (Legacy)

@@ -53,7 +53,7 @@ git push -u origin main
 Folgende Environment Variables in Vercel Dashboard setzen:
 
 ```env
-DEEPSEEK_API_KEY=sk-cd5974b6ec9e414c812bb03d1b9cd208
+DEEPSEEK_API_KEY=XXXXX-EXPOSED-KEY-SANITIZED-XXXXX
 UPSTASH_REDIS_REST_URL=your-redis-url
 UPSTASH_REDIS_REST_TOKEN=your-redis-token
 PINECONE_API_KEY=your-pinecone-key

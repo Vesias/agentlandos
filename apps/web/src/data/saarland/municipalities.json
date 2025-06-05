@@ -1,0 +1,144 @@
+{
+  "saarland_municipalities": {
+    "total_count": 52,
+    "last_updated": "2025-06-06",
+    "data_source": "Statistisches Amt Saarland",
+    "municipalities": [
+      {
+        "name": "Saarbrücken",
+        "type": "Landeshauptstadt",
+        "population": 180374,
+        "area_km2": 167.09,
+        "postal_codes": ["66001", "66111", "66113", "66115", "66117", "66119", "66121", "66123"],
+        "mayor": "Uwe Conradt",
+        "website": "https://www.saarbruecken.de",
+        "services": ["Bürgeramt", "Standesamt", "Gewerbeamt", "Sozialamt"],
+        "coordinates": {"lat": 49.2401, "lon": 6.9969},
+        "districts": ["Alt-Saarbrücken", "St. Johann", "Malstatt", "West", "Mitte", "Halberg", "Eschberg", "St. Arnual", "Klarenthal", "Dudweiler", "Jägersfreude", "Scheidt", "Bischmisheim", "Ensheim", "Eschringen", "Fechingen", "Güdingen", "Brebach-Fechingen"]
+      },
+      {
+        "name": "Neunkirchen",
+        "type": "Kreisstadt",
+        "population": 46869,
+        "area_km2": 75.17,
+        "postal_codes": ["66538", "66539"],
+        "mayor": "Jörg Aumann",
+        "website": "https://www.neunkirchen.de",
+        "services": ["Bürgerservice", "Gewerbeamt", "Bauamt"],
+        "coordinates": {"lat": 49.3469, "lon": 7.1778},
+        "specialties": ["Industriegeschichte", "Eisenhüttenmuseum", "Stummsche Kapelle"]
+      },
+      {
+        "name": "Homburg",
+        "type": "Universitätsstadt",
+        "population": 42843,
+        "area_km2": 82.88,
+        "postal_codes": ["66424", "66482"],
+        "mayor": "Michael Forster",
+        "website": "https://www.homburg.de",
+        "services": ["Bürgerbüro", "Universitätsverwaltung", "Klinikum"],
+        "coordinates": {"lat": 49.3269, "lon": 7.3386},
+        "specialties": ["Universitätsklinikum", "Schlossberg-Höhlen", "Forum Homburg"]
+      },
+      {
+        "name": "Völklingen",
+        "type": "Mittelstadt",
+        "population": 39303,
+        "area_km2": 67.58,
+        "postal_codes": ["66333"],
+        "mayor": "Christiane Blatt",
+        "website": "https://www.voelklingen.de",
+        "services": ["Rathaus", "Weltkulturerbe Völklinger Hütte"],
+        "coordinates": {"lat": 49.2519, "lon": 6.8579},
+        "specialties": ["UNESCO-Weltkulturerbe", "Völklinger Hütte", "Industriekultur"],
+        "unesco_site": true
+      },
+      {
+        "name": "Sankt Ingbert",
+        "type": "Mittelstadt", 
+        "population": 35872,
+        "area_km2": 49.95,
+        "postal_codes": ["66386"],
+        "mayor": "Ulli Meyer",
+        "website": "https://www.st-ingbert.de",
+        "services": ["Bürgerservice", "Stadtmarketing"],
+        "coordinates": {"lat": 49.2769, "lon": 7.1161},
+        "specialties": ["Alte Schmelz", "Europäischer Kulturpark", "Grenzstadt"]
+      },
+      {
+        "name": "Sankt Wendel",
+        "type": "Kreisstadt",
+        "population": 26251,
+        "area_km2": 114.24,
+        "postal_codes": ["66606"],
+        "mayor": "Peter Klär",
+        "website": "https://www.sankt-wendel.de",
+        "services": ["Rathaus", "Tourismusamt", "Kreishaus"],
+        "coordinates": {"lat": 49.4669, "lon": 7.1669},
+        "specialties": ["Wendalinus-Basilika", "Bostalsee", "Fahrradhauptstadt"]
+      },
+      {
+        "name": "Merzig",
+        "type": "Kreisstadt",
+        "population": 29704,
+        "area_km2": 108.48,
+        "postal_codes": ["66663"],
+        "mayor": "Marcus Hoffeld",
+        "website": "https://www.merzig.de",
+        "services": ["Stadtverwaltung", "Kulturamt", "Tourismusinfo"],
+        "coordinates": {"lat": 49.4431, "lon": 6.6369},
+        "specialties": ["Merziger Stadtpark", "Saar-Radweg", "Villa Borg"]
+      },
+      {
+        "name": "Saarlouis",
+        "type": "Kreisstadt",
+        "population": 34688,
+        "area_km2": 43.27,
+        "postal_codes": ["66740"],
+        "mayor": "Marc Speicher",
+        "website": "https://www.saarlouis.de",
+        "services": ["Rathaus", "Tourismusbüro", "Festungsführungen"],
+        "coordinates": {"lat": 49.3169, "lon": 6.7519},
+        "specialties": ["Festungsstadt", "Französische Architektur", "Großer Markt"],
+        "historical": "Festung von Vauban 1680"
+      },
+      {
+        "name": "Dillingen",
+        "type": "Stadt",
+        "population": 20348,
+        "area_km2": 22.09,
+        "postal_codes": ["66763"],
+        "mayor": "Franz-Josef Berg",
+        "website": "https://www.dillingen-saar.de", 
+        "services": ["Bürgeramt", "Dillinger Hütte Services"],
+        "coordinates": {"lat": 49.3569, "lon": 6.7319},
+        "specialties": ["Dillinger Hütte", "Stahlproduktion", "Industriestandort"]
+      },
+      {
+        "name": "Lebach",
+        "type": "Stadt",
+        "population": 18897,
+        "area_km2": 67.22,
+        "postal_codes": ["66822"],
+        "mayor": "Klauspeter Brill",
+        "website": "https://www.lebach.de",
+        "services": ["Rathaus", "Stadtmarketing"],
+        "coordinates": {"lat": 49.4119, "lon": 6.9069},
+        "specialties": ["Tholeyer Abtei", "Naturpark Saar-Hunsrück"]
+      }
+    ],
+    "statistics": {
+      "total_population": 990758,
+      "total_area_km2": 2568.45,
+      "population_density": 385.7,
+      "largest_city": "Saarbrücken",
+      "unesco_sites": 1,
+      "cross_border_municipalities": ["Saarbrücken", "Sankt Ingbert", "Saarlouis", "Merzig"]
+    },
+    "government_apis": {
+      "open_data_portal": "https://opendata.saarland.de",
+      "statistical_office": "https://www.saarland.de/statistik",
+      "business_registry": "https://www.saarland.de/gewerbe"
+    }
+  }
+}

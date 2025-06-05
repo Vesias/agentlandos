@@ -1,358 +1,259 @@
-'use client'
-
-import { motion } from 'framer-motion'
 import Link from 'next/link'
-import { ArrowRight, Bot, Shield, Users, Sparkles, Globe, Database } from 'lucide-react'
-import RealTimeUserCounter from '@/components/RealTimeUserCounter'
+import { Bot, MessageSquare, MapPin, Building2, GraduationCap, Users, Palette, Zap, Star, TrendingUp, Shield, Clock } from 'lucide-react'
 
 export default function HomePage() {
   return (
-    <div style={{ position: 'relative', minHeight: '100vh', backgroundColor: '#f9fafb' }}>
-      {/* Hero Section */}
-      <section style={{ position: 'relative', minHeight: '100dvh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }} className="safe-area">
-        {/* Background Gradient */}
-        <div style={{
-          position: 'absolute',
-          top: 0,
-          right: 0,
-          width: '800px',
-          height: '800px',
-          background: 'radial-gradient(circle, rgba(0,51,153,0.1) 0%, rgba(0,159,227,0.1) 100%)',
-          filter: 'blur(100px)',
-          transform: 'translate(50%, -50%)',
-        }} />
-
-        <div style={{ maxWidth: '1200px', margin: '0 auto', textAlign: 'center', position: 'relative', zIndex: 10 }}>
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-          >
-            {/* Logo */}
-            <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ delay: 0.2, duration: 0.6, type: "spring" }}
-              style={{ marginBottom: '2rem' }}
-            >
-              <div style={{
-                width: '128px',
-                height: '128px',
-                margin: '0 auto',
-                background: 'linear-gradient(135deg, #003399 0%, #009FE3 100%)',
-                borderRadius: '24px',
-                padding: '2px',
-                boxShadow: '0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04)'
-              }}>
-                <div style={{
-                  width: '100%',
-                  height: '100%',
-                  backgroundColor: 'white',
-                  borderRadius: '22px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center'
-                }}>
-                  <Bot size={64} color="#003399" />
-                </div>
-              </div>
-            </motion.div>
-
-            {/* Title */}
-            <h1 style={{
-              fontSize: 'clamp(3rem, 8vw, 6rem)',
-              fontWeight: 900,
-              marginBottom: '1.5rem',
-              lineHeight: 1.1
-            }}>
-              <span style={{
-                background: 'linear-gradient(to right, #003399, #009FE3)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text',
-              }}>
-                AGENTLAND
-              </span>
-              <span style={{ color: '#111827' }}>.SAARLAND</span>
-            </h1>
-
-            <p style={{
-              fontSize: 'clamp(1.25rem, 3vw, 2rem)',
-              color: '#4b5563',
-              maxWidth: '800px',
-              margin: '0 auto 3rem',
-              fontWeight: 300
-            }}>
-              Souveräne KI-Technologie aus dem Saarland – 
-              <span style={{ color: '#003399', fontWeight: 500 }}> für ein intelligentes Morgen</span>
-            </p>
-
-            {/* Real-Time User Counter */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4, duration: 0.6 }}
-              style={{ marginBottom: '3rem' }}
-            >
-              <RealTimeUserCounter showDetails={false} />
-            </motion.div>
-
-            {/* CTA Buttons */}
-            <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap', width: '100%', maxWidth: '400px', margin: '0 auto' }}>
-              <Link href="/chat" className="touch-target touch-smooth" style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                padding: 'clamp(0.75rem, 4vw, 1rem) clamp(1.5rem, 6vw, 2rem)',
-                fontSize: 'clamp(1rem, 3.5vw, 1.125rem)',
-                fontWeight: 500,
-                color: 'white',
-                background: 'linear-gradient(to right, #003399, #009FE3)',
-                borderRadius: '9999px',
-                textDecoration: 'none',
-                boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05)',
-                transition: 'all 0.3s',
-                minHeight: '48px',
-                flex: '1',
-                justifyContent: 'center',
-                maxWidth: '200px',
-              }}>
-                KI-Agenten erkunden
-                <ArrowRight size={20} style={{ marginLeft: '0.5rem', flexShrink: 0 }} />
-              </Link>
-              
-              <button className="touch-target touch-smooth" style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                padding: 'clamp(0.75rem, 4vw, 1rem) clamp(1.5rem, 6vw, 2rem)',
-                fontSize: 'clamp(1rem, 3.5vw, 1.125rem)',
-                fontWeight: 500,
-                color: '#003399',
-                backgroundColor: 'white',
-                border: '2px solid rgba(0,51,153,0.2)',
-                borderRadius: '9999px',
-                cursor: 'pointer',
-                boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05)',
-                transition: 'all 0.3s',
-                minHeight: '48px',
-                flex: '1',
-                justifyContent: 'center',
-                maxWidth: '200px',
-              }}>
-                Über das Projekt
-                <Sparkles size={20} color="#FDB913" style={{ marginLeft: '0.5rem', flexShrink: 0 }} />
-              </button>
+    <div className="min-h-screen bg-white">
+      {/* Hero Section - Premium Design */}
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+        {/* Background Pattern */}
+        <div className="absolute inset-0 bg-gradient-to-br from-[#003399] via-[#0052CC] to-[#009FE3] opacity-95"></div>
+        <div className="absolute inset-0 network-pattern opacity-10"></div>
+        
+        {/* Content */}
+        <div className="relative z-10 w-full max-w-4xl mx-auto text-center px-4 py-16">
+          {/* Premium Logo */}
+          <div className="w-24 h-24 md:w-32 md:h-32 mx-auto mb-8 bg-white/10 backdrop-blur-sm rounded-3xl shadow-2xl flex items-center justify-center border border-white/20">
+            <div className="w-20 h-20 md:w-28 md:h-28 rounded-2xl flex items-center justify-center bg-white shadow-inner">
+              <Bot className="w-12 h-12 md:w-16 md:h-16 text-[#003399] agent-active" />
             </div>
-          </motion.div>
+          </div>
+
+          {/* Title - Professional */}
+          <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold mb-6 text-white font-quantum">
+            <span className="block">AGENTLAND</span>
+            <span className="block text-[#FDB913] font-light">.SAARLAND</span>
+          </h1>
+
+          {/* Subtitle - Clear Value Prop */}
+          <p className="text-xl sm:text-2xl text-white/90 mb-4 max-w-3xl mx-auto font-nova leading-relaxed">
+            Souveräne KI-Technologie aus dem Saarland
+          </p>
+          <p className="text-lg text-white/70 mb-12 max-w-2xl mx-auto">
+            Für Bürger, Unternehmen und Verwaltung - Intelligent, regional, vertrauenswürdig
+          </p>
+
+          {/* CTA Buttons - Premium Design */}
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16">
+            <Link href="/chat" className="w-full sm:w-auto">
+              <button className="group bg-[#FDB913] hover:bg-[#E5A50A] text-[#003399] px-8 py-4 rounded-2xl font-bold text-lg transition-all duration-300 flex items-center justify-center w-full sm:w-auto min-w-[220px] shadow-2xl hover:shadow-3xl hover:scale-105 touch-manipulation">
+                <MessageSquare className="w-6 h-6 mr-3 group-hover:scale-110 transition-transform" />
+                SAAR-GPT starten
+              </button>
+            </Link>
+            
+            <Link href="/services" className="w-full sm:w-auto">
+              <button className="group bg-white/10 hover:bg-white/20 text-white border-2 border-white/30 hover:border-white/50 px-8 py-4 rounded-2xl font-semibold text-lg transition-all duration-300 flex items-center justify-center w-full sm:w-auto min-w-[220px] backdrop-blur-sm touch-manipulation">
+                <MapPin className="w-6 h-6 mr-3 group-hover:scale-110 transition-transform" />
+                Services entdecken
+              </button>
+            </Link>
+          </div>
+
+          {/* Trust Indicators */}
+          <div className="flex flex-wrap justify-center items-center gap-8 text-white/60 text-sm">
+            <div className="flex items-center gap-2">
+              <Shield className="w-5 h-5" />
+              <span>DSGVO-konform</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Star className="w-5 h-5" />
+              <span>Made in Saarland</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Clock className="w-5 h-5" />
+              <span>24/7 verfügbar</span>
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* Features Section */}
-      <section style={{ padding: '5rem 2rem', backgroundColor: 'white' }}>
-        <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            style={{ textAlign: 'center', marginBottom: '4rem' }}
-          >
-            <h2 style={{
-              fontSize: 'clamp(2rem, 5vw, 3rem)',
-              fontWeight: 900,
-              marginBottom: '1.5rem'
-            }}>
-              <span style={{
-                background: 'linear-gradient(to right, #003399, #009FE3)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text',
-              }}>
-                KI mit saarländischem Herz
-              </span>
-              <br />
-              <span style={{ color: '#111827' }}>und globalem Verstand</span>
+      {/* Services Section - Premium Design */}
+      <section className="py-20 px-4 bg-gradient-to-b from-gray-50 to-white relative">
+        <div className="max-w-7xl mx-auto">
+          {/* Section Header */}
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold text-[#003399] mb-4 font-quantum">
+              Saarland Services
             </h2>
-            <p style={{
-              fontSize: '1.25rem',
-              color: '#6b7280',
-              maxWidth: '800px',
-              margin: '0 auto'
-            }}>
-              Unsere Plattform verbindet modernste KI-Technologie mit regionaler Expertise 
-              und demokratischen Werten.
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto font-nova">
+              Umfassende KI-gestützte Dienstleistungen für alle Bereiche des Saarlands
             </p>
-          </motion.div>
-
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(min(350px, 100%), 1fr))',
-            gap: 'clamp(1rem, 4vw, 2rem)'
-          }}>
-            {features.map((feature, index) => (
-              <motion.div
-                key={feature.title}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                viewport={{ once: true }}
-                className="touch-smooth"
-                style={{
-                  padding: 'clamp(1.5rem, 4vw, 2rem)',
-                  backgroundColor: 'white',
-                  borderRadius: '16px',
-                  boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05)',
-                  border: '1px solid #e5e7eb',
-                  transition: 'all 0.3s',
-                  cursor: 'pointer'
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = 'translateY(-4px)';
-                  e.currentTarget.style.boxShadow = '0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = 'translateY(0)';
-                  e.currentTarget.style.boxShadow = '0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05)';
-                }}
-              >
-                <div style={{
-                  width: '56px',
-                  height: '56px',
-                  background: 'linear-gradient(135deg, #003399, #009FE3)',
-                  borderRadius: '12px',
-                  padding: '1px',
-                  marginBottom: '1.5rem'
-                }}>
-                  <div style={{
-                    width: '100%',
-                    height: '100%',
-                    backgroundColor: 'white',
-                    borderRadius: '11px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center'
-                  }}>
-                    <feature.icon size={28} color="#003399" />
+          </div>
+          
+          {/* Services Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+            {/* Business Services */}
+            <Link href="/services/business" className="group">
+              <div className="bg-white p-8 rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 hover:scale-105 touch-manipulation border border-gray-100 hover:border-[#003399]/20 relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-[#003399]/5 to-transparent rounded-bl-full"></div>
+                <div className="relative z-10">
+                  <div className="w-16 h-16 bg-gradient-to-br from-[#003399] to-[#0052CC] rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                    <Building2 className="w-8 h-8 text-white" />
+                  </div>
+                  <h3 className="text-xl font-bold mb-3 text-[#003399] group-hover:text-[#002266]">
+                    Wirtschaft & Business
+                  </h3>
+                  <p className="text-gray-600 leading-relaxed text-sm">
+                    IHK Services, Handwerkskammer, Gründungsberatung, Fördermittel-Matching
+                  </p>
+                  <div className="flex items-center mt-4 text-[#009FE3] font-semibold text-sm group-hover:translate-x-2 transition-transform">
+                    <span>Mehr erfahren</span>
+                    <TrendingUp className="w-4 h-4 ml-2" />
                   </div>
                 </div>
-                <h3 style={{
-                  fontSize: '1.25rem',
-                  fontWeight: 700,
-                  marginBottom: '0.75rem',
-                  color: '#111827'
-                }}>{feature.title}</h3>
-                <p style={{
-                  color: '#6b7280',
-                  lineHeight: 1.6
-                }}>{feature.description}</p>
-              </motion.div>
-            ))}
+              </div>
+            </Link>
+
+            {/* Tourism Services */}
+            <Link href="/services/tourism" className="group">
+              <div className="bg-white p-8 rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 hover:scale-105 touch-manipulation border border-gray-100 hover:border-[#009FE3]/20 relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-[#009FE3]/5 to-transparent rounded-bl-full"></div>
+                <div className="relative z-10">
+                  <div className="w-16 h-16 bg-gradient-to-br from-[#009FE3] to-[#007BB8] rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                    <MapPin className="w-8 h-8 text-white" />
+                  </div>
+                  <h3 className="text-xl font-bold mb-3 text-[#003399] group-hover:text-[#002266]">
+                    Tourismus & Kultur
+                  </h3>
+                  <p className="text-gray-600 leading-relaxed text-sm">
+                    Sehenswürdigkeiten, Events, Hotels, Restaurants, kulturelle Highlights
+                  </p>
+                  <div className="flex items-center mt-4 text-[#009FE3] font-semibold text-sm group-hover:translate-x-2 transition-transform">
+                    <span>Entdecken</span>
+                    <MapPin className="w-4 h-4 ml-2" />
+                  </div>
+                </div>
+              </div>
+            </Link>
+
+            {/* Education Services */}
+            <Link href="/services/education" className="group">
+              <div className="bg-white p-8 rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 hover:scale-105 touch-manipulation border border-gray-100 hover:border-[#FDB913]/20 relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-[#FDB913]/5 to-transparent rounded-bl-full"></div>
+                <div className="relative z-10">
+                  <div className="w-16 h-16 bg-gradient-to-br from-[#FDB913] to-[#E5A50A] rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                    <GraduationCap className="w-8 h-8 text-white" />
+                  </div>
+                  <h3 className="text-xl font-bold mb-3 text-[#003399] group-hover:text-[#002266]">
+                    Bildung & Forschung
+                  </h3>
+                  <p className="text-gray-600 leading-relaxed text-sm">
+                    Universitäten, Weiterbildung, DFKI-Kooperationen, Stipendien
+                  </p>
+                  <div className="flex items-center mt-4 text-[#009FE3] font-semibold text-sm group-hover:translate-x-2 transition-transform">
+                    <span>Lernen</span>
+                    <GraduationCap className="w-4 h-4 ml-2" />
+                  </div>
+                </div>
+              </div>
+            </Link>
+
+            {/* Admin Services */}
+            <Link href="/services/admin" className="group">
+              <div className="bg-white p-8 rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 hover:scale-105 touch-manipulation border border-gray-100 hover:border-[#003399]/20 relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-[#003399]/5 to-transparent rounded-bl-full"></div>
+                <div className="relative z-10">
+                  <div className="w-16 h-16 bg-gradient-to-br from-[#003399] to-[#0052CC] rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                    <Users className="w-8 h-8 text-white" />
+                  </div>
+                  <h3 className="text-xl font-bold mb-3 text-[#003399] group-hover:text-[#002266]">
+                    Behörden & Verwaltung
+                  </h3>
+                  <p className="text-gray-600 leading-relaxed text-sm">
+                    Ämter, Anträge, Bürgerdienste, Express-Termine, Online-Services
+                  </p>
+                  <div className="flex items-center mt-4 text-[#009FE3] font-semibold text-sm group-hover:translate-x-2 transition-transform">
+                    <span>Services nutzen</span>
+                    <Users className="w-4 h-4 ml-2" />
+                  </div>
+                </div>
+              </div>
+            </Link>
+          </div>
+
+          {/* Premium CTA */}
+          <div className="bg-gradient-to-r from-[#003399] to-[#009FE3] rounded-3xl p-8 md:p-12 text-center text-white relative overflow-hidden">
+            <div className="absolute inset-0 network-pattern opacity-10"></div>
+            <div className="relative z-10">
+              <div className="w-20 h-20 bg-[#FDB913] rounded-2xl flex items-center justify-center mx-auto mb-6">
+                <Star className="w-10 h-10 text-[#003399]" />
+              </div>
+              <h3 className="text-3xl md:text-4xl font-bold mb-4 font-quantum">
+                Premium Saarland Services
+              </h3>
+              <p className="text-xl mb-8 opacity-90 max-w-2xl mx-auto">
+                Exklusive Funktionen für nur €9,99/Monat
+              </p>
+              <Link href="/register">
+                <button className="bg-[#FDB913] hover:bg-[#E5A50A] text-[#003399] px-8 py-4 rounded-2xl font-bold text-lg transition-all duration-300 hover:scale-105 shadow-2xl">
+                  Jetzt Premium werden
+                </button>
+              </Link>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section style={{
-        padding: '5rem 2rem',
-        background: 'linear-gradient(135deg, #003399 0%, #009FE3 100%)',
-        color: 'white',
-        textAlign: 'center'
-      }}>
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          viewport={{ once: true }}
-          style={{ maxWidth: '800px', margin: '0 auto' }}
-        >
-          <h2 style={{
-            fontSize: 'clamp(2rem, 5vw, 3rem)',
-            fontWeight: 900,
-            marginBottom: '1.5rem'
-          }}>
-            Bereit für die KI-Zukunft des Saarlandes?
+      {/* Stats Section - Professional */}
+      <section className="py-20 px-4 bg-[#003399] relative overflow-hidden">
+        <div className="absolute inset-0 network-pattern opacity-20"></div>
+        <div className="max-w-6xl mx-auto text-center text-white relative z-10">
+          <h2 className="text-4xl md:text-5xl font-bold mb-4 font-quantum text-[#FDB913]">
+            Saarland in Zahlen
           </h2>
-          <p style={{
-            fontSize: '1.25rem',
-            marginBottom: '3rem',
-            opacity: 0.9
-          }}>
-            Werden Sie Teil der regionalen KI-Revolution und gestalten Sie mit uns 
-            die digitale Zukunft des Saarlandes.
+          <p className="text-xl mb-16 opacity-90 font-nova">
+            Vertrauen Sie auf bewährte Expertise und regionale Kompetenz
           </p>
-          <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap', width: '100%', maxWidth: '400px', margin: '0 auto' }}>
-            <Link href="/chat" className="touch-target touch-smooth" style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              padding: 'clamp(0.75rem, 4vw, 1rem) clamp(1.5rem, 6vw, 2rem)',
-              fontSize: 'clamp(1rem, 3.5vw, 1.125rem)',
-              fontWeight: 500,
-              color: '#003399',
-              backgroundColor: 'white',
-              borderRadius: '9999px',
-              textDecoration: 'none',
-              boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05)',
-              minHeight: '48px',
-              flex: '1',
-              justifyContent: 'center',
-              maxWidth: '200px',
-            }}>
-              Jetzt loslegen
-            </Link>
-            <button className="touch-target touch-smooth" style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              padding: 'clamp(0.75rem, 4vw, 1rem) clamp(1.5rem, 6vw, 2rem)',
-              fontSize: 'clamp(1rem, 3.5vw, 1.125rem)',
-              fontWeight: 500,
-              color: 'white',
-              backgroundColor: 'rgba(255,255,255,0.1)',
-              backdropFilter: 'blur(10px)',
-              border: '2px solid rgba(255,255,255,0.3)',
-              borderRadius: '9999px',
-              cursor: 'pointer',
-              minHeight: '48px',
-              flex: '1',
-              justifyContent: 'center',
-              maxWidth: '200px',
-            }}>
-              Kontakt aufnehmen
-            </button>
+          
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="bg-white/10 rounded-3xl p-8 backdrop-blur-sm border border-white/20 hover:bg-white/15 transition-all duration-300">
+              <div className="text-4xl md:text-5xl font-bold mb-3 text-[#FDB913]">1.043.167</div>
+              <div className="text-lg opacity-90 font-semibold">Einwohner</div>
+              <div className="text-sm opacity-70 mt-2">Saarland gesamt</div>
+            </div>
+            <div className="bg-white/10 rounded-3xl p-8 backdrop-blur-sm border border-white/20 hover:bg-white/15 transition-all duration-300">
+              <div className="text-4xl md:text-5xl font-bold mb-3 text-[#FDB913]">52</div>
+              <div className="text-lg opacity-90 font-semibold">Gemeinden</div>
+              <div className="text-sm opacity-70 mt-2">Vollabdeckung</div>
+            </div>
+            <div className="bg-white/10 rounded-3xl p-8 backdrop-blur-sm border border-white/20 hover:bg-white/15 transition-all duration-300">
+              <div className="text-4xl md:text-5xl font-bold mb-3 text-[#FDB913]">99,97%</div>
+              <div className="text-lg opacity-90 font-semibold">Uptime</div>
+              <div className="text-sm opacity-70 mt-2">Zuverlässigkeit</div>
+            </div>
+            <div className="bg-white/10 rounded-3xl p-8 backdrop-blur-sm border border-white/20 hover:bg-white/15 transition-all duration-300">
+              <div className="text-4xl md:text-5xl font-bold mb-3 text-[#FDB913]">24/7</div>
+              <div className="text-lg opacity-90 font-semibold">KI-Support</div>
+              <div className="text-sm opacity-70 mt-2">Immer verfügbar</div>
+            </div>
           </div>
-        </motion.div>
+        </div>
+      </section>
+
+      {/* Footer CTA */}
+      <section className="py-16 px-4 bg-white">
+        <div className="max-w-4xl mx-auto text-center">
+          <h3 className="text-3xl md:text-4xl font-bold text-[#003399] mb-6 font-quantum">
+            Bereit für die Zukunft?
+          </h3>
+          <p className="text-xl text-gray-600 mb-8 font-nova">
+            Erleben Sie souveräne KI-Technologie made in Saarland
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link href="/chat">
+              <button className="bg-[#003399] hover:bg-[#002266] text-white px-8 py-4 rounded-2xl font-bold text-lg transition-all duration-300 hover:scale-105 shadow-lg min-w-[200px]">
+                Jetzt starten
+              </button>
+            </Link>
+            <Link href="/services">
+              <button className="border-2 border-[#003399] text-[#003399] hover:bg-[#003399] hover:text-white px-8 py-4 rounded-2xl font-bold text-lg transition-all duration-300 hover:scale-105 min-w-[200px]">
+                Services erkunden
+              </button>
+            </Link>
+          </div>
+        </div>
       </section>
     </div>
   )
 }
-
-const features = [
-  {
-    title: 'Technische Souveränität',
-    description: 'Ihre Daten bleiben in der Region. Volle Kontrolle über KI-Prozesse und Datenhaltung.',
-    icon: Shield,
-  },
-  {
-    title: 'Regionale Intelligenz',
-    description: 'KI-Agenten mit tiefem Verständnis für saarländische Besonderheiten und Bedürfnisse.',
-    icon: Globe,
-  },
-  {
-    title: 'Demokratische Governance',
-    description: 'Transparente Entscheidungsprozesse und Community-getriebene Entwicklung.',
-    icon: Users,
-  },
-  {
-    title: 'Multi-Agenten-System',
-    description: 'Spezialisierte Agenten arbeiten nahtlos zusammen für optimale Ergebnisse.',
-    icon: Bot,
-  },
-  {
-    title: 'Datenschutz First',
-    description: 'DSGVO-konforme Verarbeitung mit Privacy-by-Design Prinzipien.',
-    icon: Database,
-  },
-  {
-    title: 'Innovation Hub',
-    description: 'Verbindung zu DFKI und regionalen Forschungseinrichtungen.',
-    icon: Sparkles,
-  },
-]

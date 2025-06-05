@@ -76,7 +76,7 @@ export default function InteractiveSaarlandMap({
 
   const loadPOIs = async (map: L.Map) => {
     try {
-      const response = await fetch('/api/v1/realtime/maps/pois');
+      const response = await fetch('/api/realtime/maps/pois');
       const data = await response.json();
       
       if (data.status === 'success') {
@@ -106,20 +106,40 @@ export default function InteractiveSaarlandMap({
   };
 
   const getIconForCategory = (category: string) => {
-    const iconColors: Record<string, string> = {
-      sehenswuerdigkeiten: 'blue',
-      veranstaltungsorte: 'red',
-      museen: 'purple',
-      parks: 'green'
+    const iconConfig: Record<string, { color: string; symbol: string }> = {
+      tourist_attractions: { color: '#3B82F6', symbol: '🏞️' },
+      education: { color: '#10B981', symbol: '🎓' },
+      culture: { color: '#8B5CF6', symbol: '🎭' },
+      administration: { color: '#F59E0B', symbol: '🏛️' },
+      business: { color: '#EF4444', symbol: '💼' },
+      transport: { color: '#6B7280', symbol: '🚉' },
+      healthcare: { color: '#EC4899', symbol: '🏥' },
+      leisure: { color: '#14B8A6', symbol: '🛍️' },
+      nature: { color: '#22C55E', symbol: '🌳' },
+      cities: { color: '#0EA5E9', symbol: '🏘️' }
     };
     
-    const color = iconColors[category] || 'gray';
+    const config = iconConfig[category] || { color: '#9CA3AF', symbol: '📍' };
     
     return L.divIcon({
       className: 'custom-div-icon',
-      html: `<div style="background-color: ${color}; width: 24px; height: 24px; border-radius: 50%; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.3);"></div>`,
-      iconSize: [24, 24],
-      iconAnchor: [12, 12]
+      html: `
+        <div style="
+          background-color: ${config.color}; 
+          width: 32px; 
+          height: 32px; 
+          border-radius: 50%; 
+          border: 3px solid white; 
+          box-shadow: 0 3px 6px rgba(0,0,0,0.3);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 16px;
+        ">${config.symbol}</div>
+      `,
+      iconSize: [32, 32],
+      iconAnchor: [16, 16],
+      popupAnchor: [0, -16]
     });
   };
 
@@ -255,25 +275,60 @@ export default function InteractiveSaarlandMap({
         </div>
       )}
       
-      {/* Legend */}
-      <div className="absolute bottom-4 left-4 bg-white rounded-lg shadow-lg p-3 text-xs z-[999]">
-        <p className="font-semibold mb-2">Legende:</p>
-        <div className="space-y-1">
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+      {/* Enhanced Legend */}
+      <div className="absolute bottom-4 left-4 bg-white rounded-lg shadow-lg p-4 text-xs z-[999] max-w-xs">
+        <div className="flex items-center gap-2 mb-3">
+          <div className="w-4 h-4 bg-gradient-to-r from-[#003399] to-[#009FE3] rounded"></div>
+          <span className="font-bold text-[#003399]">Saarland POIs</span>
+        </div>
+        
+        <div className="grid grid-cols-2 gap-1 text-xs">
+          <div className="flex items-center gap-1.5">
+            <div className="w-3 h-3 bg-[#3B82F6] rounded-full flex items-center justify-center text-white text-[8px]">🏞️</div>
             <span>Sehenswürdigkeiten</span>
           </div>
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 bg-red-500 rounded-full"></div>
-            <span>Veranstaltungsorte</span>
+          <div className="flex items-center gap-1.5">
+            <div className="w-3 h-3 bg-[#10B981] rounded-full flex items-center justify-center text-white text-[8px]">🎓</div>
+            <span>Bildung</span>
           </div>
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 bg-purple-500 rounded-full"></div>
-            <span>Museen</span>
+          <div className="flex items-center gap-1.5">
+            <div className="w-3 h-3 bg-[#8B5CF6] rounded-full flex items-center justify-center text-white text-[8px]">🎭</div>
+            <span>Kultur</span>
           </div>
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-            <span>Parks</span>
+          <div className="flex items-center gap-1.5">
+            <div className="w-3 h-3 bg-[#F59E0B] rounded-full flex items-center justify-center text-white text-[8px]">🏛️</div>
+            <span>Verwaltung</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <div className="w-3 h-3 bg-[#EF4444] rounded-full flex items-center justify-center text-white text-[8px]">💼</div>
+            <span>Wirtschaft</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <div className="w-3 h-3 bg-[#6B7280] rounded-full flex items-center justify-center text-white text-[8px]">🚉</div>
+            <span>Verkehr</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <div className="w-3 h-3 bg-[#EC4899] rounded-full flex items-center justify-center text-white text-[8px]">🏥</div>
+            <span>Gesundheit</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <div className="w-3 h-3 bg-[#14B8A6] rounded-full flex items-center justify-center text-white text-[8px]">🛍️</div>
+            <span>Freizeit</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <div className="w-3 h-3 bg-[#22C55E] rounded-full flex items-center justify-center text-white text-[8px]">🌳</div>
+            <span>Natur</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <div className="w-3 h-3 bg-[#0EA5E9] rounded-full flex items-center justify-center text-white text-[8px]">🏘️</div>
+            <span>Städte</span>
+          </div>
+        </div>
+        
+        <div className="mt-3 pt-2 border-t border-gray-200 text-gray-600">
+          <div className="flex items-center justify-between">
+            <span>Gesamt: {Object.values(pois).reduce((acc, category) => acc + category.length, 0)} Standorte</span>
+            <div className="text-[#003399] font-medium">AGENTLAND.SAARLAND</div>
           </div>
         </div>
       </div>
