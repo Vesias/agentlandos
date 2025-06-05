@@ -1,10 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+// Supabase client - only create if needed
+function getSupabaseClient() {
+  try {
+    const { createClient } = require('@supabase/supabase-js');
+    return createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!
+    );
+  } catch (error) {
+    console.warn('Supabase not available in middleware');
+    return null;
+  }
+}
 
 // Security headers configuration
 const SECURITY_HEADERS = {
@@ -117,6 +125,11 @@ function checkRateLimit(identifier: string, config: RateLimitConfig): {
 
 async function validateJWT(token: string): Promise<{ valid: boolean; user?: any }> {
   try {
+    const supabase = getSupabaseClient();
+    if (!supabase) {
+      return { valid: false };
+    }
+    
     const { data: { user }, error } = await supabase.auth.getUser(token);
     
     if (error || !user) {
@@ -296,6 +309,12 @@ export async function securityMiddleware(request: NextRequest) {
 
 async function logSecurityEvent(eventType: string, metadata: any) {
   try {
+    const supabase = getSupabaseClient();
+    if (!supabase) {
+      console.warn('Security event not logged - Supabase unavailable:', eventType);
+      return;
+    }
+    
     await supabase.from('security_events').insert({
       event_type: eventType,
       metadata,

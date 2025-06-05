@@ -1,25 +1,16 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import { securityMiddleware } from './src/middleware/security';
 
 export async function middleware(request: NextRequest) {
-  // Apply security middleware
-  const securityResponse = await securityMiddleware(request);
-  
-  // If security middleware returns a response (like rate limiting), use it
-  if (securityResponse.status !== 200 || securityResponse.headers.get('x-middleware-override')) {
-    return securityResponse;
-  }
-  
-  // Additional custom middleware logic can go here
   const response = NextResponse.next();
   
-  // Copy security headers from security middleware
-  securityResponse.headers.forEach((value, key) => {
-    response.headers.set(key, value);
-  });
+  // Basic security headers
+  response.headers.set('X-Content-Type-Options', 'nosniff');
+  response.headers.set('X-Frame-Options', 'DENY');
+  response.headers.set('X-XSS-Protection', '1; mode=block');
+  response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
   
-  // Add custom headers
+  // Custom headers
   response.headers.set('X-Powered-By', 'AGENTLAND.SAARLAND');
   response.headers.set('X-Region', 'Saarland');
   response.headers.set('X-Version', '2.0.0');
