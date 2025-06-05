@@ -13,6 +13,7 @@ export default function SimpleNavigation() {
     { href: '/', label: 'Home' },
     { href: '/chat', label: 'SAAR-GPT' },
     { href: '/services', label: 'Services' },
+    { href: '/saarbrett', label: 'SAARBRETT' },
     { href: '/behoerden', label: 'Behördenfinder' },
   ]
 
