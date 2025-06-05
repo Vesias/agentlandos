@@ -37,7 +37,7 @@ export async function POST(request: NextRequest) {
           const readable = new ReadableStream({
             async start(controller) {
               try {
-                for await (const chunk of enhancedAI.streamEnhancedChat(prompt, category, context)) {
+                for await (const chunk of enhancedAI.streamResponse(prompt, category)) {
                   controller.enqueue(encoder.encode(`data: ${JSON.stringify({ content: chunk })}\n\n`))
                 }
                 controller.enqueue(encoder.encode('data: [DONE]\n\n'))
@@ -57,7 +57,7 @@ export async function POST(request: NextRequest) {
             },
           })
         } else {
-          const response = await enhancedAI.enhancedChat(prompt, category, context)
+          const response = await enhancedAI.processQuery(prompt, 'chat', category, context)
           return NextResponse.json({
             ...response,
             api_version: 'enhanced-v1',
@@ -70,7 +70,7 @@ export async function POST(request: NextRequest) {
           return NextResponse.json({ error: 'Artifact type is required' }, { status: 400 })
         }
         
-        const artifact = await enhancedAI.generateArtifact(prompt, artifact_type, category)
+        const artifact = await enhancedAI.processQuery(prompt, 'artifact', category, { artifact_type })
         return NextResponse.json({
           artifact,
           api_version: 'enhanced-v1',
@@ -78,7 +78,7 @@ export async function POST(request: NextRequest) {
         })
 
       case 'rag':
-        const ragResponse = await enhancedAI.ragEnhancedQuery(prompt, category)
+        const ragResponse = await enhancedAI.ragQuery(prompt, { category })
         return NextResponse.json({
           ...ragResponse,
           api_version: 'enhanced-v1-rag',
@@ -105,8 +105,9 @@ export async function GET(request: NextRequest) {
   if (test === 'health') {
     try {
       // Quick health check with simple AI call
-      const response = await enhancedAI.enhancedChat(
+      const response = await enhancedAI.processQuery(
         'Kurzer Saarland-Test', 
+        'chat',
         'general'
       )
       
