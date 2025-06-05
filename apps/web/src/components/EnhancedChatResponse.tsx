@@ -10,9 +10,9 @@ interface EnhancedChatResponseProps {
 }
 
 export default function EnhancedChatResponse({ category, query }: EnhancedChatResponseProps) {
-  const { data, loading, error } = useRealTimeData(category, 30000); // Refresh every 30 seconds
+  const { data, isLoading, error } = useRealTimeData(category, 30000); // Refresh every 30 seconds
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="flex items-center gap-2 text-gray-600">
         <Loader2 className="w-4 h-4 animate-spin" />

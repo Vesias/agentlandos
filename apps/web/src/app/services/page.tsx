@@ -10,7 +10,7 @@ import Link from 'next/link';
 
 export default function ServicesPage() {
   const [activeTab, setActiveTab] = useState<'overview' | 'behoerden' | 'map'>('overview');
-  const { data: eventsData, loading: eventsLoading } = useRealTimeData('events', 300000);
+  const { data: eventsData, isLoading: eventsLoading } = useRealTimeData('events', 300000);
 
   const services = [
     {

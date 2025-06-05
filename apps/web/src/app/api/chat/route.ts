@@ -107,7 +107,7 @@ export async function POST(request: NextRequest) {
     const saarlandData = await getCurrentSaarlandData();
     
     // Enhance context with real data
-    let enhancedContext = {
+    let enhancedContext: any = {
       ...context,
       saarlandData,
       conversationHistory: messages.slice(-5),
@@ -121,14 +121,14 @@ export async function POST(request: NextRequest) {
       const embedding = await multiModelAI.createEmbedding(userMessage);
       if (embedding.length > 0) {
         // Search for similar previous conversations (if table exists)
-        const { data: similar } = await supabase
+        const result = await supabase
           .rpc('find_similar_chats', {
             query_embedding: embedding,
             similarity_threshold: 0.8,
             match_count: 3
-          })
-          .then(result => result)
-          .catch(() => ({ data: null }));
+          });
+        
+        const similar = result.data;
 
         if (similar && similar.length > 0) {
           enhancedContext.relatedTopics = similar.map((s: any) => s.topic);
@@ -174,16 +174,16 @@ export async function POST(request: NextRequest) {
       timestamp: new Date().toISOString()
     });
 
-  } catch (error) {
+  } catch (error: any) {
     console.error('Chat API Error:', error);
 
     // Log error for monitoring
     try {
       await supabase.from('api_errors').insert({
         endpoint: '/api/chat',
-        error_type: error.name,
-        error_message: error.message,
-        error_stack: error.stack,
+        error_type: error?.name || 'Unknown',
+        error_message: error?.message || 'Unknown error',
+        error_stack: error?.stack || '',
         timestamp: new Date().toISOString()
       });
     } catch (logError) {

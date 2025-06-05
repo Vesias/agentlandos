@@ -78,20 +78,20 @@ export async function POST(request: NextRequest) {
         });
 
       case 'categorize':
-        const categorizeQuery = query || text;
-        if (!categorizeQuery) {
+        const queryText = query || text;
+        if (!queryText) {
           return NextResponse.json({
             success: false,
             error: 'Query required for categorization'
           }, { status: 400 });
         }
 
-        const category = await categorizeQuery(categorizeQuery);
+        const category = await categorizeQuery(queryText);
         
         return NextResponse.json({
           success: true,
           category,
-          query: categorizeQuery,
+          query: queryText,
           confidence: category.confidence,
           processingTime: Date.now() - startTime,
           timestamp: new Date().toISOString()
@@ -422,7 +422,7 @@ async function getServiceHealth() {
       database: false,
       multiModel: {},
       overall: false,
-      error: error.message
+      error: error instanceof Error ? error.message : 'Unknown error'
     };
   }
 }
