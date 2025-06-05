@@ -7,7 +7,7 @@ redis==5.0.1
 
 # Input Validation & Sanitization
 bleach==6.1.0
-python-multipart==0.0.6
+python-multipart==0.0.18
 email-validator==2.1.0
 
 # Authentication & Authorization
@@ -19,7 +19,7 @@ bcrypt==4.1.2
 fastapi-security==0.5.0
 
 # Cryptography & Encryption
-cryptography==44.0.1
+cryptography==45.0.3
 pyotp==2.9.0  # For 2FA implementation
 
 # Monitoring & Logging
