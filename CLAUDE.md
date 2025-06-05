@@ -311,6 +311,10 @@ ai_docs/                        # AI agent memory & documentation
 - **Mobile Optimization**: PWA-ready responsive design
 - **Security**: Dependency vulnerabilities resolved, GDPR framework
 - **Infrastructure**: Supabase + Vercel PRO + automated deployment
+- **SAARBRETT**: Community bulletin board with blue navigation button (blauer Hintergrund, weiße Schrift)
+- **Behördenfinder**: Maximally extended with 25+ detailed authorities database
+- **Stripe Integration**: Real API with test keys, subscription handling, Stripe CLI installed
+- **Navigation**: Enhanced with SAARBRETT prominent placement
 
 ### 🔄 Active Development
 - **Enhanced AI Services**: Open Canvas content creation

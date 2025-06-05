@@ -4,7 +4,7 @@ import Stripe from 'stripe'
 export const runtime = 'edge'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || 'sk_test_51PzhbGLYCLJOCQYhDummyTestKey123', {
-  apiVersion: '2024-12-18.acacia'
+  apiVersion: '2025-05-28.basil'
 })
 
 export async function POST(request: NextRequest) {
@@ -87,8 +87,7 @@ export async function POST(request: NextRequest) {
       currency: selectedPlan.currency.toLowerCase(),
       recurring: { interval: 'month' },
       product_data: {
-        name: selectedPlan.name,
-        description: `Premium ${selectedPlan.name} subscription for AGENTLAND.SAARLAND`
+        name: selectedPlan.name
       }
     })
 
@@ -113,7 +112,7 @@ export async function POST(request: NextRequest) {
         status: subscription.status,
         amount: selectedPlan.price,
         currency: selectedPlan.currency,
-        clientSecret: (subscription.latest_invoice as Stripe.Invoice)?.payment_intent?.client_secret
+        clientSecret: subscription.latest_invoice && typeof subscription.latest_invoice === 'object' && 'payment_intent' in subscription.latest_invoice ? (subscription.latest_invoice.payment_intent as any)?.client_secret : undefined
       },
       nextSteps: {
         message: 'Complete payment to activate premium features',
