@@ -9,6 +9,8 @@ import re
 from datetime import datetime, timedelta
 from typing import Dict, List, Optional, Tuple
 from urllib.parse import urlparse, urljoin
+from pathlib import Path
+import os
 from bs4 import BeautifulSoup
 import logging
 
@@ -333,7 +335,11 @@ async def validate_links_endpoint(urls: List[str]) -> Dict:
             }
         }
 
-async def generate_health_report_endpoint(base_path: str = "/Users/deepsleeping/agentlandos") -> Dict:
-    """API endpoint for comprehensive health report"""
+async def generate_health_report_endpoint(base_path: str | Path | None = None) -> Dict:
+    """API endpoint for comprehensive health report."""
+    if base_path is None:
+        base_path = Path(
+            os.getenv("AGENTLAND_ROOT", Path(__file__).resolve().parents[4])
+        )
     async with SaarlandLinkValidator() as validator:
-        return await validator.generate_link_health_report(base_path)
+        return await validator.generate_link_health_report(str(base_path))
