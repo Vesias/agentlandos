@@ -133,9 +133,8 @@ async def chat_with_agent(
     Sendet eine Nachricht an den KI-Agenten
     """
     # Kontext erstellen
-    user_uuid = uuid5(NAMESPACE_DNS, current_user.username)
     context = AgentContext(
-        user_id=user_uuid,
+        user_id=current_user.user_id,
         session_id=request.session_id or uuid4(),
         language=request.language,
         location=request.location,
@@ -159,12 +158,14 @@ async def submit_feedback(
     rating: int,
     comment: str | None = None,
     session: AsyncSession = Depends(get_async_session),
+    current_user: TokenData = Depends(get_current_user),
 ):
     """
     Feedback für eine Agent-Interaktion einreichen
     """
     feedback = Feedback(
         agent_id=agent_id,
+        user_id=current_user.user_id,
         message_id=message_id,
         rating=rating,
         comment=comment,

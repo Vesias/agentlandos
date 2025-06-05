@@ -4,6 +4,7 @@ Authentifizierungs-Endpoints
 
 from datetime import datetime, timedelta
 from typing import Annotated
+from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
@@ -14,6 +15,9 @@ from pydantic import BaseModel, EmailStr
 from app.core.config import settings
 
 router = APIRouter()
+
+# Demo user ID for demonstration purposes
+DEMO_USER_ID = UUID("00000000-0000-0000-0000-000000000001")
 
 # Password hashing
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -47,6 +51,7 @@ class TokenData(BaseModel):
     Token Payload Schema
     """
     username: str | None = None
+    user_id: UUID | None = None
 
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
@@ -89,9 +94,10 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
     try:
         payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
         username: str = payload.get("sub")
-        if username is None:
+        user_id_str: str = payload.get("uid")
+        if username is None or user_id_str is None:
             raise credentials_exception
-        token_data = TokenData(username=username)
+        token_data = TokenData(username=username, user_id=UUID(user_id_str))
     except JWTError:
         raise credentials_exception
     # TODO: Benutzer aus Datenbank laden
@@ -133,7 +139,8 @@ async def login(form_data: Annotated[OAuth2PasswordRequestForm, Depends()]):
         
         access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
         access_token = create_access_token(
-            data={"sub": form_data.username}, expires_delta=access_token_expires
+            data={"sub": form_data.username, "uid": str(DEMO_USER_ID)},
+            expires_delta=access_token_expires,
         )
         
         # SICHERHEIT: Erfolgreiche Anmeldung loggen
@@ -160,6 +167,7 @@ async def read_users_me(current_user: Annotated[TokenData, Depends(get_current_u
     Gibt Informationen über den aktuellen Benutzer zurück
     """
     return {
+        "user_id": str(current_user.user_id),
         "username": current_user.username,
         "email": f"{current_user.username}@agentland.saarland",
         "region": "Saarland",
