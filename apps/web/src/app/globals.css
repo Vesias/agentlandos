@@ -298,16 +298,36 @@
   }
 }
 
-/* Performance optimizations for mobile */
+/* Enhanced mobile optimizations and touch interactions */
 @media (max-width: 768px) {
   * {
     /* Reduce repaints and reflows */
     will-change: auto;
+    /* Improve scroll performance */
+    -webkit-overflow-scrolling: touch;
   }
 
   /* Optimize animations for mobile */
   .agent-active {
     animation-duration: 3s; /* Slower on mobile to reduce battery drain */
+  }
+  
+  /* Enhanced touch targets */
+  .touch-manipulation {
+    min-height: 44px; /* iOS minimum touch target */
+    min-width: 44px;
+  }
+  
+  /* Touch feedback improvements */
+  button:active,
+  .touch-manipulation:active {
+    transform: scale(0.98);
+    transition: transform 0.1s ease-out;
+  }
+  
+  /* Prevent 300ms click delay */
+  a, button, input, textarea, select {
+    touch-action: manipulation;
   }
 
   /* Reduce motion for users who prefer it */
@@ -319,5 +339,35 @@
     .touch-smooth {
       transition: none;
     }
+    
+    button:active,
+    .touch-manipulation:active {
+      transform: none;
+    }
+  }
+}
+
+/* PWA specific optimizations */
+@media (display-mode: standalone) {
+  /* Hide browser chrome when installed as PWA */
+  body {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  
+  /* Adjust navigation for notch devices */
+  header {
+    padding-top: env(safe-area-inset-top);
+  }
+}
+
+/* Dark mode support for mobile */
+@media (prefers-color-scheme: dark) {
+  .dark\:bg-dark {
+    background-color: #1a1a1a;
+  }
+  
+  .dark\:text-light {
+    color: #f0f0f0;
   }
 }

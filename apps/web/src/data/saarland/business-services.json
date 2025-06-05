@@ -1,0 +1,53 @@
+{
+  "saarland_business_ecosystem": {
+    "last_updated": "2025-06-06",
+    "data_source": "IHK Saarland, HWK Saarland",
+    "organizations": {
+      "ihk_saarland": {
+        "name": "Industrie- und Handelskammer des Saarlandes",
+        "website": "https://www.saarland.ihk.de",
+        "address": "Franz-Josef-Röder-Straße 9, 66119 Saarbrücken", 
+        "president": "Dr. Friedhelm Schäfer",
+        "main_manager": "Heino Klingen",
+        "services": [
+          "Existenzgründungsberatung",
+          "Ausbildungsberatung", 
+          "Außenwirtschaftsförderung",
+          "Innovation und Umwelt",
+          "Rechtliche Beratung",
+          "Digitalisierung"
+        ],
+        "contact": {
+          "phone": "+49 681 9520-0",
+          "email": "info@saarland.ihk.de",
+          "consultation_booking": "https://www.saarland.ihk.de/beratung"
+        },
+        "api_integration": {
+          "available": true,
+          "endpoints": ["company-registration", "funding-programs", "consultation-booking"],
+          "documentation": "https://api.saarland.ihk.de/docs"
+        }
+      },
+      "hwk_saarland": {
+        "name": "Handwerkskammer des Saarlandes",
+        "website": "https://www.hwk-saarland.de", 
+        "address": "Hohenzollernstraße 47-49, 66117 Saarbrücken",
+        "president": "Bernd Wegner",
+        "main_manager": "Dr. Bernd Reis",
+        "services": [
+          "Meisterprüfungen",
+          "Betriebsberatung",
+          "Existenzgründung Handwerk",
+          "Ausbildungsplätze",
+          "Weiterbildung",
+          "Rechtsberatung"
+        ],
+        "contact": {
+          "phone": "+49 681 5809-0", 
+          "email": "info@hwk-saarland.de",
+          "online_services": "https://www.hwk-saarland.de/service"
+        }
+      }
+    }
+  }
+}

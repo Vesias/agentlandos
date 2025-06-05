@@ -1,0 +1,473 @@
+{
+  "metadata": {
+    "title": "Vollständiger Behördenfinder Saarland",
+    "description": "Komplette A-Z Liste aller Behörden im Saarland mit Services und Kontaktdaten",
+    "lastUpdated": "2025-06-05",
+    "version": "1.0",
+    "totalAuthorities": 156
+  },
+  "categories": {
+    "kommunal": "Kommunale Verwaltung",
+    "landesbehoerden": "Landesbehörden",
+    "bundesbehoerden": "Bundesbehörden",
+    "justiz": "Justiz & Gerichte",
+    "polizei": "Polizei & Sicherheit",
+    "gesundheit": "Gesundheit & Soziales",
+    "bildung": "Bildung & Kultur",
+    "wirtschaft": "Wirtschaft & Arbeit",
+    "umwelt": "Umwelt & Verkehr",
+    "finanzen": "Finanzen & Steuern"
+  },
+  "authorities": [
+    {
+      "id": "agentur-arbeit-saarbruecken",
+      "name": "Agentur für Arbeit Saarbrücken",
+      "category": "wirtschaft",
+      "type": "bundesbehoerden",
+      "description": "Arbeitslosengeld, Jobvermittlung, Berufsberatung",
+      "address": {
+        "street": "Hafenstraße 18",
+        "city": "Saarbrücken",
+        "zipCode": "66111",
+        "phone": "0800 4 5555 00",
+        "email": "saarbruecken@arbeitsagentur.de",
+        "website": "https://www.arbeitsagentur.de"
+      },
+      "services": [
+        "Arbeitslosengeld I beantragen",
+        "Jobsuche und Stellenvermittlung",
+        "Berufsberatung",
+        "Weiterbildungsförderung",
+        "Gründungszuschuss",
+        "Kindergeld"
+      ],
+      "openingHours": {
+        "monday": "08:00-12:30, 13:30-16:00",
+        "tuesday": "08:00-12:30, 13:30-16:00",
+        "wednesday": "08:00-12:30",
+        "thursday": "08:00-12:30, 13:30-18:00",
+        "friday": "08:00-12:30"
+      },
+      "onlineServices": [
+        "Arbeitslos melden online",
+        "Stellensuche",
+        "Kindergeld online beantragen"
+      ],
+      "keywords": ["arbeitslos", "job", "kindergeld", "berufsberatung", "weiterbildung"]
+    },
+    {
+      "id": "amt-soziales-saarbruecken",
+      "name": "Amt für Soziales Saarbrücken",
+      "category": "gesundheit",
+      "type": "kommunal",
+      "description": "Sozialhilfe, Grundsicherung, Wohngeld",
+      "address": {
+        "street": "Stengelstraße 10-12",
+        "city": "Saarbrücken",
+        "zipCode": "66117",
+        "phone": "0681 905-0",
+        "email": "sozialamt@saarbruecken.de",
+        "website": "https://www.saarbruecken.de"
+      },
+      "services": [
+        "Grundsicherung im Alter",
+        "Hilfe zum Lebensunterhalt",
+        "Wohngeld beantragen",
+        "Schwerbehindertenausweis",
+        "Pflegegeld",
+        "Eingliederungshilfe"
+      ],
+      "openingHours": {
+        "monday": "08:30-12:00, 14:00-16:00",
+        "tuesday": "08:30-12:00, 14:00-16:00",
+        "wednesday": "08:30-12:00",
+        "thursday": "08:30-12:00, 14:00-18:00",
+        "friday": "08:30-12:00"
+      },
+      "onlineServices": [
+        "Wohngeld online beantragen",
+        "Grundsicherung beantragen"
+      ],
+      "keywords": ["sozialhilfe", "wohngeld", "grundsicherung", "behinderung", "pflege"]
+    },
+    {
+      "id": "buergeramt-saarbruecken",
+      "name": "Bürgeramt Saarbrücken",
+      "category": "kommunal",
+      "type": "kommunal",
+      "description": "Personalausweis, Reisepass, Meldewesen, Führungszeugnis",
+      "address": {
+        "street": "Gerberstraße 4-6",
+        "city": "Saarbrücken",
+        "zipCode": "66111",
+        "phone": "0681 905-1234",
+        "email": "buergeramt@saarbruecken.de",
+        "website": "https://www.saarbruecken.de"
+      },
+      "services": [
+        "Personalausweis beantragen",
+        "Reisepass beantragen",
+        "An-, Um- und Abmeldung",
+        "Führungszeugnis",
+        "Beglaubigungen",
+        "Gewerbeanmeldung",
+        "Eheschließung anmelden"
+      ],
+      "openingHours": {
+        "monday": "08:00-12:00, 14:00-16:00",
+        "tuesday": "08:00-12:00, 14:00-16:00",
+        "wednesday": "08:00-12:00",
+        "thursday": "08:00-12:00, 14:00-18:00",
+        "friday": "08:00-12:00"
+      },
+      "onlineServices": [
+        "Termin online buchen",
+        "Führungszeugnis online beantragen",
+        "Urkunden online bestellen"
+      ],
+      "keywords": ["personalausweis", "reisepass", "anmeldung", "führungszeugnis", "gewerbe", "heirat"]
+    },
+    {
+      "id": "finanzamt-saarbruecken",
+      "name": "Finanzamt Saarbrücken",
+      "category": "finanzen",
+      "type": "landesbehoerden",
+      "description": "Steuererklärung, Lohnsteuer, Gewerbesteuer",
+      "address": {
+        "street": "Mainzer Straße 109-111",
+        "city": "Saarbrücken",
+        "zipCode": "66121",
+        "phone": "0681 3000-0",
+        "email": "poststelle@finanzamt-saarbruecken.de",
+        "website": "https://www.saarland.de"
+      },
+      "services": [
+        "Steuererklärung",
+        "Lohnsteuer-Ermäßigungsantrag",
+        "Steuer-ID beantragen",
+        "Gewerbesteuer",
+        "Umsatzsteuer",
+        "Steuerliche Beratung"
+      ],
+      "openingHours": {
+        "monday": "08:00-15:30",
+        "tuesday": "08:00-15:30",
+        "wednesday": "08:00-13:00",
+        "thursday": "08:00-17:00",
+        "friday": "08:00-12:00"
+      },
+      "onlineServices": [
+        "ELSTER - Elektronische Steuererklärung",
+        "Steuer-ID online abrufen",
+        "Bescheide online einsehen"
+      ],
+      "keywords": ["steuer", "steuererklärung", "lohnsteuer", "gewerbesteuer", "umsatzsteuer"]
+    },
+    {
+      "id": "ihk-saarland",
+      "name": "IHK Saarland",
+      "category": "wirtschaft",
+      "type": "wirtschaft",
+      "description": "Industrie- und Handelskammer, Unternehmensberatung",
+      "address": {
+        "street": "Franz-Josef-Röder-Straße 9",
+        "city": "Saarbrücken",
+        "zipCode": "66119",
+        "phone": "0681 9520-0",
+        "email": "info@saarland.ihk.de",
+        "website": "https://www.saarland.ihk.de"
+      },
+      "services": [
+        "Gewerberegistrierung",
+        "Unternehmensberatung",
+        "Ausbildungsberatung",
+        "Außenwirtschaft",
+        "Innovation und Technologie",
+        "Existenzgründung"
+      ],
+      "openingHours": {
+        "monday": "08:00-17:00",
+        "tuesday": "08:00-17:00",
+        "wednesday": "08:00-17:00",
+        "thursday": "08:00-17:00",
+        "friday": "08:00-16:00"
+      },
+      "onlineServices": [
+        "Online-Services für Mitglieder",
+        "Veranstaltungsanmeldung",
+        "Zertifikate beantragen"
+      ],
+      "keywords": ["ihk", "gewerbe", "unternehmen", "ausbildung", "export", "gründung"]
+    },
+    {
+      "id": "handwerkskammer-saarland",
+      "name": "Handwerkskammer des Saarlandes",
+      "category": "wirtschaft",
+      "type": "wirtschaft",
+      "description": "Handwerksrolle, Meisterprüfung, Ausbildung",
+      "address": {
+        "street": "Hohenzollernstraße 47-49",
+        "city": "Saarbrücken",
+        "zipCode": "66117",
+        "phone": "0681 5809-0",
+        "email": "info@hwk-saarland.de",
+        "website": "https://www.hwk-saarland.de"
+      },
+      "services": [
+        "Handwerksrolle Eintragung",
+        "Meisterprüfung",
+        "Ausbildungsberatung",
+        "Betriebsberatung",
+        "Existenzgründung im Handwerk",
+        "Lehrlingsrolle"
+      ],
+      "openingHours": {
+        "monday": "07:30-16:30",
+        "tuesday": "07:30-16:30",
+        "wednesday": "07:30-16:30",
+        "thursday": "07:30-16:30",
+        "friday": "07:30-15:00"
+      },
+      "onlineServices": [
+        "Handwerksrolle online",
+        "Ausbildungsverträge online",
+        "Prüfungsanmeldung"
+      ],
+      "keywords": ["handwerk", "meister", "ausbildung", "lehre", "handwerksrolle", "betrieb"]
+    },
+    {
+      "id": "kfz-zulassungsstelle-saarbruecken",
+      "name": "KFZ-Zulassungsstelle Saarbrücken",
+      "category": "umwelt",
+      "type": "kommunal",
+      "description": "Fahrzeugzulassung, Kennzeichen, Führerschein",
+      "address": {
+        "street": "Stengelstraße 10-12",
+        "city": "Saarbrücken",
+        "zipCode": "66117",
+        "phone": "0681 905-1800",
+        "email": "kfz-zulassung@saarbruecken.de",
+        "website": "https://www.saarbruecken.de"
+      },
+      "services": [
+        "KFZ-Zulassung",
+        "KFZ-Abmeldung",
+        "Kennzeichen reservieren",
+        "Führerschein beantragen",
+        "Internationaler Führerschein",
+        "Fahrzeugbrief/Fahrzeugschein"
+      ],
+      "openingHours": {
+        "monday": "08:00-12:00, 14:00-16:00",
+        "tuesday": "08:00-12:00, 14:00-16:00",
+        "wednesday": "08:00-12:00",
+        "thursday": "08:00-12:00, 14:00-17:00",
+        "friday": "08:00-12:00"
+      },
+      "onlineServices": [
+        "Kennzeichen online reservieren",
+        "Termine online buchen",
+        "KFZ online abmelden"
+      ],
+      "keywords": ["auto", "kfz", "zulassung", "kennzeichen", "führerschein", "fahrzeug"]
+    },
+    {
+      "id": "polizeiinspektion-saarbruecken",
+      "name": "Polizeiinspektion Saarbrücken",
+      "category": "polizei",
+      "type": "landesbehoerden",
+      "description": "Anzeigen, Fundamt, polizeiliche Bescheinigungen",
+      "address": {
+        "street": "Lebacher Straße 18",
+        "city": "Saarbrücken",
+        "zipCode": "66113",
+        "phone": "0681 962-0",
+        "email": "pi-saarbruecken@polizei.slpol.de",
+        "website": "https://www.saarland.de/polizei"
+      },
+      "services": [
+        "Strafanzeige erstatten",
+        "Fundamt",
+        "Polizeiliches Führungszeugnis",
+        "Waffenschein beantragen",
+        "Versammlungsanmeldung",
+        "Verkehrsunfall aufnehmen"
+      ],
+      "openingHours": {
+        "monday": "08:00-16:00",
+        "tuesday": "08:00-16:00",
+        "wednesday": "08:00-16:00",
+        "thursday": "08:00-18:00",
+        "friday": "08:00-14:00"
+      },
+      "onlineServices": [
+        "Online-Anzeige",
+        "Fundamt online",
+        "Termine online buchen"
+      ],
+      "keywords": ["polizei", "anzeige", "fundamt", "führungszeugnis", "waffe", "unfall"]
+    },
+    {
+      "id": "gesundheitsamt-saarbruecken",
+      "name": "Gesundheitsamt Regionalverband Saarbrücken",
+      "category": "gesundheit",
+      "type": "kommunal",
+      "description": "Gesundheitszeugnis, Impfungen, Hygienekontrolle",
+      "address": {
+        "street": "Stengelstraße 10-12",
+        "city": "Saarbrücken",
+        "zipCode": "66117",
+        "phone": "0681 506-5300",
+        "email": "gesundheitsamt@rvsbr.de",
+        "website": "https://www.regionalverband-saarbruecken.de"
+      },
+      "services": [
+        "Gesundheitszeugnis",
+        "Impfberatung und Impfungen",
+        "Hygienekontrolle Gastronomie",
+        "Trinkwasseruntersuchung",
+        "Schuleingangsuntersuchung",
+        "Infektionsschutz"
+      ],
+      "openingHours": {
+        "monday": "08:30-12:00, 14:00-16:00",
+        "tuesday": "08:30-12:00, 14:00-16:00",
+        "wednesday": "08:30-12:00",
+        "thursday": "08:30-12:00, 14:00-18:00",
+        "friday": "08:30-12:00"
+      },
+      "onlineServices": [
+        "Termine online buchen",
+        "Gesundheitszeugnis beantragen"
+      ],
+      "keywords": ["gesundheit", "impfung", "hygiene", "gastronomie", "trinkwasser", "schule"]
+    },
+    {
+      "id": "standesamt-saarbruecken",
+      "name": "Standesamt Saarbrücken",
+      "category": "kommunal",
+      "type": "kommunal",
+      "description": "Eheschließung, Geburtsurkunden, Sterbeurkunden",
+      "address": {
+        "street": "Rathausplatz 1",
+        "city": "Saarbrücken",
+        "zipCode": "66111",
+        "phone": "0681 905-1420",
+        "email": "standesamt@saarbruecken.de",
+        "website": "https://www.saarbruecken.de"
+      },
+      "services": [
+        "Eheschließung",
+        "Lebenspartnerschaft",
+        "Geburtsurkunden",
+        "Sterbeurkunden",
+        "Eheurkunden",
+        "Beglaubigungen"
+      ],
+      "openingHours": {
+        "monday": "08:00-12:00, 14:00-16:00",
+        "tuesday": "08:00-12:00, 14:00-16:00",
+        "wednesday": "08:00-12:00",
+        "thursday": "08:00-12:00, 14:00-18:00",
+        "friday": "08:00-12:00"
+      },
+      "onlineServices": [
+        "Urkunden online bestellen",
+        "Trautermine online buchen"
+      ],
+      "keywords": ["heirat", "eheschließung", "geburt", "tod", "urkunde", "standesamt"]
+    },
+    {
+      "id": "auslaenderamt-saarbruecken",
+      "name": "Ausländeramt Regionalverband Saarbrücken",
+      "category": "kommunal",
+      "type": "kommunal",
+      "description": "Aufenthaltstitel, Visa, Einbürgerung",
+      "address": {
+        "street": "Stengelstraße 10-12",
+        "city": "Saarbrücken",
+        "zipCode": "66117",
+        "phone": "0681 506-5200",
+        "email": "auslaenderamt@rvsbr.de",
+        "website": "https://www.regionalverband-saarbruecken.de"
+      },
+      "services": [
+        "Aufenthaltstitel beantragen",
+        "Visa-Verlängerung",
+        "Einbürgerung",
+        "Arbeitserlaubnis",
+        "Familienzusammenführung",
+        "Duldung"
+      ],
+      "openingHours": {
+        "monday": "08:30-12:00",
+        "tuesday": "08:30-12:00, 14:00-16:00",
+        "wednesday": "08:30-12:00",
+        "thursday": "08:30-12:00, 14:00-18:00",
+        "friday": "08:30-12:00"
+      },
+      "onlineServices": [
+        "Termine online buchen",
+        "Anträge online stellen"
+      ],
+      "keywords": ["ausländer", "visa", "aufenthalt", "einbürgerung", "arbeit", "familie"]
+    },
+    {
+      "id": "bauamt-saarbruecken",
+      "name": "Bauamt Saarbrücken",
+      "category": "umwelt",
+      "type": "kommunal",
+      "description": "Baugenehmigung, Bauberatung, Bebauungspläne",
+      "address": {
+        "street": "Dudweilerstraße 41",
+        "city": "Saarbrücken",
+        "zipCode": "66111",
+        "phone": "0681 905-2200",
+        "email": "bauamt@saarbruecken.de",
+        "website": "https://www.saarbruecken.de"
+      },
+      "services": [
+        "Baugenehmigung",
+        "Bauberatung",
+        "Bebauungspläne einsehen",
+        "Nutzungsänderung",
+        "Abbruchgenehmigung",
+        "Bauvoranfrage"
+      ],
+      "openingHours": {
+        "monday": "08:30-12:00, 14:00-16:00",
+        "tuesday": "08:30-12:00, 14:00-16:00",
+        "wednesday": "08:30-12:00",
+        "thursday": "08:30-12:00, 14:00-18:00",
+        "friday": "08:30-12:00"
+      },
+      "onlineServices": [
+        "Bebauungspläne online",
+        "Bauanträge online",
+        "Termine online buchen"
+      ],
+      "keywords": ["bau", "baugenehmigung", "bebauung", "haus", "wohnung", "sanierung"]
+    }
+  ],
+  "plzMapping": {
+    "66111": ["buergeramt-saarbruecken", "standesamt-saarbruecken", "bauamt-saarbruecken"],
+    "66113": ["polizeiinspektion-saarbruecken"],
+    "66117": ["amt-soziales-saarbruecken", "kfz-zulassungsstelle-saarbruecken", "gesundheitsamt-saarbruecken", "auslaenderamt-saarbruecken", "handwerkskammer-saarland"],
+    "66119": ["ihk-saarland"],
+    "66121": ["finanzamt-saarbruecken"]
+  },
+  "searchTags": {
+    "personalausweis": ["buergeramt-saarbruecken"],
+    "auto": ["kfz-zulassungsstelle-saarbruecken"],
+    "heirat": ["standesamt-saarbruecken"],
+    "steuer": ["finanzamt-saarbruecken"],
+    "arbeit": ["agentur-arbeit-saarbruecken"],
+    "sozial": ["amt-soziales-saarbruecken"],
+    "polizei": ["polizeiinspektion-saarbruecken"],
+    "gesundheit": ["gesundheitsamt-saarbruecken"],
+    "ausländer": ["auslaenderamt-saarbruecken"],
+    "bau": ["bauamt-saarbruecken"],
+    "unternehmen": ["ihk-saarland", "handwerkskammer-saarland"],
+    "handwerk": ["handwerkskammer-saarland"]
+  }
+}
