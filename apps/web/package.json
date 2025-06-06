@@ -8,7 +8,9 @@
     "vercel-build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test-supabase": "cd ../../ && node scripts/test-supabase.js",
+    "setup-database": "bash ../../scripts/setup-database.sh"
   },
   "dependencies": {
     "@ai-sdk/deepseek": "^0.2.14",

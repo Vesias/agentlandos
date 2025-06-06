@@ -1,0 +1,112 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f8fafc;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#e2e8f0;stop-opacity:1" />
+    </linearGradient>
+    
+    <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1e40af;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#3b82f6;stop-opacity:1" />
+    </linearGradient>
+    
+    <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#000000" flood-opacity="0.1"/>
+    </filter>
+  </defs>
+  
+  <!-- Professional background -->
+  <rect width="1200" height="630" fill="url(#bgGrad)"/>
+  
+  <!-- Professional pattern overlay -->
+  <defs>
+    <pattern id="professionalPattern" x="0" y="0" width="60" height="60" patternUnits="userSpaceOnUse">
+      <rect width="60" height="60" fill="none"/>
+      <circle cx="30" cy="30" r="2" fill="#1e40af" opacity="0.1"/>
+      <circle cx="10" cy="10" r="1" fill="#059669" opacity="0.1"/>
+      <circle cx="50" cy="10" r="1" fill="#059669" opacity="0.1"/>
+      <circle cx="10" cy="50" r="1" fill="#059669" opacity="0.1"/>
+      <circle cx="50" cy="50" r="1" fill="#059669" opacity="0.1"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="630" fill="url(#professionalPattern)"/>
+  
+  <!-- Main content container -->
+  <g transform="translate(120, 150)">
+    <!-- Professional logo symbol -->
+    <rect x="0" y="0" width="120" height="120" rx="24" 
+          fill="url(#logoGrad)" 
+          filter="url(#shadow)"/>
+    
+    <!-- AI connectivity symbol -->
+    <g transform="translate(60, 60)" stroke="#ffffff" stroke-width="3" fill="none">
+      <circle cx="0" cy="0" r="20" stroke-width="4"/>
+      <circle cx="-30" cy="-20" r="8"/>
+      <circle cx="30" cy="-20" r="8"/>
+      <circle cx="-30" cy="20" r="8"/>
+      <circle cx="30" cy="20" r="8"/>
+      <line x1="-22" y1="-15" x2="-15" y2="-15"/>
+      <line x1="15" y1="-15" x2="22" y2="-15"/>
+      <line x1="-22" y1="15" x2="-15" y2="15"/>
+      <line x1="15" y1="15" x2="22" y2="15"/>
+    </g>
+    
+    <!-- Accent indicator -->
+    <circle cx="105" cy="25" r="8" fill="#10b981"/>
+  </g>
+  
+  <!-- Professional typography -->
+  <g transform="translate(280, 150)">
+    <!-- Main headline -->
+    <text x="0" y="60" 
+          font-family="'Segoe UI', -apple-system, system-ui, sans-serif" 
+          font-size="56" 
+          font-weight="700" 
+          fill="#1e293b"
+          letter-spacing="-0.02em">AGENTLAND</text>
+    
+    <!-- Separator line -->
+    <rect x="0" y="80" width="400" height="2" fill="#e2e8f0"/>
+    
+    <!-- Regional identifier -->
+    <text x="0" y="130" 
+          font-family="'Segoe UI', -apple-system, system-ui, sans-serif" 
+          font-size="32" 
+          font-weight="600" 
+          fill="#475569"
+          letter-spacing="0.01em">SAARLAND</text>
+    
+    <!-- Professional tagline -->
+    <text x="0" y="180" 
+          font-family="'Segoe UI', -apple-system, system-ui, sans-serif" 
+          font-size="24" 
+          font-weight="400" 
+          fill="#64748b"
+          letter-spacing="0.01em">Digitale Exzellenz für Unternehmen</text>
+    
+    <!-- Value proposition -->
+    <text x="0" y="220" 
+          font-family="'Segoe UI', -apple-system, system-ui, sans-serif" 
+          font-size="18" 
+          font-weight="500" 
+          fill="#059669"
+          letter-spacing="0.005em">KI-Automation • Kosteneinsparung • Umsatzsteigerung</text>
+  </g>
+  
+  <!-- Professional badge -->
+  <g transform="translate(950, 50)">
+    <rect x="0" y="0" width="200" height="80" rx="12" fill="#1e40af" opacity="0.1" stroke="#1e40af" stroke-width="2"/>
+    <text x="100" y="35" 
+          text-anchor="middle"
+          font-family="'Segoe UI', -apple-system, system-ui, sans-serif" 
+          font-size="14" 
+          font-weight="600" 
+          fill="#1e40af">ENTERPRISE READY</text>
+    <text x="100" y="55" 
+          text-anchor="middle"
+          font-family="'Segoe UI', -apple-system, system-ui, sans-serif" 
+          font-size="12" 
+          font-weight="400" 
+          fill="#475569">Professional KI-Services</text>
+  </g>
+</svg>

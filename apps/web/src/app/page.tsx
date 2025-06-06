@@ -49,19 +49,19 @@ export default function HomePage() {
             </p>
           </div>
 
-          {/* CTA Buttons - KI-Agentur Focus */}
+          {/* Revolutionary 2027 CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16">
-            <Link href="/chat" className="w-full sm:w-auto">
+            <Link href="/ai-assistant" className="w-full sm:w-auto">
               <button className="group bg-[#FDB913] hover:bg-[#E5A50A] text-[#003399] px-8 py-4 rounded-2xl font-bold text-lg transition-all duration-300 flex items-center justify-center w-full sm:w-auto min-w-[260px] shadow-2xl hover:shadow-3xl hover:scale-105 touch-manipulation">
-                <TrendingUp className="w-6 h-6 mr-3 group-hover:scale-110 transition-transform" />
-                KI-Agentur LIVE testen
+                <Brain className="w-6 h-6 mr-3 group-hover:scale-110 transition-transform" />
+                AI Assistant starten
               </button>
             </Link>
             
-            <Link href="/services/business" className="w-full sm:w-auto">
+            <Link href="/instant-help" className="w-full sm:w-auto">
               <button className="group bg-white/10 hover:bg-white/20 text-white border-2 border-white/30 hover:border-white/50 px-8 py-4 rounded-2xl font-semibold text-lg transition-all duration-300 flex items-center justify-center w-full sm:w-auto min-w-[260px] backdrop-blur-sm touch-manipulation">
-                <Building2 className="w-6 h-6 mr-3 group-hover:scale-110 transition-transform" />
-                Business Services
+                <Zap className="w-6 h-6 mr-3 group-hover:scale-110 transition-transform" />
+                Sofort-Hilfe
               </button>
             </Link>
           </div>
@@ -360,21 +360,55 @@ export default function HomePage() {
       {/* Advanced Saarland Services - NEW! */}
       <EnhancedSaarlandServices />
       
-      {/* Multi-Agent Chat Section */}
+      {/* Revolutionary AI Interface Section */}
       <section className="py-20 px-4 bg-gradient-to-b from-white to-gray-50">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
             <div className="inline-flex items-center gap-2 bg-[#003399]/10 border border-[#003399]/20 rounded-full px-6 py-2 mb-6">
               <Brain className="w-5 h-5 text-[#003399]" />
-              <span className="text-[#003399] font-semibold">INTELLIGENTES AI CHAT</span>
+              <span className="text-[#003399] font-semibold">2027 UX REVOLUTION</span>
             </div>
             <h2 className="text-4xl md:text-5xl font-bold text-[#003399] mb-4 font-quantum">
-              Multi-Agent KI mit erweiterten Fähigkeiten
+              Intelligente AI ohne Grenzen
             </h2>
             <p className="text-xl text-gray-600 max-w-4xl mx-auto font-nova">
-              Sprechen Sie mit spezialisierten KI-Agenten. Upload von Dokumenten, Sprachaufnahmen und Echtzeit-Datenintegration.
+              Keine veralteten "Chat Free" vs "Chat Pro" Kategorien. Ein adaptiver AI-Assistent, der automatisch erkennt, was Sie brauchen.
             </p>
           </div>
+          
+          {/* New UX Features Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+            <div className="bg-white p-8 rounded-3xl shadow-lg border border-gray-100 text-center">
+              <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                <Brain className="w-8 h-8 text-white" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-4">Intent Detection</h3>
+              <p className="text-gray-600">
+                AI erkennt automatisch, was Sie brauchen - ohne manuelle Kategorieauswahl
+              </p>
+            </div>
+            
+            <div className="bg-white p-8 rounded-3xl shadow-lg border border-gray-100 text-center">
+              <div className="w-16 h-16 bg-gradient-to-r from-green-500 to-teal-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                <Zap className="w-8 h-8 text-white" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-4">Multi-Modal Input</h3>
+              <p className="text-gray-600">
+                Text, Sprache, Bilder, Dokumente - alles in einer einheitlichen Oberfläche
+              </p>
+            </div>
+            
+            <div className="bg-white p-8 rounded-3xl shadow-lg border border-gray-100 text-center">
+              <div className="w-16 h-16 bg-gradient-to-r from-orange-500 to-red-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                <Star className="w-8 h-8 text-white" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-4">Adaptive Responses</h3>
+              <p className="text-gray-600">
+                Intelligente Antworten die sich an Ihren Kontext und Ihre Bedürfnisse anpassen
+              </p>
+            </div>
+          </div>
+          
           <EnhancedMultiAgentChat />
         </div>
       </section>
@@ -437,9 +471,9 @@ export default function HomePage() {
                 AGENTNET-Pionier werden
               </button>
             </Link>
-            <Link href="/chat">
+            <Link href="/ai-assistant">
               <button className="border-2 border-[#FDB913] text-[#FDB913] hover:bg-[#FDB913] hover:text-[#003399] px-8 py-4 rounded-2xl font-bold text-lg transition-all duration-300 hover:scale-105 min-w-[240px]">
-                AI-Agenten testen
+                AI Assistant starten
               </button>
             </Link>
           </div>

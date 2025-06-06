@@ -21,18 +21,47 @@ module.exports = {
     },
     extend: {
       colors: {
-        // Primary Colors
-        'saarland-blue': '#003399',
-        'technical-silver': '#E6E6EB',
+        // Professional Primary Colors
+        'primary': {
+          50: '#eff6ff',
+          100: '#dbeafe', 
+          200: '#bfdbfe',
+          300: '#93c5fd',
+          400: '#60a5fa',
+          500: '#3b82f6',
+          600: '#1e40af',  // Main brand color
+          700: '#1e3a8a',
+          800: '#1e3a8a',
+          900: '#1e3a8a',
+        },
         
-        // Secondary Colors
-        'innovation-cyan': '#009FE3',
-        'warm-gold': '#FDB913',
+        // Saarland Accent Colors
+        'saarland': {
+          50: '#ecfdf5',
+          100: '#d1fae5',
+          200: '#a7f3d0',
+          300: '#6ee7b7',
+          400: '#34d399',
+          500: '#10b981',
+          600: '#059669',  // Main accent
+          700: '#047857',
+          800: '#065f46',
+          900: '#064e3b',
+        },
         
-        // Tertiary Colors
-        'success-green': '#43B049',
-        'alert-red': '#E31E2D',
-        'neutral-gray': '#929497',
+        // Professional Grays
+        'neutral': {
+          50: '#f8fafc',
+          100: '#f1f5f9',
+          200: '#e2e8f0', 
+          300: '#cbd5e1',
+          400: '#94a3b8',
+          500: '#64748b',
+          600: '#475569',
+          700: '#334155',
+          800: '#1e293b',
+          900: '#0f172a',
+        },
         
         // Semantic Colors
         border: 'hsl(var(--border))',
@@ -70,8 +99,10 @@ module.exports = {
         },
       },
       fontFamily: {
-        quantum: ['var(--font-quantum)', 'Inter', 'sans-serif'],
-        nova: ['var(--font-nova)', 'Inter', 'sans-serif'],
+        sans: ['var(--font-professional)', 'system-ui', 'sans-serif'],
+        serif: ['var(--font-serif)', 'Georgia', 'serif'],
+        mono: ['ui-monospace', 'SFMono-Regular', 'monospace'],
+        professional: ['var(--font-professional)', 'system-ui', 'sans-serif'],
       },
       animation: {
         'fade-in': 'fadeIn 0.5s ease-in-out',

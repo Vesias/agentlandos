@@ -1,15 +1,15 @@
 {
-  "name": "AGENTLAND.SAARLAND - KI für das Saarland",
+  "name": "AGENTLAND.SAARLAND - Digitale Exzellenz für Unternehmen",
   "short_name": "AGENTLAND",
-  "description": "Souveräne KI-Plattform mit regionaler Expertise für Bürger, Unternehmen und Verwaltung im Saarland",
-  "theme_color": "#003399",
+  "description": "Professional KI-Agentur für Unternehmen - Kosteneinsparung durch Automatisierung und Digitalisierung",
+  "theme_color": "#1e40af",
   "background_color": "#ffffff",
   "display": "standalone",
   "orientation": "portrait-primary",
   "scope": "/",
   "start_url": "/",
   "lang": "de-DE",
-  "categories": ["productivity", "utilities", "government"],
+  "categories": ["business", "productivity", "utilities", "enterprise"],
   "screenshots": [
     {
       "src": "/pwa/screenshot-desktop.jpg",
@@ -34,19 +34,19 @@
       "purpose": "maskable any"
     },
     {
-      "src": "/pwa/icon-192x192.svg",
+      "src": "/pwa/icon-192x192-professional.svg",
       "sizes": "192x192",
       "type": "image/svg+xml", 
       "purpose": "maskable any"
     },
     {
-      "src": "/pwa/icon-512x512.svg",
+      "src": "/pwa/icon-512x512-professional.svg",
       "sizes": "512x512",
       "type": "image/svg+xml",
       "purpose": "maskable any"
     },
     {
-      "src": "/favicon.svg",
+      "src": "/favicon-professional.svg",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "maskable any"

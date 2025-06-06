@@ -21,6 +21,16 @@ export function useRealTimeData<T = any>(
       const response = await fetch(endpoint);
       
       if (!response.ok) {
+        // More detailed error handling
+        const errorText = await response.text().catch(() => 'Unknown error');
+        console.warn(`API ${endpoint} returned ${response.status}: ${errorText}`);
+        
+        // For development, provide fallback data instead of hard error
+        if (process.env.NODE_ENV === 'development') {
+          setData({ fallback: true, message: `API ${endpoint} unavailable` } as T);
+          return;
+        }
+        
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       
@@ -32,8 +42,14 @@ export function useRealTimeData<T = any>(
         throw new Error(result.error || 'Failed to fetch data');
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Unknown error occurred');
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
+      setError(errorMessage);
       console.error('Real-time data fetch error:', err);
+      
+      // Graceful degradation - don't break the app
+      if (process.env.NODE_ENV === 'development') {
+        setData({ error: true, message: errorMessage } as T);
+      }
     } finally {
       setIsLoading(false);
     }

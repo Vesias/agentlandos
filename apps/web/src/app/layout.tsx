@@ -1,31 +1,33 @@
 import type { Metadata, Viewport } from 'next'
-import { Inter, Work_Sans, Crimson_Text } from 'next/font/google'
+import { Inter, Manrope, Source_Serif_4 } from 'next/font/google'
 import './globals.css'
 import Providers from './providers'
 import GlobalTutorial from '@/components/GlobalTutorial'
 import MainNavigation from '@/components/navigation/MainNavigation'
+import { AnalyticsProvider } from '@/components/AnalyticsProvider'
 
-// Brandbook-compliant fonts using Google Fonts
+// Professional German/French optimized fonts
 const inter = Inter({ 
-  subsets: ['latin'],
+  subsets: ['latin', 'latin-ext'],
   variable: '--font-inter',
-  display: 'swap'
+  display: 'swap',
+  weight: ['400', '500', '600', '700', '800']
 })
 
-// Quantum Sans replacement - Work Sans has similar geometric characteristics
-const quantumSans = Work_Sans({
-  subsets: ['latin'],
-  variable: '--font-quantum',
+// Enterprise-grade geometric sans-serif - excellent for German umlauts and French accents
+const manrope = Manrope({
+  subsets: ['latin', 'latin-ext'],
+  variable: '--font-professional',
+  display: 'swap',
+  weight: ['400', '500', '600', '700', '800']
+})
+
+// Sophisticated serif for body text - optimized for readability in multiple languages
+const sourceSerif = Source_Serif_4({
+  subsets: ['latin', 'latin-ext'],
+  variable: '--font-serif',
   display: 'swap',
   weight: ['400', '500', '600', '700']
-})
-
-// Nova Text replacement - Crimson Text has similar serif characteristics
-const novaText = Crimson_Text({
-  subsets: ['latin'],
-  variable: '--font-nova',
-  display: 'swap',
-  weight: ['400', '600']
 })
 
 export const viewport: Viewport = {
@@ -52,10 +54,10 @@ export const metadata: Metadata = {
     siteName: 'AGENTLAND.SAARLAND',
     images: [
       {
-        url: '/og-image.svg',
+        url: '/og-image-professional.svg',
         width: 1200,
         height: 630,
-        alt: 'AGENTLAND.SAARLAND'
+        alt: 'AGENTLAND.SAARLAND - Digitale Exzellenz für Unternehmen'
       }
     ]
   },
@@ -63,11 +65,11 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'AGENTLAND.SAARLAND - KI-Agentur für das Saarland',
     description: 'Die erste KI-Agentur im Saarland mit real-time services und AI-powered assistance.',
-    images: ['/og-image.svg']
+    images: ['/og-image-professional.svg']
   },
   manifest: '/manifest.json',
   icons: {
-    icon: '/favicon.svg',
+    icon: '/favicon-professional.svg',
     apple: '/pwa/icon-192x192.svg'
   }
 }
@@ -80,7 +82,7 @@ export default function RootLayout({
   return (
     <html 
       lang="de" 
-      className={`${inter.variable} ${quantumSans.variable} ${novaText.variable}`}
+      className={`${inter.variable} ${manrope.variable} ${sourceSerif.variable}`}
     >
       <head>
         {/* Performance optimization */}
@@ -92,38 +94,59 @@ export default function RootLayout({
         <style dangerouslySetInnerHTML={{
           __html: `
             :root {
-              /* Primary Brand Colors - Brandbook Compliant */
-              --color-saarland-blue: #003399;
-              --color-innovation-cyan: #009FE3;
-              --color-warm-gold: #FDB913;
-              --color-technical-silver: #E6E6EB;
+              /* Professional Business Colors - Enterprise Grade */
+              --color-primary-blue: #1e40af;      /* Professional blue */
+              --color-primary-blue-light: #3b82f6; /* Hover states */
+              --color-primary-blue-dark: #1e3a8a;  /* Active states */
               
-              /* Tertiary Colors */
-              --color-success-green: #43B049;
-              --color-alert-red: #E31E2D;
-              --color-neutral-gray: #929497;
+              --color-saarland-accent: #059669;    /* Regional identity */
+              --color-saarland-light: #10b981;     /* Success states */
               
-              /* Typography Scale - 8px Grid System */
-              --font-size-xs: 0.75rem;   /* 12px */
-              --font-size-sm: 0.875rem;  /* 14px */
-              --font-size-md: 1rem;      /* 16px */
-              --font-size-lg: 1.25rem;   /* 20px */
-              --font-size-xl: 1.5rem;    /* 24px */
-              --font-size-2xl: 2rem;     /* 32px */
+              --color-neutral-50: #f8fafc;         /* Background light */
+              --color-neutral-100: #f1f5f9;        /* Background cards */
+              --color-neutral-200: #e2e8f0;        /* Borders light */
+              --color-neutral-300: #cbd5e1;        /* Borders */
+              --color-neutral-400: #94a3b8;        /* Text muted */
+              --color-neutral-500: #64748b;        /* Text secondary */
+              --color-neutral-600: #475569;        /* Text primary light */
+              --color-neutral-700: #334155;        /* Text primary */
+              --color-neutral-800: #1e293b;        /* Text headings */
+              --color-neutral-900: #0f172a;        /* Text strong */
               
-              /* Spacing System - 8px Grid */
-              --space-1: 0.25rem;  /* 4px */
-              --space-2: 0.5rem;   /* 8px */
-              --space-3: 1rem;     /* 16px */
-              --space-4: 1.5rem;   /* 24px */
-              --space-5: 2rem;     /* 32px */
-              --space-6: 3rem;     /* 48px */
-              --space-7: 4rem;     /* 64px */
+              /* Semantic Colors */
+              --color-success: #059669;
+              --color-warning: #d97706;
+              --color-danger: #dc2626;
+              --color-info: #0284c7;
               
-              /* Animation Timing */
-              --duration-quick: 150ms;
+              /* Professional Typography Scale */
+              --font-size-xs: 0.75rem;     /* 12px */
+              --font-size-sm: 0.875rem;    /* 14px */
+              --font-size-base: 1rem;      /* 16px */
+              --font-size-lg: 1.125rem;    /* 18px */
+              --font-size-xl: 1.25rem;     /* 20px */
+              --font-size-2xl: 1.5rem;     /* 24px */
+              --font-size-3xl: 1.875rem;   /* 30px */
+              --font-size-4xl: 2.25rem;    /* 36px */
+              
+              /* Professional Spacing - 4px Grid System */
+              --space-1: 0.25rem;   /* 4px */
+              --space-2: 0.5rem;    /* 8px */
+              --space-3: 0.75rem;   /* 12px */
+              --space-4: 1rem;      /* 16px */
+              --space-5: 1.25rem;   /* 20px */
+              --space-6: 1.5rem;    /* 24px */
+              --space-8: 2rem;      /* 32px */
+              --space-10: 2.5rem;   /* 40px */
+              --space-12: 3rem;     /* 48px */
+              
+              /* Professional Animation */
+              --duration-fast: 150ms;
               --duration-normal: 300ms;
-              --ease-standard: cubic-bezier(0.4, 0.0, 0.2, 1);
+              --duration-slow: 500ms;
+              --ease-out: cubic-bezier(0.0, 0.0, 0.2, 1);
+              --ease-in: cubic-bezier(0.4, 0.0, 1, 1);
+              --ease-in-out: cubic-bezier(0.4, 0.0, 0.2, 1);
             }
             
             /* Network Pattern for AGENTNET branding */
@@ -151,13 +174,15 @@ export default function RootLayout({
           `
         }} />
       </head>
-      <body className="font-nova text-neutral-gray bg-white antialiased">
+      <body className="font-serif text-slate-700 bg-white antialiased">
         <Providers>
-          <MainNavigation />
-          <main>
-            {children}
-          </main>
-          <GlobalTutorial />
+          <AnalyticsProvider>
+            <MainNavigation />
+            <main>
+              {children}
+            </main>
+            <GlobalTutorial />
+          </AnalyticsProvider>
         </Providers>
       </body>
     </html>
