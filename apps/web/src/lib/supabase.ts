@@ -135,6 +135,11 @@ export class AuthService {
     await supabaseBrowser.auth.signOut()
   }
 
+  static async resetPassword(email: string) {
+    const { data, error } = await supabaseBrowser.auth.resetPasswordForEmail(email)
+    return { data, error: error?.message }
+  }
+
   static async getCurrentUser(): Promise<User | null> {
     const {
       data: { session },

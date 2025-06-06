@@ -1,10 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
+import { supabaseServer } from "@/lib/supabase";
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
 
 // PLZ ranges for Saarland municipalities
 const SAARLAND_PLZ_RANGES = {
@@ -79,7 +75,7 @@ async function performFullCrawl() {
     }
 
     // Update crawl status
-    await supabase.from('crawl_status').upsert({
+    await supabaseServer.from('crawl_status').upsert({
       id: 'authorities',
       last_crawl: new Date().toISOString(),
       total_processed: results.processed,

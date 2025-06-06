@@ -1,10 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+import { supabaseServer } from '@/lib/supabase';
 
 // Real-time Revenue Analytics & MRR Tracking
 export async function GET(request: NextRequest) {
@@ -14,7 +9,7 @@ export async function GET(request: NextRequest) {
     const includeProjections = searchParams.get('projections') === 'true';
 
     // Calculate current MRR
-    const { data: activeSubscriptions } = await supabase
+    const { data: activeSubscriptions } = await supabaseServer
       .from('premium_subscriptions')
       .select(`
         *,
@@ -31,20 +26,20 @@ export async function GET(request: NextRequest) {
 
     // Get revenue trends
     const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
-    const { data: revenueHistory } = await supabase
+    const { data: revenueHistory } = await supabaseServer
       .rpc('get_daily_revenue', {
         start_date: thirtyDaysAgo.toISOString(),
         end_date: new Date().toISOString()
       });
 
     // User acquisition metrics
-    const { data: userGrowth } = await supabase
+    const { data: userGrowth } = await supabaseServer
       .rpc('get_user_growth_metrics', {
         days: 30
       });
 
     // Conversion funnel
-    const { data: conversionMetrics } = await supabase
+    const { data: conversionMetrics } = await supabaseServer
       .rpc('get_conversion_funnel');
 
     // Regional breakdown

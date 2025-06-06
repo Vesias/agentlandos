@@ -1,14 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { multiModelAI } from '@/services/multi-model-ai';
-import { createClient } from '@supabase/supabase-js';
+import { supabaseServer } from "@/lib/supabase";
 import { z } from 'zod';
 
 export const runtime = 'edge';
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
 
 const embeddingsRequestSchema = z.object({
   action: z.enum(['search', 'create', 'similar', 'categorize', 'enhance', 'feedback', 'status']),
@@ -387,7 +383,7 @@ Gib nur die verbesserte Antwort zurück.`;
 
 async function recordFeedback(query: string, content: string, feedback: any) {
   try {
-    await supabase.from('user_feedback').insert({
+    await supabaseServer.from('user_feedback').insert({
       query,
       content,
       feedback,

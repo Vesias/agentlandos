@@ -1,13 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
+import { supabaseServer } from '@/lib/supabase';
 import { cookies } from 'next/headers';
 import crypto from 'crypto';
 import { z } from 'zod';
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
 
 // Input validation schemas
 const loginSchema = z.object({
@@ -108,7 +103,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Authenticate with Supabase
-    const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
+    const { data: authData, error: authError } = await supabaseServer.auth.signInWithPassword({
       email,
       password,
     });
@@ -140,11 +135,11 @@ export async function POST(request: NextRequest) {
     }
 
     // Update user metadata
-    await supabase.from('user_profiles').upsert({
+    await supabaseServer.from('user_profiles').upsert({
       id: authData.user.id,
       email: authData.user.email,
       last_login: new Date().toISOString(),
-      login_count: supabase.sql`COALESCE(login_count, 0) + 1`,
+      login_count: supabaseServer.sql`COALESCE(login_count, 0) + 1`,
       last_ip: clientIP,
       device_fingerprint: deviceFingerprint
     });
@@ -260,7 +255,7 @@ export async function PUT(request: NextRequest) {
     }
 
     // Create user with Supabase Auth
-    const { data: authData, error: authError } = await supabase.auth.signUp({
+    const { data: authData, error: authError } = await supabaseServer.auth.signUp({
       email,
       password,
       options: {
@@ -286,7 +281,7 @@ export async function PUT(request: NextRequest) {
 
     // Create user profile
     if (authData.user) {
-      await supabase.from('user_profiles').insert({
+      await supabaseServer.from('user_profiles').insert({
         id: authData.user.id,
         email: authData.user.email,
         municipality,
@@ -334,7 +329,7 @@ export async function DELETE(request: NextRequest) {
     
     if (sessionToken) {
       // Invalidate session in Supabase
-      await supabase.auth.admin.signOut(sessionToken);
+      await supabaseServer.auth.admin.signOut(sessionToken);
     }
 
     const response = NextResponse.json({
@@ -363,7 +358,7 @@ async function logSecurityEvent(
   metadata: any = {}
 ) {
   try {
-    await supabase.from('security_events').insert({
+    await supabaseServer.from('security_events').insert({
       event_type: eventType,
       client_ip: clientIP,
       user_agent: metadata.userAgent,

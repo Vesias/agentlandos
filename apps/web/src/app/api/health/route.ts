@@ -1,14 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
+import { supabaseServer } from '@/lib/supabase';
 import { multiModelAI } from '@/services/multi-model-ai';
 
 export const runtime = 'edge';
-
-// Supabase client for health checks
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
 
 interface HealthStatus {
   status: 'healthy' | 'degraded' | 'unhealthy';
@@ -76,7 +70,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 
     // Log health check to database for monitoring
     try {
-      await supabase.from('api_health_checks').insert({
+      await supabaseServer.from('api_health_checks').insert({
         status: overallStatus,
         services: services,
         response_time_ms: Date.now() - startTime,
@@ -114,8 +108,8 @@ async function checkDatabaseHealth(): Promise<ServiceHealth> {
   
   try {
     // Test database connection with a simple query
-    const { data, error } = await supabase
-      .from('chat_interactions')
+    const { data, error } = await supabaseServer
+      .from('users')
       .select('id')
       .limit(1);
 

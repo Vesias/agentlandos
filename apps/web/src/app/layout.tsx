@@ -1,31 +1,32 @@
 import type { Metadata, Viewport } from 'next'
-import { Inter } from 'next/font/google'
+import { Inter, Work_Sans, Crimson_Text } from 'next/font/google'
 import './globals.css'
 import Providers from './providers'
 import GlobalTutorial from '@/components/GlobalTutorial'
 import MainNavigation from '@/components/navigation/MainNavigation'
 
-// Brandbook-compliant fonts
+// Brandbook-compliant fonts using Google Fonts
 const inter = Inter({ 
   subsets: ['latin'],
   variable: '--font-inter',
   display: 'swap'
 })
 
-// Custom fonts for brand compliance (fallback to system fonts)
-const quantumSans = {
+// Quantum Sans replacement - Work Sans has similar geometric characteristics
+const quantumSans = Work_Sans({
+  subsets: ['latin'],
   variable: '--font-quantum',
-  style: {
-    fontFamily: 'Quantum Sans, Inter, Arial, sans-serif'
-  }
-}
+  display: 'swap',
+  weight: ['400', '500', '600', '700']
+})
 
-const novaText = {
-  variable: '--font-nova', 
-  style: {
-    fontFamily: 'Nova Text, Inter, Arial, sans-serif'
-  }
-}
+// Nova Text replacement - Crimson Text has similar serif characteristics
+const novaText = Crimson_Text({
+  subsets: ['latin'],
+  variable: '--font-nova',
+  display: 'swap',
+  weight: ['400', '600']
+})
 
 export const viewport: Viewport = {
   width: 'device-width',
@@ -82,31 +83,9 @@ export default function RootLayout({
       className={`${inter.variable} ${quantumSans.variable} ${novaText.variable}`}
     >
       <head>
-        {/* Brandbook-compliant custom fonts */}
-        <link
-          rel="preload"
-          href="/fonts/QuantumSans-Regular.woff2"
-          as="font"
-          type="font/woff2"
-          crossOrigin="anonymous"
-        />
-        <link
-          rel="preload"
-          href="/fonts/QuantumSans-Bold.woff2"
-          as="font"
-          type="font/woff2"
-          crossOrigin="anonymous"
-        />
-        <link
-          rel="preload"
-          href="/fonts/NovaText-Regular.woff2"
-          as="font"
-          type="font/woff2"
-          crossOrigin="anonymous"
-        />
-        
         {/* Performance optimization */}
         <link rel="dns-prefetch" href="//fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://agentland.saarland" />
         
         {/* Brandbook CSS Variables */}
@@ -145,34 +124,6 @@ export default function RootLayout({
               --duration-quick: 150ms;
               --duration-normal: 300ms;
               --ease-standard: cubic-bezier(0.4, 0.0, 0.2, 1);
-            }
-            
-            /* Custom Font Faces */
-            @font-face {
-              font-family: 'Quantum Sans';
-              src: url('/fonts/QuantumSans-Regular.woff2') format('woff2'),
-                   url('/fonts/QuantumSans-Regular.woff') format('woff');
-              font-weight: 400;
-              font-style: normal;
-              font-display: swap;
-            }
-            
-            @font-face {
-              font-family: 'Quantum Sans';
-              src: url('/fonts/QuantumSans-Bold.woff2') format('woff2'),
-                   url('/fonts/QuantumSans-Bold.woff') format('woff');
-              font-weight: 700;
-              font-style: normal;
-              font-display: swap;
-            }
-            
-            @font-face {
-              font-family: 'Nova Text';
-              src: url('/fonts/NovaText-Regular.woff2') format('woff2'),
-                   url('/fonts/NovaText-Regular.woff') format('woff');
-              font-weight: 400;
-              font-style: normal;
-              font-display: swap;
             }
             
             /* Network Pattern for AGENTNET branding */

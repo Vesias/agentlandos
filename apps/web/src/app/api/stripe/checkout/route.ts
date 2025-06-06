@@ -1,15 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
-import { createClient } from '@supabase/supabase-js';
+import { supabaseServer } from '@/lib/supabase';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || 'sk_test_placeholder', {
   apiVersion: '2024-11-20.acacia',
 });
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
 
 // SAAR-ID & Business-ID Premium Subscription Checkout
 export async function POST(request: NextRequest) {
@@ -64,7 +59,7 @@ export async function POST(request: NextRequest) {
     });
 
     // Log checkout attempt
-    await supabase.from('checkout_sessions').insert({
+    await supabaseServer.from('checkout_sessions').insert({
       session_id: session.id,
       user_id: userId,
       plan_type: planType,
@@ -85,7 +80,7 @@ export async function POST(request: NextRequest) {
     console.error('Stripe checkout error:', error);
     
     // Log error to Supabase
-    await supabase.from('payment_errors').insert({
+    await supabaseServer.from('payment_errors').insert({
       error_type: 'checkout_creation',
       error_message: error.message,
       error_stack: error.stack,
