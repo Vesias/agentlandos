@@ -7,11 +7,13 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import text
 
 from app.db.database import get_async_session
+from app.core.rate_limiter import limiter
 
 router = APIRouter()
 
 
 @router.get("/")
+@limiter.limit("60/minute")
 async def health_check():
     """
     Basis-Gesundheitsprüfung
@@ -24,6 +26,7 @@ async def health_check():
 
 
 @router.get("/ready")
+@limiter.limit("30/minute")
 async def readiness_check(db: AsyncSession = Depends(get_async_session)):
     """
     Prüft, ob alle Dienste bereit sind
