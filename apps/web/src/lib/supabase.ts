@@ -38,3 +38,15 @@ export class AuthService {
     return supabaseBrowser.auth.onAuthStateChange(callback)
   }
 }
+
+export class DatabaseService {
+  static async getTotalUsers() {
+    return 0
+  }
+  static async getUsersRegisteredToday() {
+    return 0
+  }
+  static async getActiveSessions() {
+    return 0
+  }
+}
