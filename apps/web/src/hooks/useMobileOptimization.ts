@@ -1,200 +1,109 @@
 'use client'
 
 import { useEffect, useState, useCallback } from 'react'
-import { mobileUtils } from '@/lib/mobile-utils'
 
 interface MobileOptimizationState {
   isMobile: boolean
-  isOnline: boolean
-  connectionType: string
-  isSlowConnection: boolean
-  batteryLevel: number | null
-  isLowBattery: boolean
+  isTablet: boolean
+  isDesktop: boolean
   viewport: { width: number; height: number }
-  safeAreaInsets: { top: number; bottom: number; left: number; right: number }
-  performanceScore: number | null
+  isLandscape: boolean
+  isPortrait: boolean
+  touchSupported: boolean
+  devicePixelRatio: number
 }
 
-interface UseMobileOptimizationOptions {
-  enableBatteryOptimization?: boolean
-  enablePerformanceMonitoring?: boolean
-  enableConnectionOptimization?: boolean
-  lowBatteryThreshold?: number
-}
-
-export function useMobileOptimization(options: UseMobileOptimizationOptions = {}) {
-  const {
-    enableBatteryOptimization = true,
-    enablePerformanceMonitoring = true,
-    enableConnectionOptimization = true,
-    lowBatteryThreshold = 20
-  } = options
-
+export function useMobileOptimization() {
   const [state, setState] = useState<MobileOptimizationState>({
     isMobile: false,
-    isOnline: true,
-    connectionType: 'unknown',
-    isSlowConnection: false,
-    batteryLevel: null,
-    isLowBattery: false,
+    isTablet: false,
+    isDesktop: true,
     viewport: { width: 0, height: 0 },
-    safeAreaInsets: { top: 0, bottom: 0, left: 0, right: 0 },
-    performanceScore: null
+    isLandscape: false,
+    isPortrait: true,
+    touchSupported: false,
+    devicePixelRatio: 1
   })
 
-  // Initialize mobile detection
-  useEffect(() => {
-    setState(prev => ({
-      ...prev,
-      isMobile: mobileUtils.isMobile(),
-      viewport: mobileUtils.getViewport(),
-      safeAreaInsets: mobileUtils.getSafeAreaInsets()
-    }))
+  // Device detection utility functions
+  const detectDevice = useCallback(() => {
+    if (typeof window === 'undefined') return state
+
+    const width = window.innerWidth
+    const height = window.innerHeight
+    const touchSupported = 'ontouchstart' in window || navigator.maxTouchPoints > 0
+    const devicePixelRatio = window.devicePixelRatio || 1
+
+    const isMobile = width < 768 && touchSupported
+    const isTablet = width >= 768 && width < 1024 && touchSupported
+    const isDesktop = width >= 1024 || !touchSupported
+
+    return {
+      isMobile,
+      isTablet,
+      isDesktop,
+      viewport: { width, height },
+      isLandscape: width > height,
+      isPortrait: height >= width,
+      touchSupported,
+      devicePixelRatio
+    }
   }, [])
 
-  // Monitor network status
+  // Initialize device detection
   useEffect(() => {
-    if (!enableConnectionOptimization) return
-
-    const updateConnectionStatus = () => {
-      setState(prev => ({
-        ...prev,
-        isOnline: navigator.onLine,
-        connectionType: mobileUtils.getConnectionType(),
-        isSlowConnection: mobileUtils.isSlowConnection()
-      }))
-    }
-
-    const handleOnline = () => updateConnectionStatus()
-    const handleOffline = () => updateConnectionStatus()
-
-    window.addEventListener('online', handleOnline)
-    window.addEventListener('offline', handleOffline)
-
-    // Initial check
-    updateConnectionStatus()
-
-    return () => {
-      window.removeEventListener('online', handleOnline)
-      window.removeEventListener('offline', handleOffline)
-    }
-  }, [enableConnectionOptimization])
-
-  // Monitor battery status
-  useEffect(() => {
-    if (!enableBatteryOptimization) return
-
-    const updateBatteryStatus = async () => {
-      const batteryInfo = await mobileUtils.getBatteryInfo()
-      if (batteryInfo) {
-        setState(prev => ({
-          ...prev,
-          batteryLevel: batteryInfo.level,
-          isLowBattery: batteryInfo.level < lowBatteryThreshold && !batteryInfo.charging
-        }))
-      }
-    }
-
-    updateBatteryStatus()
-
-    // Update battery status every 5 minutes
-    const batteryInterval = setInterval(updateBatteryStatus, 5 * 60 * 1000)
-
-    return () => clearInterval(batteryInterval)
-  }, [enableBatteryOptimization, lowBatteryThreshold])
+    setState(detectDevice())
+  }, [detectDevice])
 
   // Monitor viewport changes
   useEffect(() => {
-    const handleResize = mobileUtils.throttle(() => {
-      setState(prev => ({
-        ...prev,
-        viewport: mobileUtils.getViewport(),
-        safeAreaInsets: mobileUtils.getSafeAreaInsets()
-      }))
-    }, 150)
+    const handleResize = () => {
+      setState(detectDevice())
+    }
 
-    window.addEventListener('resize', handleResize)
-    window.addEventListener('orientationchange', handleResize)
+    const throttledResize = throttle(handleResize, 150)
+
+    window.addEventListener('resize', throttledResize)
+    window.addEventListener('orientationchange', throttledResize)
 
     return () => {
-      window.removeEventListener('resize', handleResize)
-      window.removeEventListener('orientationchange', handleResize)
+      window.removeEventListener('resize', throttledResize)
+      window.removeEventListener('orientationchange', throttledResize)
     }
-  }, [])
+  }, [detectDevice])
 
-  // Performance monitoring
-  useEffect(() => {
-    if (!enablePerformanceMonitoring) return
-
-    const measurePagePerformance = () => {
-      const performance = mobileUtils.measurePerformance()
-      if (performance) {
-        // Calculate a simple performance score (0-100)
-        const score = Math.max(0, 100 - (performance.pageLoad / 50)) // 5 seconds = 0 score
-        setState(prev => ({
-          ...prev,
-          performanceScore: Math.round(score)
-        }))
+  // Utility functions
+  const throttle = useCallback((func: Function, delay: number) => {
+    let timeoutId: NodeJS.Timeout | null = null
+    let lastExecTime = 0
+    return function (this: any, ...args: any[]) {
+      const currentTime = Date.now()
+      
+      if (currentTime - lastExecTime > delay) {
+        func.apply(this, args)
+        lastExecTime = currentTime
+      } else {
+        if (timeoutId) clearTimeout(timeoutId)
+        timeoutId = setTimeout(() => {
+          func.apply(this, args)
+          lastExecTime = Date.now()
+        }, delay - (currentTime - lastExecTime))
       }
     }
-
-    // Measure performance after page load
-    if (document.readyState === 'complete') {
-      measurePagePerformance()
-    } else {
-      window.addEventListener('load', measurePagePerformance)
-    }
-
-    return () => {
-      window.removeEventListener('load', measurePagePerformance)
-    }
-  }, [enablePerformanceMonitoring])
-
-  // Auto-optimization for low battery
-  useEffect(() => {
-    if (state.isLowBattery && enableBatteryOptimization) {
-      mobileUtils.optimizeForLowBattery()
-    }
-  }, [state.isLowBattery, enableBatteryOptimization])
-
-  // Prevent input zoom on iOS
-  useEffect(() => {
-    if (state.isMobile && mobileUtils.isIOS()) {
-      mobileUtils.preventInputZoom()
-    }
-  }, [state.isMobile])
-
-  // Optimize fonts
-  useEffect(() => {
-    mobileUtils.optimizeFonts()
   }, [])
 
-  // Helper functions
-  const optimizeForSlowConnection = useCallback(() => {
-    if (state.isSlowConnection) {
-      // Disable auto-playing videos
-      document.querySelectorAll('video[autoplay]').forEach(video => {
-        (video as HTMLVideoElement).autoplay = false
-      })
-
-      // Reduce image quality
-      document.querySelectorAll('img').forEach(img => {
-        const src = img.src
-        if (src.includes('?')) {
-          img.src = src.replace(/q=\d+/, 'q=50') // Reduce quality to 50%
-        }
-      })
-
-      return true
+  const debounce = useCallback((func: Function, delay: number) => {
+    let timeoutId: NodeJS.Timeout
+    return function (this: any, ...args: any[]) {
+      clearTimeout(timeoutId)
+      timeoutId = setTimeout(() => func.apply(this, args), delay)
     }
-    return false
-  }, [state.isSlowConnection])
+  }, [])
 
   const getOptimizedImageProps = useCallback((width: number, height: number) => {
-    const pixelRatio = mobileUtils.getPixelRatio()
     return {
-      width: Math.round(width * pixelRatio),
-      height: Math.round(height * pixelRatio),
+      width: Math.round(width * state.devicePixelRatio),
+      height: Math.round(height * state.devicePixelRatio),
       loading: 'lazy' as const,
       decoding: 'async' as const,
       style: {
@@ -203,46 +112,34 @@ export function useMobileOptimization(options: UseMobileOptimizationOptions = {}
         objectFit: 'cover' as const
       }
     }
-  }, [])
+  }, [state.devicePixelRatio])
+
+  const getBreakpointClass = useCallback(() => {
+    if (state.isMobile) return 'mobile'
+    if (state.isTablet) return 'tablet'
+    return 'desktop'
+  }, [state.isMobile, state.isTablet])
 
   const shouldReduceMotion = useCallback(() => {
-    return state.isLowBattery || 
-           state.isSlowConnection || 
-           (state.performanceScore !== null && state.performanceScore < 50)
-  }, [state.isLowBattery, state.isSlowConnection, state.performanceScore])
-
-  const getRecommendedImageQuality = useCallback(() => {
-    if (state.isSlowConnection) return 50
-    if (state.isLowBattery) return 60
-    if (mobileUtils.getPixelRatio() > 2) return 85
-    return 75
-  }, [state.isSlowConnection, state.isLowBattery])
-
-  const shouldPreloadResources = useCallback(() => {
-    return !state.isSlowConnection && 
-           !state.isLowBattery && 
-           state.isOnline &&
-           (state.performanceScore === null || state.performanceScore > 60)
-  }, [state.isSlowConnection, state.isLowBattery, state.isOnline, state.performanceScore])
+    // Check for user preference
+    if (typeof window !== 'undefined') {
+      return window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    }
+    return false
+  }, [])
 
   return {
     // State
     ...state,
 
     // Computed values
+    breakpointClass: getBreakpointClass(),
     shouldReduceMotion: shouldReduceMotion(),
-    recommendedImageQuality: getRecommendedImageQuality(),
-    shouldPreloadResources: shouldPreloadResources(),
 
     // Helper functions
-    optimizeForSlowConnection,
     getOptimizedImageProps,
-
-    // Utility functions
-    preloadResource: mobileUtils.preloadResource,
-    lazyLoadImage: mobileUtils.lazyLoadImage,
-    debounce: mobileUtils.debounce,
-    throttle: mobileUtils.throttle
+    throttle,
+    debounce
   }
 }
 

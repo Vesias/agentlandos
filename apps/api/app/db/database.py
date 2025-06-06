@@ -6,7 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import DeclarativeMeta, declarative_base, sessionmaker
 
 # Import models so that Base.metadata is populated when creating tables
-from app.models import Agent, Feedback, analytics  # noqa: F401
+from app.models import Agent, Feedback, User, analytics  # noqa: F401
 
 from app.core.config import settings
 

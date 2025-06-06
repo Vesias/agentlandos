@@ -39,6 +39,17 @@ if [ $# -eq 0 ]; then
     exit 1
 fi
 
+# Validate required environment variables
+REQUIRED_VARS=(DATABASE_URL REDIS_URL SECRET_KEY OPENAI_API_KEY DEEPSEEK_API_KEY)
+for var in "${REQUIRED_VARS[@]}"; do
+    if [[ -z "${!var}" ]]; then
+        print_error "Environment variable $var is not set"
+        exit 1
+    fi
+done
+
+print_success "Environment variables validated"
+
 DEPLOY_TARGET=$1
 
 case $DEPLOY_TARGET in

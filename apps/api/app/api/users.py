@@ -46,7 +46,7 @@ async def get_user_profile(
     """
     # TODO: Aus Datenbank laden
     return UserProfile(
-        id=UUID("00000000-0000-0000-0000-000000000001"),
+        id=current_user.user_id or UUID("00000000-0000-0000-0000-000000000001"),
         username=current_user.username,
         email=f"{current_user.username}@agentland.saarland",
         full_name="Demo Benutzer",
