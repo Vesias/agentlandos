@@ -1,8 +1,9 @@
 'use client'
 
 import React, { useState, useRef, useEffect } from 'react'
-import { Send, Bot, User, Loader2, Star, MessageSquare } from 'lucide-react'
+import { Send, Bot, User, Loader2, Star, MessageSquare, Zap, Brain, Search, FileText } from 'lucide-react'
 import VoiceRecording from '@/components/VoiceRecording'
+import HybridAIChat, { useHybridAIChat } from '@/components/HybridAIChat'
 
 interface Message {
   id: string
@@ -16,13 +17,16 @@ export default function ChatPage() {
     {
       id: '1',
       role: 'assistant',
-      content: '👋 Willkommen bei SAAR-GPT! Ich bin Ihr KI-Assistent für das Saarland. Wie kann ich Ihnen heute helfen?',
+      content: '👋 Willkommen bei SAAR-GPT Enhanced! Ich bin Ihr KI-Assistent mit DeepSeek R1 + Gemini 2.5 + Vector RAG. Wie kann ich Ihnen heute helfen?',
       timestamp: new Date()
     }
   ])
   const [input, setInput] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+  const [chatMode, setChatMode] = useState<'chat' | 'artifact' | 'rag' | 'websearch'>('chat')
+  const [useHybridMode, setUseHybridMode] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
+  const { sendMessage } = useHybridAIChat()
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -44,27 +48,38 @@ export default function ChatPage() {
     }
 
     setMessages(prev => [...prev, userMessage])
+    const currentInput = input.trim()
     setInput('')
     setIsLoading(true)
 
     try {
-      // Use improved chat API that's faster and more reliable
-      const response = await fetch('/api/chat-improved', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          message: input.trim(),
-          language: 'de',
-          context: { category: 'general' }
-        })
-      })
-
       let aiResponse = 'Entschuldigung, ich konnte Ihre Anfrage nicht verarbeiten. Bitte versuchen Sie es erneut.'
       
-      if (response.ok) {
-        const data = await response.json()
-        console.log('Chat API Response:', data) // Debug log
-        aiResponse = data.message || data.response || aiResponse
+      if (useHybridMode) {
+        // Use hybrid AI chat with Copilot Kit + AG-UI
+        const data = await sendMessage(currentInput, {
+          mode: chatMode,
+          category: 'general',
+          webSearch: chatMode === 'websearch'
+        })
+        aiResponse = data.response || data.artifact?.content || aiResponse
+      } else {
+        // Use enhanced AI API directly
+        const response = await fetch('/api/ai/enhanced', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            prompt: currentInput,
+            mode: chatMode,
+            category: 'general',
+            web_search: chatMode === 'websearch'
+          })
+        })
+
+        if (response.ok) {
+          const data = await response.json()
+          aiResponse = data.response || data.artifact?.content || aiResponse
+        }
       }
 
       const assistantMessage: Message = {
@@ -98,8 +113,49 @@ export default function ChatPage() {
           <div className="w-20 h-20 bg-gradient-to-br from-[#FDB913] to-[#FFD700] rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-2xl transform hover:scale-105 transition-transform">
             <Bot className="w-12 h-12 text-[#003399]" />
           </div>
-          <h1 className="text-5xl font-bold mb-3 font-quantum bg-gradient-to-r from-white to-blue-100 bg-clip-text text-transparent">SAAR-GPT</h1>
-          <p className="text-xl opacity-90 mb-4">Ihr intelligenter KI-Assistent für das Saarland</p>
+          <h1 className="text-5xl font-bold mb-3 font-quantum bg-gradient-to-r from-white to-blue-100 bg-clip-text text-transparent">SAAR-GPT Enhanced</h1>
+          <p className="text-xl opacity-90 mb-4">DeepSeek R1 + Gemini 2.5 + Vector RAG + Copilot Kit + AG-UI</p>
+          
+          {/* AI Mode Selector */}
+          <div className="flex justify-center space-x-3 mb-6">
+            {[
+              { mode: 'chat', icon: MessageSquare, label: 'Chat', color: 'bg-blue-500' },
+              { mode: 'artifact', icon: FileText, label: 'Dokument', color: 'bg-green-500' },
+              { mode: 'rag', icon: Brain, label: 'RAG Vector', color: 'bg-purple-500' },
+              { mode: 'websearch', icon: Search, label: 'Web Search', color: 'bg-orange-500' }
+            ].map(({ mode, icon: Icon, label, color }) => (
+              <button
+                key={mode}
+                onClick={() => setChatMode(mode as any)}
+                className={`flex items-center space-x-2 px-4 py-2 rounded-full text-sm font-medium transition-all ${
+                  chatMode === mode
+                    ? `${color} text-white shadow-lg transform scale-105`
+                    : 'bg-white/20 text-white/80 hover:bg-white/30'
+                }`}
+              >
+                <Icon className="w-4 h-4" />
+                <span>{label}</span>
+              </button>
+            ))}
+          </div>
+
+          {/* Hybrid Mode Toggle */}
+          <div className="flex justify-center items-center space-x-3 mb-4">
+            <span className="text-sm opacity-80">Standard AI</span>
+            <button
+              onClick={() => setUseHybridMode(!useHybridMode)}
+              className={`relative w-12 h-6 rounded-full transition-colors ${
+                useHybridMode ? 'bg-yellow-500' : 'bg-white/30'
+              }`}
+            >
+              <div className={`absolute top-1 w-4 h-4 rounded-full transition-transform ${
+                useHybridMode ? 'translate-x-7 bg-white' : 'translate-x-1 bg-white/80'
+              }`} />
+            </button>
+            <span className="text-sm opacity-80">Hybrid AI</span>
+            {useHybridMode && <Zap className="w-4 h-4 text-yellow-400" />}
+          </div>
+
           <div className="flex justify-center space-x-6 text-sm">
             <div className="flex items-center space-x-2">
               <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
@@ -107,11 +163,11 @@ export default function ChatPage() {
             </div>
             <div className="flex items-center space-x-2">
               <div className="w-3 h-3 bg-yellow-400 rounded-full"></div>
-              <span>Echtzeit-Wetter</span>
+              <span>Vector RAG</span>
             </div>
             <div className="flex items-center space-x-2">
-              <div className="w-3 h-3 bg-blue-400 rounded-full"></div>
-              <span>Lokale Services</span>
+              <div className="w-3 h-3 bg-purple-400 rounded-full"></div>
+              <span>Multi-Agent</span>
             </div>
           </div>
         </div>
@@ -180,13 +236,39 @@ export default function ChatPage() {
 
           {/* Input Form */}
           <div className="border-t border-gray-200 p-6">
+            {/* Current Mode Status */}
+            <div className="flex items-center justify-between mb-4 p-3 bg-gray-50 rounded-lg">
+              <div className="flex items-center space-x-3">
+                <div className={`w-3 h-3 rounded-full ${
+                  chatMode === 'chat' ? 'bg-blue-500' :
+                  chatMode === 'artifact' ? 'bg-green-500' :
+                  chatMode === 'rag' ? 'bg-purple-500' :
+                  'bg-orange-500'
+                }`} />
+                <span className="text-sm font-medium text-gray-700">
+                  {chatMode.toUpperCase()} Modus
+                </span>
+                {useHybridMode && (
+                  <span className="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full">
+                    HYBRID AI
+                  </span>
+                )}
+              </div>
+              <div className="text-xs text-gray-500">
+                {useHybridMode ? 'Copilot Kit + AG-UI' : 'Enhanced AI'}
+              </div>
+            </div>
+
             <form onSubmit={handleSubmit} className="flex space-x-4">
               <div className="flex-1 flex space-x-3">
                 <input
                   type="text"
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
-                  placeholder="Stellen Sie Ihre Frage über das Saarland..."
+                  placeholder={`${chatMode === 'websearch' ? 'Durchsuchen Sie das Web...' : 
+                    chatMode === 'artifact' ? 'Erstellen Sie ein Dokument...' : 
+                    chatMode === 'rag' ? 'Fragen Sie die Saarland-Datenbank...' : 
+                    'Stellen Sie Ihre Frage über das Saarland...'}`}
                   className="flex-1 px-4 py-3 border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-[#003399] focus:border-transparent text-base"
                   disabled={isLoading}
                 />

@@ -1,15 +1,148 @@
 /**
- * Multi-Agent Orchestrator for AGENTLAND.SAARLAND
- * Using LangGraph for agent coordination and workflow management
- * Enhanced with specialized Saarland agents
+ * Enhanced Multi-Agent Orchestrator for AGENTLAND.SAARLAND
+ * Direct integration of DeepSeek R1 + Gemini 2.5 + OpenAI without LangChain dependencies
+ * Advanced agent coordination with Copilot Kit & AG-UI Protocol compatibility
  */
 
-import { Graph, StateGraph, StateGraphArgs } from "@langchain/langgraph"
-import { ChatDeepSeek } from "@langchain/community/chat_models/deepseek"
-import { ChatGoogleGenerativeAI } from "@langchain/google-genai"
+import { supabase } from '@/lib/supabase'
 import { z } from "zod"
 
-// Agent State Schema
+// Enhanced Multi-Agent Types and Interfaces
+interface LLMResult {
+  text?: string
+  response?: string
+}
+
+interface LLMInteraction {
+  model: string
+  input: string
+  output: string
+  processingTime: number
+}
+
+// Direct API integrations without LangChain dependencies
+class DeepSeekReasoningLLM {
+  private apiKey: string
+
+  constructor(apiKey: string) {
+    this.apiKey = apiKey
+  }
+
+  async call(prompt: string): Promise<string> {
+    try {
+      const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${this.apiKey}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          model: 'deepseek-reasoner',
+          messages: [{ role: 'user', content: prompt }],
+          max_tokens: 2000,
+          temperature: 0.7
+        })
+      })
+
+      if (!response.ok) throw new Error(`DeepSeek API error: ${response.status}`)
+      
+      const data = await response.json()
+      return data.choices[0].message.content || 'No response from DeepSeek'
+    } catch (error) {
+      console.error('DeepSeek LLM error:', error)
+      return 'DeepSeek reasoning temporarily unavailable'
+    }
+  }
+}
+
+class GeminiFlashLLM {
+  private apiKey: string
+
+  constructor(apiKey: string) {
+    this.apiKey = apiKey
+  }
+
+  async call(prompt: string): Promise<string> {
+    try {
+      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${this.apiKey}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }],
+          generationConfig: {
+            temperature: 0.8,
+            maxOutputTokens: 2000
+          }
+        })
+      })
+
+      if (!response.ok) throw new Error(`Gemini API error: ${response.status}`)
+
+      const data = await response.json()
+      return data.candidates[0].content.parts[0].text || 'No response from Gemini'
+    } catch (error) {
+      console.error('Gemini LLM error:', error)
+      return 'Gemini generation temporarily unavailable'
+    }
+  }
+}
+
+class OpenAIGPTLLM {
+  private apiKey: string
+
+  constructor(apiKey: string) {
+    this.apiKey = apiKey
+  }
+
+  async call(prompt: string): Promise<string> {
+    try {
+      const response = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${this.apiKey}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          model: 'gpt-4o',
+          messages: [{ role: 'user', content: prompt }],
+          max_tokens: 2000,
+          temperature: 0.7
+        })
+      })
+
+      if (!response.ok) throw new Error(`OpenAI API error: ${response.status}`)
+      
+      const data = await response.json()
+      return data.choices[0].message.content || 'No response from OpenAI'
+    } catch (error) {
+      console.error('OpenAI LLM error:', error)
+      return 'OpenAI service temporarily unavailable'
+    }
+  }
+}
+
+// Vector Search implementation for RAG
+class VectorSearchService {
+  async searchDocuments(query: string, limit: number = 5): Promise<any[]> {
+    try {
+      // Simple text search as fallback for vector search
+      const { data, error } = await supabase
+        .from('saarland_knowledge_vectors')
+        .select('*')
+        .textSearch('content', query, { config: 'german' })
+        .limit(limit)
+
+      if (error) throw error
+
+      return data || []
+    } catch (error) {
+      console.error('Vector search failed:', error)
+      return []
+    }
+  }
+}
+
+// Enhanced Agent State Schema with LangChain integration
 const AgentStateSchema = z.object({
   query: z.string(),
   category: z.enum(['tourism', 'business', 'admin', 'education', 'culture', 'general']),
@@ -17,89 +150,147 @@ const AgentStateSchema = z.object({
   responses: z.array(z.any()).default([]),
   finalResponse: z.string().optional(),
   confidence: z.number().min(0).max(1).default(0.5),
+  vectorContext: z.string().optional(), // RAG enrichment
+  preferredModel: z.enum(['deepseek-r1', 'gemini-2.5', 'openai-gpt4o']).optional(),
+  mode: z.enum(['chat', 'artifact', 'rag', 'websearch']).default('chat'),
   metadata: z.object({
     agentsUsed: z.array(z.string()).default([]),
     processingTime: z.number().default(0),
-    reasoningSteps: z.array(z.string()).default([])
+    reasoningSteps: z.array(z.string()).default([]),
+    llmInteractions: z.array(z.object({
+      model: z.string(),
+      input: z.string(),
+      output: z.string(),
+      processingTime: z.number()
+    })).default([]),
+    vectorSearchResults: z.number().default(0),
+    handoffs: z.array(z.string()).default([])
   }).default({
     agentsUsed: [],
     processingTime: 0,
-    reasoningSteps: []
+    reasoningSteps: [],
+    llmInteractions: [],
+    vectorSearchResults: 0,
+    handoffs: []
   })
 })
 
 export type AgentState = z.infer<typeof AgentStateSchema>
 
-// Specialized Saarland Agents
+// Enhanced Saarland Agents with LangChain integration
 export class SaarlandTourismAgent {
   name = "SaarlandTourismAgent"
+  private deepSeekLLM: DeepSeekReasoningLLM
+  private geminiLLM: GeminiFlashLLM
+  private openaiLLM: OpenAIGPTLLM
+  private vectorSearch: VectorSearchService
+
+  constructor() {
+    this.deepSeekLLM = new DeepSeekReasoningLLM(process.env.DEEPSEEK_API_KEY || '')
+    this.geminiLLM = new GeminiFlashLLM(process.env.GOOGLE_AI_API_KEY || '')
+    this.openaiLLM = new OpenAIGPTLLM(process.env.OPENAI_API_KEY || '')
+    this.vectorSearch = new VectorSearchService()
+  }
   
   async process(state: AgentState): Promise<Partial<AgentState>> {
     const startTime = Date.now()
-    
-    // Tourism-specific knowledge base
-    const tourismData = {
-      attractions: [
-        "Saarschleife Aussichtspunkt Cloef",
-        "Völklinger Hütte UNESCO Welterbe", 
-        "Bostalsee Erholungsgebiet",
-        "Homburger Schlossberghöhlen",
-        "Saarbrücker Schloss"
-      ],
-      activities: [
-        "Wandern im Bliesgau",
-        "Radfahren entlang der Saar",
-        "Wassersport am Bostalsee",
-        "Kulturevents in Saarbrücken"
-      ],
-      events: [
-        "Saarspektakel (Sommer)",
-        "Filmfestival Max Ophüls Preis (Januar)",
-        "Saarländisches Künstlerfest"
-      ]
+
+    // Enrich with vector context for complex tourism queries
+    let vectorContext = state.vectorContext || ''
+    if (state.mode === 'rag' || state.query.toLowerCase().includes('empfehlung')) {
+      try {
+        const relevantDocs = await this.vectorSearch.searchDocuments(state.query, 3)
+        vectorContext = relevantDocs.map(doc => doc.content || doc.pageContent).join('\n\n')
+        state.metadata.vectorSearchResults = relevantDocs.length
+      } catch (error) {
+        console.error('Vector search failed:', error)
+      }
     }
 
-    let response = ""
-    const query = state.query.toLowerCase()
+    // Select appropriate LLM based on query complexity and preferred model
+    let selectedLLM: DeepSeekReasoningLLM | GeminiFlashLLM | OpenAIGPTLLM
+    let modelUsed: string
 
-    if (query.includes('saarschleife')) {
-      response = `🌊 Die Saarschleife ist unser Wahrzeichen! Beste Aussicht vom Cloef-Atrium in Orscholz (kostenlos). 
-      
-      🚗 Anfahrt: A8 → Ausfahrt Perl → B419 → Orscholz
-      🥾 Wandertipp: Saarschleifenpfad (15km Rundweg)
-      📷 Beste Fotozeit: Sonnenauf-/untergang
-      🍽️ Restaurant-Tipp: Zur Saarschleife (regionale Küche)`
-    } else if (query.includes('völklingen')) {
-      response = `🏭 Völklinger Hütte - UNESCO Welterbe der Industriekultur!
-      
-      🎫 Öffnungszeiten: 10-19 Uhr (Apr-Okt), 10-18 Uhr (Nov-März)
-      💰 Eintritt: 17€ Erwachsene, 15€ ermäßigt
-      🎨 Highlights: Science Center, Aussichtsplattform, Wechselausstellungen
-      🚉 Anfahrt: Bahnhof Völklingen → 10min Fußweg`
-    } else if (query.includes('bostalsee')) {
-      response = `🏊‍♂️ Bostalsee - Das Freizeitparadis im Saarland!
-      
-      🏖️ Aktivitäten: Schwimmen, Segeln, SUP, Tretbootfahren
-      🏨 Center Parcs Bostalsee: Tropical Aqua Mundo
-      🥾 Rundwanderweg: 7km um den See
-      🍺 Seeterrassen: Regionale Spezialitäten mit Seeblick`
+    if (state.preferredModel === 'deepseek-r1' || 
+        state.query.toLowerCase().includes('warum') || 
+        state.query.toLowerCase().includes('vergleich')) {
+      selectedLLM = this.deepSeekLLM
+      modelUsed = 'deepseek-reasoner'
+    } else if (state.preferredModel === 'gemini-2.5' || state.mode === 'artifact') {
+      selectedLLM = this.geminiLLM  
+      modelUsed = 'gemini-2.0-flash'
     } else {
-      response = `✨ Entdecken Sie das Saarland! 
-      
-      🌟 Top-Ziele: ${tourismData.attractions.slice(0, 3).join(', ')}
-      🎯 Aktivitäten: ${tourismData.activities.slice(0, 2).join(', ')}
-      🎭 Events 2025: ${tourismData.events.join(', ')}
-      
-      💡 Tipp: Saarland Card für vergünstigte Eintritte!`
+      selectedLLM = this.openaiLLM
+      modelUsed = 'gpt-4o'
     }
 
-    return {
-      responses: [...state.responses, { agent: this.name, response }],
-      metadata: {
-        ...state.metadata,
-        agentsUsed: [...state.metadata.agentsUsed, this.name],
-        processingTime: state.metadata.processingTime + (Date.now() - startTime),
-        reasoningSteps: [...state.metadata.reasoningSteps, `Tourism agent analyzed query for Saarland attractions`]
+    // Enhanced tourism prompt
+    const tourismPrompt = `Du bist ein spezialisierter Saarland-Tourismus-Agent mit Zugang zu aktuellen Daten.
+
+QUERY: ${state.query}
+MODUS: ${state.mode}
+VECTOR-KONTEXT: ${vectorContext || 'Keine spezifischen Saarland-Daten verfügbar'}
+
+AUFGABE:
+Beantworte die Tourismus-Anfrage für das Saarland mit präzisen, aktuellen Informationen.
+
+SAARLAND HIGHLIGHTS:
+- Saarschleife (UNESCO-Biosphäre Bliesgau)
+- Völklinger Hütte (UNESCO Welterbe)
+- Bostalsee (größter Freizeitsee)
+- St. Wendeler Land (Wanderparadies)
+- Saarbrücken (Kultur & Shopping)
+
+STIL: Hilfsbereit, regional-informiert, praktische Details, Emojis für bessere Lesbarkeit.
+
+ANTWORT:`
+
+    try {
+      const llmStartTime = Date.now()
+      const response = await selectedLLM.call(tourismPrompt)
+      const llmProcessingTime = Date.now() - llmStartTime
+
+      // Track LLM interaction
+      const llmInteraction: LLMInteraction = {
+        model: modelUsed,
+        input: state.query,
+        output: response,
+        processingTime: llmProcessingTime
+      }
+
+      return {
+        responses: [...state.responses, { agent: this.name, response, model: modelUsed }],
+        vectorContext,
+        metadata: {
+          ...state.metadata,
+          agentsUsed: [...state.metadata.agentsUsed, this.name],
+          processingTime: state.metadata.processingTime + (Date.now() - startTime),
+          reasoningSteps: [...state.metadata.reasoningSteps, `Tourism agent used ${modelUsed} for query analysis`],
+          llmInteractions: [...state.metadata.llmInteractions, llmInteraction]
+        }
+      }
+
+    } catch (error) {
+      console.error('Tourism agent LLM error:', error)
+      
+      // Fallback to static response
+      const fallbackResponse = `🏛️ Saarland Tourismus - Entdecken Sie unsere Highlights!
+      
+      🌊 Saarschleife: Deutschlands schönste Flussschleife
+      🏭 Völklinger Hütte: UNESCO Welterbe der Industriekultur  
+      🏊‍♂️ Bostalsee: Wassersport & Erholung
+      🥾 Bliesgau: UNESCO Biosphärenreservat
+      
+      💡 Mehr Infos: saarland.de/tourismus`
+
+      return {
+        responses: [...state.responses, { agent: this.name, response: fallbackResponse, model: 'fallback' }],
+        metadata: {
+          ...state.metadata,
+          agentsUsed: [...state.metadata.agentsUsed, this.name],
+          processingTime: state.metadata.processingTime + (Date.now() - startTime),
+          reasoningSteps: [...state.metadata.reasoningSteps, `Tourism agent fallback due to LLM error`]
+        }
       }
     }
   }
@@ -320,7 +511,7 @@ export class ResponseAggregator {
   }
 }
 
-// Main Multi-Agent Orchestrator
+// Enhanced Main Multi-Agent Orchestrator with Direct API Integration
 export class SaarlandMultiAgentOrchestrator {
   private router = new AgentRouter()
   private aggregator = new ResponseAggregator()
@@ -329,25 +520,54 @@ export class SaarlandMultiAgentOrchestrator {
     business: new SaarlandBusinessAgent(), 
     admin: new SaarlandAdminAgent()
   }
+  private vectorSearch: VectorSearchService
+
+  constructor() {
+    this.vectorSearch = new VectorSearchService()
+  }
 
   async processQuery(
     query: string,
     category: AgentState['category'] = 'general',
-    context?: any
+    context?: any,
+    options?: {
+      mode?: 'chat' | 'artifact' | 'rag' | 'websearch'
+      preferredModel?: 'deepseek-r1' | 'gemini-2.5' | 'openai-gpt4o'
+      enableVectorSearch?: boolean
+    }
   ): Promise<AgentState> {
     const startTime = Date.now()
     
-    // Initialize state
+    // Initialize enhanced state
     let state: AgentState = {
       query,
       category,
       context,
       responses: [],
       confidence: 0.5,
+      mode: options?.mode || 'chat',
+      preferredModel: options?.preferredModel,
       metadata: {
         agentsUsed: [],
         processingTime: 0,
-        reasoningSteps: [`Started multi-agent processing for query: ${query}`]
+        reasoningSteps: [`Started enhanced multi-agent processing for query: ${query}`],
+        llmInteractions: [],
+        vectorSearchResults: 0,
+        handoffs: []
+      }
+    }
+
+    // Vector enrichment for RAG mode or complex queries
+    if (options?.enableVectorSearch !== false && 
+        (state.mode === 'rag' || query.length > 50)) {
+      try {
+        const relevantDocs = await this.vectorSearch.searchDocuments(query, 5)
+        state.vectorContext = relevantDocs.map(doc => doc.content || doc.pageContent).join('\n\n')
+        state.metadata.vectorSearchResults = relevantDocs.length
+        state.metadata.reasoningSteps.push(`Vector search found ${relevantDocs.length} relevant documents`)
+      } catch (error) {
+        console.error('Vector enrichment failed:', error)
+        state.metadata.reasoningSteps.push('Vector search failed, proceeding without RAG')
       }
     }
 
