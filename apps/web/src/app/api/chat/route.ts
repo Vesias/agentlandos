@@ -1,33 +1,3 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { multiModelAI } from '@/services/multi-model-ai';
-import { createClient } from '@supabase/supabase-js';
-import { z } from 'zod';
-
-// Supabase client for logging
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
-
-// Request validation schema
-const chatRequestSchema = z.object({
-  messages: z.array(z.object({
-    role: z.enum(['user', 'assistant', 'system']),
-    content: z.string()
-  })).min(1),
-  userId: z.string().optional(),
-  context: z.object({
-    location: z.string().optional(),
-    language: z.string().optional(),
-    previousTopics: z.array(z.string()).optional()
-  }).optional(),
-  options: z.object({
-    preferredModel: z.enum(['auto', 'gemini-2.5', 'deepseek-reasoner', 'gpt-4']).optional(),
-    maxTokens: z.number().optional(),
-    temperature: z.number().optional()
-  }).optional()
-});
-
 async function getCurrentSaarlandData() {
   try {
     const baseUrl = process.env.NEXT_PUBLIC_VERCEL_URL 

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { enhancedAI } from '@/lib/ai/enhanced-ai-service'
+import { enhancedAI } from '@/services/ai/enhanced-ai-service'
 
 export const dynamic = 'force-dynamic'
 
