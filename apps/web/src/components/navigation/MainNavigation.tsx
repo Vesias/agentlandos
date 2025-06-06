@@ -226,21 +226,21 @@ export default function MainNavigation() {
               <LiveUserCounter />
               
               {/* Professional Service Access */}
-              <button className="p-3 bg-primary-600 hover:bg-primary-700 text-white rounded-lg hover:shadow-md transition-all duration-300 group">
+              <button className="p-3 bg-saarland-blue-700 hover:bg-saarland-blue-800 text-white rounded-lg hover:shadow-md transition-all duration-300 group focus:ring-2 focus:ring-saarland-blue-500 focus:ring-offset-2">
                 <Mic className="w-5 h-5 group-hover:scale-105 transition-transform" />
               </button>
               
-              <button className="p-3 bg-saarland-600 hover:bg-saarland-700 text-white rounded-lg hover:shadow-md transition-all duration-300 group">
+              <button className="p-3 bg-innovation-cyan-600 hover:bg-innovation-cyan-700 text-white rounded-lg hover:shadow-md transition-all duration-300 group focus:ring-2 focus:ring-innovation-cyan-500 focus:ring-offset-2">
                 <Camera className="w-5 h-5 group-hover:scale-105 transition-transform" />
               </button>
               
               {/* Professional Community Button */}
               <Link
                 href="/community"
-                className={`px-5 py-3 rounded-lg font-professional font-semibold transition-all duration-300 flex items-center space-x-2 ${
+                className={`px-5 py-3 rounded-lg font-professional font-semibold transition-all duration-300 flex items-center space-x-2 focus:ring-2 focus:ring-saarland-blue-500 focus:ring-offset-2 ${
                   pathname === '/community'
-                    ? 'bg-primary-700 text-white shadow-md'
-                    : 'bg-primary-600 text-white hover:bg-primary-700 hover:shadow-md'
+                    ? 'bg-saarland-blue-800 text-white shadow-md'
+                    : 'bg-saarland-blue-700 text-white hover:bg-saarland-blue-800 hover:shadow-md'
                 }`}
               >
                 <User className="w-5 h-5" />
@@ -272,7 +272,7 @@ export default function MainNavigation() {
               {/* Professional AI Button */}
               <Link
                 href="/ai-assistant"
-                className="p-3 bg-primary-600 hover:bg-primary-700 text-white rounded-lg shadow-md active:scale-95 transition-all"
+                className="p-3 bg-saarland-blue-700 hover:bg-saarland-blue-800 text-white rounded-lg shadow-md active:scale-95 transition-all focus:ring-2 focus:ring-saarland-blue-500 focus:ring-offset-2"
               >
                 <Brain className="w-5 h-5" />
               </Link>
@@ -282,10 +282,10 @@ export default function MainNavigation() {
                 variant="ghost"
                 size="icon"
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="relative z-50 p-3 rounded-lg bg-neutral-100 hover:bg-neutral-200 active:scale-95 transition-all"
+                className="relative z-50 p-3 rounded-lg bg-technical-silver-100 hover:bg-technical-silver-200 active:scale-95 transition-all focus:ring-2 focus:ring-saarland-blue-500 focus:ring-offset-2"
                 aria-label={mobileMenuOpen ? "Menü schließen" : "Menu öffnen"}
               >
-                {mobileMenuOpen ? <X className="w-6 h-6 text-neutral-600" /> : <Menu className="w-6 h-6 text-neutral-600" />}
+                {mobileMenuOpen ? <X className="w-6 h-6 text-neutral-gray-600" /> : <Menu className="w-6 h-6 text-neutral-gray-600" />}
               </Button>
             </div>
           </div>
@@ -351,10 +351,10 @@ export default function MainNavigation() {
                 <Link
                   href="/community"
                   onClick={() => setMobileMenuOpen(false)}
-                  className={`px-6 py-4 rounded-2xl font-semibold transition-all duration-300 flex items-center space-x-3 w-full shadow-lg active:scale-95 ${
+                  className={`px-6 py-4 rounded-2xl font-semibold transition-all duration-300 flex items-center space-x-3 w-full shadow-lg active:scale-95 focus:ring-2 focus:ring-saarland-blue-500 focus:ring-offset-2 ${
                     pathname === '/community'
-                      ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white'
-                      : 'bg-gradient-to-r from-blue-500 to-blue-600 text-white'
+                      ? 'bg-gradient-to-r from-saarland-blue-700 to-saarland-blue-800 text-white'
+                      : 'bg-gradient-to-r from-saarland-blue-600 to-saarland-blue-700 text-white'
                   }`}
                 >
                   <User className="w-6 h-6" />
@@ -396,16 +396,16 @@ export default function MainNavigation() {
                 </div>
                 
                 {/* Input Methods */}
-                <div className="flex items-center gap-3 pt-4 border-t border-gray-100">
-                  <button className="flex-1 p-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-2xl flex items-center justify-center gap-2 active:scale-95 transition-all">
+                <div className="flex items-center gap-3 pt-4 border-t border-technical-silver-200">
+                  <button className="flex-1 p-3 bg-gradient-to-r from-saarland-blue-600 to-innovation-cyan-600 text-white rounded-2xl flex items-center justify-center gap-2 active:scale-95 transition-all focus:ring-2 focus:ring-saarland-blue-500 focus:ring-offset-2">
                     <Mic className="w-5 h-5" />
                     <span className="text-sm font-medium">Sprechen</span>
                   </button>
-                  <button className="flex-1 p-3 bg-gradient-to-r from-green-500 to-teal-600 text-white rounded-2xl flex items-center justify-center gap-2 active:scale-95 transition-all">
+                  <button className="flex-1 p-3 bg-gradient-to-r from-success-green-600 to-innovation-cyan-600 text-white rounded-2xl flex items-center justify-center gap-2 active:scale-95 transition-all focus:ring-2 focus:ring-success-green-500 focus:ring-offset-2">
                     <Camera className="w-5 h-5" />
                     <span className="text-sm font-medium">Foto</span>
                   </button>
-                  <button className="flex-1 p-3 bg-gradient-to-r from-orange-500 to-red-600 text-white rounded-2xl flex items-center justify-center gap-2 active:scale-95 transition-all">
+                  <button className="flex-1 p-3 bg-gradient-to-r from-warm-gold-500 to-warm-gold-600 text-white rounded-2xl flex items-center justify-center gap-2 active:scale-95 transition-all focus:ring-2 focus:ring-warm-gold-500 focus:ring-offset-2">
                     <FileText className="w-5 h-5" />
                     <span className="text-sm font-medium">Dokument</span>
                   </button>
