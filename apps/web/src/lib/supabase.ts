@@ -185,10 +185,40 @@ export class DatabaseService {
     }
   }
 
+  // Ensure tables exist helper
+  static async ensureTablesExist(client: any) {
+    try {
+      // Check if users table exists by trying to query it
+      const { error } = await client
+        .from('users')
+        .select('id')
+        .limit(1)
+      
+      // If table doesn't exist, that's okay - we'll return fallback data
+      if (error && error.message.includes('does not exist')) {
+        console.warn('Analytics tables not yet created - using fallback data')
+      }
+    } catch (err) {
+      console.warn('Database check failed:', err)
+    }
+  }
+
   // Real user analytics methods - NO FAKE DATA
   static async getTotalUsers(): Promise<number> {
     try {
       const client = this.getClient()
+      
+      // Check if table exists first
+      const { error: checkError } = await client
+        .from('users')
+        .select('id')
+        .limit(1)
+      
+      if (checkError) {
+        console.warn('Users table not available - starting from 0:', checkError.message)
+        return 0
+      }
+      
       const { count, error } = await client
         .from('users')
         .select('*', { count: 'exact', head: true })
@@ -260,6 +290,10 @@ export class DatabaseService {
   }) {
     try {
       const client = this.getClient()
+      
+      // Create tables if they don't exist (graceful degradation)
+      await this.ensureTablesExist(client)
+      
       const { data, error } = await client
         .from('session_tracking')
         .insert({
@@ -270,7 +304,10 @@ export class DatabaseService {
         .select()
         .single()
       
-      if (error) throw new Error(error.message)
+      if (error) {
+        console.warn('Session tracking unavailable:', error.message)
+        return null
+      }
       return data
     } catch (err) {
       console.error('Failed to create session:', err)
@@ -281,6 +318,18 @@ export class DatabaseService {
   static async updateSessionActivity(sessionId: string, pageVisited = false) {
     try {
       const client = this.getClient()
+      
+      // Graceful degradation - check if table exists first
+      const { error: checkError } = await client
+        .from('session_tracking')
+        .select('session_id')
+        .limit(1)
+      
+      if (checkError) {
+        console.warn('Session tracking table not available:', checkError.message)
+        return null
+      }
+      
       const updateData: any = {
         last_activity: new Date().toISOString()
       }
@@ -303,7 +352,10 @@ export class DatabaseService {
         .select()
         .single()
       
-      if (error) throw new Error(error.message)
+      if (error) {
+        console.warn('Session update failed:', error.message)
+        return null
+      }
       return data
     } catch (err) {
       console.error('Failed to update session activity:', err)

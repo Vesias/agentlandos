@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 import { 
   Users, MessageCircle, Newspaper, Calendar, MapPin, 
   TrendingUp, Heart, Share2, ExternalLink, Star,
-  Clock, Eye, ThumbsUp, MessageSquare
+  Clock, Eye, ThumbsUp, MessageSquare, Building2
 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 
