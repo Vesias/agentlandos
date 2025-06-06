@@ -47,8 +47,10 @@ export async function POST(request: NextRequest) {
         category = 'admin'
       } else if (keywords.includes('förder') || keywords.includes('business') || keywords.includes('startup')) {
         category = 'business'
-      } else if (keywords.includes('agentland') || keywords.includes('lohnt sich')) {
+      } else if (keywords.includes('agentland') || keywords.includes('lohnt sich') || keywords.includes('was ist das')) {
         category = 'agentland'
+      } else if (keywords.includes('hey') || keywords.includes('hallo') || keywords.includes('hi') || keywords.includes('guten tag')) {
+        category = 'greeting'
       }
     }
 
@@ -273,6 +275,59 @@ Welchen Service benötigen Sie?`
 📱 Digitalisierung
 
 Für welche Art von Projekt suchen Sie Förderung?`
+        break
+
+      case 'agentland':
+        agentName = 'SAAR-GPT Assistant'
+        response = `🚀 AGENTLAND.SAARLAND lohnt sich definitiv!
+
+**WAS MACHT UNS BESONDERS:**
+• Erste KI-Agentur-Plattform im Saarland
+• Modernste AI-Technologie (DeepSeek R1 + Gemini)
+• Lokale Saarland-Expertise mit globaler KI-Power
+• Premium Services ab €10/Monat
+
+**FÜR UNTERNEHMEN:**
+• 40-70% Kosteneinsparung durch KI-Automatisierung
+• Prozessoptimierung mit speziellen Saarland-Agenten
+• Cross-Border Services (DE/FR/LU)
+
+**FÜR PRIVATNUTZER:**
+• SAAR-GPT Chat mit lokalen Informationen
+• Behördenfinder & Services
+• Tourismus & Freizeit-Tipps
+• Community Features (SAARBRETT)
+
+**WARUM JETZT EINSTEIGEN:**
+💡 Kostenlose Testphase verfügbar
+📈 Erste Mover Advantage im Saarland
+🤖 Zugang zu modernster KI-Technologie
+🏆 Regionaler Marktführer werden
+
+Probieren Sie es kostenlos aus!`
+        break
+
+      case 'greeting':
+        agentName = 'SAAR-GPT Welcome'
+        response = `👋 Hallo! Willkommen bei SAAR-GPT!
+
+Ich bin Ihr intelligenter KI-Assistent für das Saarland und helfe gerne bei:
+
+🌤️ **Wetter & Klima**
+🏛️ **Behörden & Services**  
+🎓 **Bildung & Nachhilfe**
+⚽ **Sport & Vereine**
+🏞️ **Tourismus & Freizeit**
+💼 **Business & Förderung**
+
+**Einfach fragen!** Zum Beispiel:
+• "Wie ist das Wetter heute im Saarland?"
+• "Wo finde ich Nachhilfe in Saarbrücken?"
+• "Was kann man am Bostalsee machen?"
+• "Welche Behörden gibt es in Saarlouis?"
+• "Lohnt sich agentland.saarland?"
+
+Was interessiert Sie heute?`
         break
 
       default:

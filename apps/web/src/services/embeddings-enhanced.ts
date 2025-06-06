@@ -235,6 +235,8 @@ export class SaarlandEmbeddingsService {
       // Fallback zu keyword-basierter Kategorisierung
       const keywords = query.toLowerCase()
       
+      if (keywords.includes('hey') || keywords.includes('hallo') || keywords.includes('hi') || keywords.includes('guten tag')) return 'greeting'
+      if (keywords.includes('agentland') || keywords.includes('lohnt sich') || keywords.includes('was ist das')) return 'agentland'
       if (keywords.includes('wetter') || keywords.includes('temperatur')) return 'weather'
       if (keywords.includes('fußball') || keywords.includes('sport')) return 'football'
       if (keywords.includes('nachhilfe') || keywords.includes('lernen')) return 'education'
