@@ -66,6 +66,24 @@ export default function HomePage() {
             </Link>
           </div>
 
+          {/* FREE Saarland Special */}
+          <div className="bg-gradient-to-r from-[#003399] to-[#009FE3] rounded-3xl p-6 mb-8 max-w-2xl mx-auto text-center text-white border-2 border-[#FDB913]/50">
+            <div className="flex items-center justify-center gap-2 mb-4">
+              <span className="text-2xl">🆓</span>
+              <h3 className="text-xl font-bold text-[#FDB913]">KOSTENLOS für alle Saarlänger!</h3>
+              <span className="text-2xl">🏛️</span>
+            </div>
+            <p className="text-white/90 mb-4">
+              Als erste KI-Agentur im Saarland unterstützen wir unsere Heimat - 
+              <strong className="text-[#FDB913]"> komplett kostenlos mit fairen Limits</strong>
+            </p>
+            <Link href="/register?plan=saarland-free">
+              <button className="bg-[#FDB913] hover:bg-[#E5A50A] text-[#003399] px-6 py-3 rounded-xl font-bold transition-all duration-300 hover:scale-105">
+                Jetzt kostenlos als Saarlänger registrieren
+              </button>
+            </Link>
+          </div>
+
           {/* Live AGENTNET Hero Metrics */}
           <div className="mb-8">
             <div className="inline-flex items-center gap-2 bg-red-500/20 border border-red-500/30 rounded-full px-4 py-2 mb-6">
@@ -205,7 +223,31 @@ export default function HomePage() {
           </div>
 
           {/* Service Packages - Quick Overview */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-16">
+            {/* KOSTENLOS für SAARUSER */}
+            <div className="bg-gradient-to-br from-[#003399] to-[#009FE3] p-6 rounded-3xl shadow-xl text-white relative overflow-hidden transform hover:scale-105 transition-all duration-300">
+              <div className="absolute top-0 right-0 bg-[#FDB913] text-[#003399] px-3 py-1 rounded-bl-xl font-bold text-sm">SAARLAND</div>
+              <div className="text-center pt-4">
+                <h3 className="text-2xl font-bold mb-2">🆓 KOSTENLOS</h3>
+                <div className="text-3xl font-bold mb-4">0€<span className="text-lg text-blue-100">/Monat</span></div>
+                <div className="bg-[#FDB913]/20 border border-[#FDB913]/30 rounded-xl p-3 mb-4">
+                  <div className="text-lg font-bold text-[#FDB913]">Nur für Saarlänger!</div>
+                  <div className="text-sm text-blue-100">Mit fairen Limits</div>
+                </div>
+                <ul className="text-sm text-blue-100 space-y-2 mb-6 text-left">
+                  <li>• 10 KI-Anfragen/Tag</li>
+                  <li>• Basis Chat-Support</li>
+                  <li>• PLZ-Services Saarland</li>
+                  <li>• Community-Zugang</li>
+                </ul>
+                <Link href="/register?plan=saarland-free">
+                  <button className="w-full bg-[#FDB913] hover:bg-[#E5A50A] text-[#003399] py-3 rounded-xl font-bold transition-all duration-300">
+                    Als Saarlänger starten
+                  </button>
+                </Link>
+              </div>
+            </div>
+
             {/* Starter Paket */}
             <div className="bg-white p-6 rounded-3xl shadow-lg border-2 border-gray-100 hover:border-[#FDB913]/30 transition-all duration-300 hover:scale-105">
               <div className="text-center">
@@ -309,16 +351,16 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Enhanced Saarland Services - NEW! */}
+      {/* Advanced Saarland Services - NEW! */}
       <EnhancedSaarlandServices />
       
-      {/* Enhanced Multi-Agent Chat Section */}
+      {/* Multi-Agent Chat Section */}
       <section className="py-20 px-4 bg-gradient-to-b from-white to-gray-50">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
             <div className="inline-flex items-center gap-2 bg-[#003399]/10 border border-[#003399]/20 rounded-full px-6 py-2 mb-6">
               <Brain className="w-5 h-5 text-[#003399]" />
-              <span className="text-[#003399] font-semibold">ENHANCED AI CHAT</span>
+              <span className="text-[#003399] font-semibold">INTELLIGENTES AI CHAT</span>
             </div>
             <h2 className="text-4xl md:text-5xl font-bold text-[#003399] mb-4 font-quantum">
               Multi-Agent KI mit erweiterten Fähigkeiten

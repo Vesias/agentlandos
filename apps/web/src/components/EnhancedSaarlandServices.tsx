@@ -137,10 +137,10 @@ export default function EnhancedSaarlandServices() {
       {/* Header */}
       <div className="text-center mb-8">
         <h1 className="text-4xl font-bold text-[#003399] mb-4">
-          🚀 Enhanced Saarland Services
+          🚀 Saarland Services
         </h1>
         <p className="text-xl text-gray-600">
-          Real-time services, AI-powered assistance, and enhanced PLZ-search
+          Real-time services, AI-powered assistance, and intelligent PLZ-search
         </p>
       </div>
 
@@ -175,7 +175,7 @@ export default function EnhancedSaarlandServices() {
           <div className="bg-white rounded-3xl p-8 shadow-lg border border-gray-100">
             <h2 className="text-2xl font-bold text-[#003399] mb-6 flex items-center gap-2">
               <Search className="w-6 h-6" />
-              Enhanced PLZ Service Search
+              Intelligente PLZ Service Suche
             </h2>
             
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
@@ -489,7 +489,7 @@ export default function EnhancedSaarlandServices() {
                       <div className="text-blue-900">{documentAnalysis.data.analyzedDocument.requirements.length}</div>
                     </div>
                     <div>
-                      <span className="text-blue-600 font-medium">KI-Enhanced:</span>
+                      <span className="text-blue-600 font-medium">KI-Optimiert:</span>
                       <div className="text-blue-900">{documentAnalysis.meta.aiEnhanced ? '✅ Ja' : '❌ Nein'}</div>
                     </div>
                   </div>
