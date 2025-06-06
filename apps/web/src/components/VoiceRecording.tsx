@@ -1,0 +1,336 @@
+'use client'
+
+import React, { useState, useEffect, useRef } from 'react'
+import { Mic, MicOff, Volume2, Languages, Square, Play } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { useVoiceRecognition } from '@/hooks/useVoiceRecognition'
+
+interface VoiceRecordingProps {
+  onTranscript?: (text: string) => void
+  onAudioData?: (audioBlob: Blob) => void
+  className?: string
+  autoSend?: boolean
+  showLanguageSelector?: boolean
+  disabled?: boolean
+}
+
+const supportedLanguages = [
+  { code: 'de-DE', label: 'Deutsch', flag: '🇩🇪' },
+  { code: 'fr-FR', label: 'Français', flag: '🇫🇷' },
+  { code: 'en-US', label: 'English', flag: '🇺🇸' },
+  { code: 'lb-LU', label: 'Lëtzebuergesch', flag: '🇱🇺' }
+]
+
+export default function VoiceRecording({
+  onTranscript,
+  onAudioData,
+  className = '',
+  autoSend = false,
+  showLanguageSelector = true,
+  disabled = false
+}: VoiceRecordingProps) {
+  const [selectedLanguage, setSelectedLanguage] = useState('de-DE')
+  const [isRecording, setIsRecording] = useState(false)
+  const [audioLevel, setAudioLevel] = useState(0)
+  const [recordedBlob, setRecordedBlob] = useState<Blob | null>(null)
+  const [showTranscript, setShowTranscript] = useState(false)
+
+  // Audio recording refs
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null)
+  const audioContextRef = useRef<AudioContext | null>(null)
+  const analyserRef = useRef<AnalyserNode | null>(null)
+  const audioStreamRef = useRef<MediaStream | null>(null)
+  const animationFrameRef = useRef<number>(0)
+  const chunksRef = useRef<Blob[]>([])
+
+  // Voice recognition hook
+  const {
+    isListening,
+    isSupported,
+    transcript,
+    interimTranscript,
+    error,
+    startListening,
+    stopListening,
+    resetTranscript,
+    changeLanguage
+  } = useVoiceRecognition({
+    language: selectedLanguage,
+    continuous: true,
+    interimResults: true,
+    onResult: (text, isFinal) => {
+      if (isFinal && autoSend && text.trim()) {
+        onTranscript?.(text)
+        resetTranscript()
+      }
+    },
+    onStart: () => {
+      setShowTranscript(true)
+    },
+    onEnd: () => {
+      if (!autoSend && transcript.trim()) {
+        onTranscript?.(transcript)
+      }
+    }
+  })
+
+  // Audio level visualization
+  const updateAudioLevel = () => {
+    if (!analyserRef.current) return
+
+    const dataArray = new Uint8Array(analyserRef.current.frequencyBinCount)
+    analyserRef.current.getByteFrequencyData(dataArray)
+    
+    const average = dataArray.reduce((a, b) => a + b) / dataArray.length
+    const normalizedLevel = Math.min(average / 128, 1)
+    setAudioLevel(normalizedLevel)
+
+    if (isRecording || isListening) {
+      animationFrameRef.current = requestAnimationFrame(updateAudioLevel)
+    }
+  }
+
+  // Start audio recording and speech recognition
+  const startRecording = async () => {
+    if (disabled) return
+
+    try {
+      // Get media stream
+      const stream = await navigator.mediaDevices.getUserMedia({ 
+        audio: {
+          echoCancellation: true,
+          noiseSuppression: true,
+          autoGainControl: true
+        } 
+      })
+      
+      audioStreamRef.current = stream
+
+      // Set up audio context for visualization
+      const audioContext = new (window.AudioContext || window.webkitAudioContext)()
+      const analyser = audioContext.createAnalyser()
+      const source = audioContext.createMediaStreamSource(stream)
+      
+      analyser.fftSize = 256
+      source.connect(analyser)
+      
+      audioContextRef.current = audioContext
+      analyserRef.current = analyser
+
+      // Set up media recorder for audio capture
+      const mediaRecorder = new MediaRecorder(stream, {
+        mimeType: 'audio/webm;codecs=opus'
+      })
+      
+      chunksRef.current = []
+      
+      mediaRecorder.ondataavailable = (event) => {
+        if (event.data.size > 0) {
+          chunksRef.current.push(event.data)
+        }
+      }
+      
+      mediaRecorder.onstop = () => {
+        const blob = new Blob(chunksRef.current, { type: 'audio/webm;codecs=opus' })
+        setRecordedBlob(blob)
+        onAudioData?.(blob)
+      }
+
+      mediaRecorderRef.current = mediaRecorder
+      
+      // Start recording
+      mediaRecorder.start(1000) // Record in 1-second chunks
+      setIsRecording(true)
+      
+      // Start speech recognition
+      startListening()
+      
+      // Start audio level monitoring
+      updateAudioLevel()
+
+    } catch (error) {
+      console.error('Error starting recording:', error)
+    }
+  }
+
+  // Stop recording
+  const stopRecording = () => {
+    if (mediaRecorderRef.current && isRecording) {
+      mediaRecorderRef.current.stop()
+    }
+    
+    if (audioStreamRef.current) {
+      audioStreamRef.current.getTracks().forEach(track => track.stop())
+    }
+    
+    if (audioContextRef.current) {
+      audioContextRef.current.close()
+    }
+    
+    if (animationFrameRef.current) {
+      cancelAnimationFrame(animationFrameRef.current)
+    }
+    
+    stopListening()
+    setIsRecording(false)
+    setAudioLevel(0)
+  }
+
+  // Handle language change
+  const handleLanguageChange = (langCode: string) => {
+    setSelectedLanguage(langCode)
+    changeLanguage(langCode)
+  }
+
+  // Send transcript manually
+  const sendTranscript = () => {
+    if (transcript.trim()) {
+      onTranscript?.(transcript)
+      resetTranscript()
+      setShowTranscript(false)
+    }
+  }
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      stopRecording()
+    }
+  }, [])
+
+  if (!isSupported) {
+    return (
+      <div className={`p-4 text-center text-gray-500 ${className}`}>
+        <MicOff className="w-8 h-8 mx-auto mb-2" />
+        <p className="text-sm">Spracherkennung wird in diesem Browser nicht unterstützt</p>
+      </div>
+    )
+  }
+
+  return (
+    <div className={`flex flex-col space-y-3 ${className}`}>
+      {/* Language Selector */}
+      {showLanguageSelector && (
+        <div className="flex items-center space-x-2">
+          <Languages className="w-4 h-4 text-gray-500" />
+          <select
+            value={selectedLanguage}
+            onChange={(e) => handleLanguageChange(e.target.value)}
+            className="text-sm border border-gray-300 rounded px-2 py-1 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            disabled={isRecording || isListening}
+          >
+            {supportedLanguages.map((lang) => (
+              <option key={lang.code} value={lang.code}>
+                {lang.flag} {lang.label}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
+
+      {/* Recording Controls */}
+      <div className="flex items-center space-x-3">
+        {/* Record Button */}
+        <Button
+          onClick={isRecording ? stopRecording : startRecording}
+          disabled={disabled}
+          variant={isRecording ? "destructive" : "default"}
+          size="sm"
+          className="relative"
+        >
+          {isRecording ? (
+            <Square className="w-4 h-4" />
+          ) : (
+            <Mic className="w-4 h-4" />
+          )}
+          {isRecording ? 'Stopp' : 'Aufnahme'}
+        </Button>
+
+        {/* Audio Level Visualization */}
+        {(isRecording || isListening) && (
+          <div className="flex items-center space-x-1">
+            <Volume2 className="w-4 h-4 text-green-500" />
+            <div className="flex space-x-1">
+              {[...Array(5)].map((_, i) => (
+                <div
+                  key={i}
+                  className={`w-1 h-4 rounded-full transition-all duration-100 ${
+                    audioLevel > (i + 1) * 0.2 ? 'bg-green-500' : 'bg-gray-300'
+                  }`}
+                />
+              ))}
+            </div>
+            {isListening && (
+              <span className="text-xs text-green-600 animate-pulse">Höre zu...</span>
+            )}
+          </div>
+        )}
+
+        {/* Status Indicator */}
+        {(isRecording || isListening) && (
+          <div className="flex items-center space-x-2">
+            <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
+            <span className="text-xs text-gray-600">
+              {isRecording && isListening ? 'Aufnahme & Erkennung' : 
+               isRecording ? 'Aufnahme läuft' : 'Spracherkennung'}
+            </span>
+          </div>
+        )}
+      </div>
+
+      {/* Live Transcript */}
+      {showTranscript && (transcript || interimTranscript) && (
+        <div className="p-3 bg-gray-50 rounded-lg border">
+          <div className="flex items-center justify-between mb-2">
+            <h4 className="text-sm font-medium text-gray-700">Live Transkript</h4>
+            {!autoSend && transcript && (
+              <Button onClick={sendTranscript} size="sm" variant="outline">
+                <Play className="w-3 h-3 mr-1" />
+                Senden
+              </Button>
+            )}
+          </div>
+          <div className="text-sm">
+            <span className="text-gray-900">{transcript}</span>
+            {interimTranscript && (
+              <span className="text-gray-500 italic">{interimTranscript}</span>
+            )}
+          </div>
+          {autoSend && (
+            <div className="text-xs text-gray-500 mt-1">
+              Text wird automatisch gesendet wenn die Sprache pausiert
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Error Display */}
+      {error && (
+        <div className="p-2 bg-red-50 border border-red-200 rounded text-sm text-red-700">
+          {error}
+        </div>
+      )}
+
+      {/* Recorded Audio Playback */}
+      {recordedBlob && (
+        <div className="p-3 bg-blue-50 rounded-lg border">
+          <div className="flex items-center justify-between">
+            <span className="text-sm font-medium text-gray-700">Aufgenommene Audio</span>
+            <audio 
+              controls 
+              src={URL.createObjectURL(recordedBlob)}
+              className="h-8"
+            />
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
+// Extend Window interface for TypeScript
+declare global {
+  interface Window {
+    webkitAudioContext: typeof AudioContext
+  }
+}

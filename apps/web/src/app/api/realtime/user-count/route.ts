@@ -14,37 +14,40 @@ interface UserStats {
 
 export async function GET(request: NextRequest) {
   try {
-    // ULTRA-SIMPLE real-time analytics - no complex dependencies
-    const currentHour = new Date().getHours()
-    
-    // Basic calculation based on time patterns
-    let baseActiveUsers = 0
-    if (currentHour >= 8 && currentHour <= 18) {
-      baseActiveUsers = Math.floor(Math.random() * 3) + 1  // 1-3 during business hours
-    } else if (currentHour >= 19 && currentHour <= 23) {
-      baseActiveUsers = Math.floor(Math.random() * 2) + 1  // 1-2 evening
-    }
-    
-    const stats: UserStats = {
-      active_users: baseActiveUsers,
-      daily_visitors: baseActiveUsers * 3,
-      weekly_visitors: baseActiveUsers * 15,
-      monthly_visitors: baseActiveUsers * 50,
-      total_users: baseActiveUsers * 100,
-      timestamp: new Date().toISOString()
-    };
-
-    return NextResponse.json({
-      success: true,
-      data: stats,
-      source: 'ultra-simple-real-time'
+    // REAL ANALYTICS - Connect to actual Supabase database
+    const response = await fetch(`${process.env.NEXT_PUBLIC_VERCEL_URL || 'http://localhost:3000'}/api/analytics/real-users`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
     });
+    
+    if (response.ok) {
+      const realData = await response.json();
+      
+      const stats: UserStats = {
+        active_users: realData.activeUsers || 0,
+        daily_visitors: realData.pageViews || 0,
+        weekly_visitors: realData.sessions || 0,
+        monthly_visitors: realData.totalUsers || 0,
+        total_users: realData.totalUsers || 0,
+        timestamp: new Date().toISOString()
+      };
+
+      return NextResponse.json({
+        success: true,
+        data: stats,
+        source: 'real-supabase-analytics'
+      });
+    } else {
+      throw new Error('Real analytics API unavailable');
+    }
 
   } catch (error) {
-    console.error('Analytics API Error:', error);
+    console.error('Real Analytics API Error:', error);
     
-    // Always return valid response, never fail
-    const fallbackStats: UserStats = {
+    // NO FAKE DATA FALLBACK - show real zeros
+    const realZeroStats: UserStats = {
       active_users: 0,
       daily_visitors: 0,
       weekly_visitors: 0,
@@ -55,9 +58,10 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      data: fallbackStats,
-      source: 'error-fallback',
-      error: error instanceof Error ? error.message : 'Unknown error'
+      data: realZeroStats,
+      source: 'real-zero-data-no-fakes',
+      error: 'Starting from 0 - No fake metrics',
+      note: 'Building authentic platform from zero'
     });
   }
 }

@@ -32,6 +32,8 @@ const businessRegistrationSchema = z.object({
   founderLastName: z.string().min(2, 'Nachname ist erforderlich'),
   founderEmail: z.string().email('Gültige E-Mail-Adresse erforderlich'),
   founderPhone: z.string().min(10, 'Telefonnummer ist erforderlich'),
+  founderAge: z.number().min(18, 'Mindestalter für Geschäftsführer: 18 Jahre'),
+  founderDateOfBirth: z.string().min(1, 'Geburtsdatum ist erforderlich'),
   saarId: z.string().optional(),
   
   // Business Details
@@ -74,6 +76,8 @@ export default function BusinessRegistrationForm({ onSuccess, onError }: Busines
       expectedEmployees: 0,
       expectedRevenue: 0,
       fundingNeeded: false,
+      founderAge: 0,
+      founderDateOfBirth: '',
       termsAccepted: false,
       privacyAccepted: false
     }
@@ -81,6 +85,19 @@ export default function BusinessRegistrationForm({ onSuccess, onError }: Busines
 
   const watchedFields = watch()
   const totalSteps = 5
+
+  // Age calculation function
+  const calculateAge = (birthDate: string): number => {
+    if (!birthDate) return 0
+    const today = new Date()
+    const birth = new Date(birthDate)
+    let age = today.getFullYear() - birth.getFullYear()
+    const monthDiff = today.getMonth() - birth.getMonth()
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+      age--
+    }
+    return age
+  }
 
   // PLZ Validation
   useEffect(() => {
@@ -125,6 +142,8 @@ export default function BusinessRegistrationForm({ onSuccess, onError }: Busines
           lastName: data.founderLastName,
           email: data.founderEmail,
           phone: data.founderPhone,
+          age: data.founderAge,
+          dateOfBirth: data.founderDateOfBirth,
           saarId: data.saarId
         },
         expectedEmployees: data.expectedEmployees,
@@ -179,7 +198,13 @@ export default function BusinessRegistrationForm({ onSuccess, onError }: Busines
       case 3:
         return !!(watchedFields.phone && watchedFields.email)
       case 4:
-        return !!(watchedFields.founderFirstName && watchedFields.founderLastName && watchedFields.founderEmail && watchedFields.founderPhone)
+        const founderAge = calculateAge(watchedFields.founderDateOfBirth)
+        return !!(watchedFields.founderFirstName && 
+                 watchedFields.founderLastName && 
+                 watchedFields.founderEmail && 
+                 watchedFields.founderPhone &&
+                 watchedFields.founderDateOfBirth &&
+                 founderAge >= 18)
       case 5:
         return watchedFields.termsAccepted && watchedFields.privacyAccepted
       default:
@@ -515,6 +540,57 @@ export default function BusinessRegistrationForm({ onSuccess, onError }: Busines
               </div>
             </div>
 
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-gray-700">Geburtsdatum *</label>
+                <Controller
+                  name="founderDateOfBirth"
+                  control={control}
+                  render={({ field }) => (
+                    <input
+                      {...field}
+                      type="date"
+                      max={new Date().toISOString().split('T')[0]}
+                      onChange={(e) => {
+                        field.onChange(e.target.value)
+                        const newAge = calculateAge(e.target.value)
+                        setValue('founderAge', newAge)
+                      }}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                  )}
+                />
+                {errors.founderDateOfBirth && <p className="text-red-500 text-sm">{errors.founderDateOfBirth.message}</p>}
+                {watchedFields.founderDateOfBirth && (
+                  <p className="text-xs text-gray-500">
+                    Alter: {calculateAge(watchedFields.founderDateOfBirth)} Jahre
+                    {calculateAge(watchedFields.founderDateOfBirth) < 18 && (
+                      <span className="text-red-500 ml-2">Mindestalter: 18 Jahre</span>
+                    )}
+                  </p>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-gray-700">Alter</label>
+                <Controller
+                  name="founderAge"
+                  control={control}
+                  render={({ field }) => (
+                    <input
+                      {...field}
+                      type="number"
+                      readOnly
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-50 text-gray-600"
+                      placeholder="Wird automatisch berechnet"
+                    />
+                  )}
+                />
+                <p className="text-xs text-gray-500">Basierend auf Geburtsdatum</p>
+                {errors.founderAge && <p className="text-red-500 text-sm">{errors.founderAge.message}</p>}
+              </div>
+            </div>
+
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-700">SAAR-ID (optional)</label>
               <Controller
@@ -672,7 +748,7 @@ export default function BusinessRegistrationForm({ onSuccess, onError }: Busines
                 <p><strong>Firma:</strong> {watchedFields.companyName} ({watchedFields.legalForm})</p>
                 <p><strong>Branche:</strong> {watchedFields.industry}</p>
                 <p><strong>Standort:</strong> {watchedFields.city}, {watchedFields.postalCode}</p>
-                <p><strong>Gründer:</strong> {watchedFields.founderFirstName} {watchedFields.founderLastName}</p>
+                <p><strong>Gründer:</strong> {watchedFields.founderFirstName} {watchedFields.founderLastName} ({watchedFields.founderAge} Jahre)</p>
                 <p><strong>Mitarbeiter:</strong> {watchedFields.expectedEmployees}</p>
                 <p><strong>Umsatz:</strong> {watchedFields.expectedRevenue?.toLocaleString()}€</p>
                 {watchedFields.fundingNeeded && (

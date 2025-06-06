@@ -9,15 +9,26 @@ interface SaarIdProfile {
   issuedDate: string
   expiryDate: string
   status: 'active' | 'inactive' | 'suspended' | 'expired'
+  registrationStatus: 'pending' | 'in_review' | 'approved' | 'rejected' | 'active'
   
-  // Personal Data
+  // Personal Data with Age Verification
   personalInfo: {
     firstName: string
     lastName: string
     dateOfBirth: string
+    age: number
     placeOfBirth: string
     nationality: string
     gender?: 'male' | 'female' | 'diverse'
+  }
+  
+  // Age Verification
+  ageVerification: {
+    verified: boolean
+    ageAtRegistration: number
+    minimumAgeRequired: number
+    verificationDate: string
+    passed: boolean
   }
   
   // Address & Contact
@@ -148,6 +159,28 @@ function generateSaarId(): string {
   return `SAAR-${year}-${randomPart}-${checksum}`
 }
 
+function calculateAge(dateOfBirth: string): number {
+  const today = new Date()
+  const birth = new Date(dateOfBirth)
+  let age = today.getFullYear() - birth.getFullYear()
+  const monthDiff = today.getMonth() - birth.getMonth()
+  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+    age--
+  }
+  return age
+}
+
+function verifyAge(dateOfBirth: string, minAge: number = 14): { passed: boolean; age: number; message?: string } {
+  const age = calculateAge(dateOfBirth)
+  const passed = age >= minAge
+  
+  return {
+    passed,
+    age,
+    message: passed ? undefined : `Mindestalter von ${minAge} Jahren nicht erreicht. Aktuelles Alter: ${age} Jahre.`
+  }
+}
+
 function validateSaarlandResidence(postalCode: string): boolean {
   // Saarland PLZ ranges: 66xxx
   return postalCode.startsWith('66') && postalCode.length === 5
@@ -162,6 +195,30 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({
         success: false,
         error: 'Persönliche Daten und Wohnadresse sind erforderlich'
+      }, { status: 400 })
+    }
+    
+    // Validate required age field
+    if (!registrationData.personalInfo.dateOfBirth) {
+      return NextResponse.json({
+        success: false,
+        error: 'Geburtsdatum ist für die Altersverifikation erforderlich'
+      }, { status: 400 })
+    }
+    
+    // Perform age verification
+    const ageVerification = verifyAge(registrationData.personalInfo.dateOfBirth, 14)
+    if (!ageVerification.passed) {
+      return NextResponse.json({
+        success: false,
+        error: 'Altersverifikation fehlgeschlagen',
+        details: ageVerification.message,
+        ageVerification: {
+          passed: false,
+          currentAge: ageVerification.age,
+          minimumRequired: 14,
+          message: ageVerification.message
+        }
       }, { status: 400 })
     }
     
@@ -187,7 +244,18 @@ export async function POST(request: NextRequest) {
       issuedDate,
       expiryDate,
       status: 'active',
-      personalInfo: registrationData.personalInfo,
+      registrationStatus: ageVerification.passed ? 'approved' : 'rejected',
+      personalInfo: {
+        ...registrationData.personalInfo,
+        age: ageVerification.age
+      },
+      ageVerification: {
+        verified: true,
+        ageAtRegistration: ageVerification.age,
+        minimumAgeRequired: 14,
+        verificationDate: issuedDate,
+        passed: ageVerification.passed
+      },
       residenceAddress: {
         ...registrationData.residenceAddress,
         district: municipalityInfo?.district || 'Unbekannt',
@@ -217,10 +285,18 @@ export async function POST(request: NextRequest) {
       }
     }
     
-    // Generate activation steps
-    const activationSteps = [
+    // Generate activation steps (only if age verification passed)
+    const activationSteps = ageVerification.passed ? [
       {
         step: 1,
+        title: 'Altersverifikation',
+        description: `Alter bestätigt: ${ageVerification.age} Jahre (erforderlich: min. 14 Jahre)`,
+        location: 'Automatisch validiert',
+        completed: true,
+        required: true
+      },
+      {
+        step: 2,
         title: 'Identitätsprüfung',
         description: 'Persönliche Vorsprache mit Personalausweis bei zuständiger Behörde',
         location: municipalityInfo?.municipality || 'Zuständige Gemeinde',
@@ -228,7 +304,7 @@ export async function POST(request: NextRequest) {
         required: true
       },
       {
-        step: 2,
+        step: 3,
         title: 'Digitale Signatur einrichten',
         description: 'Optionale Einrichtung der qualifizierten elektronischen Signatur',
         location: 'Online oder Bürgeramt',
@@ -236,12 +312,28 @@ export async function POST(request: NextRequest) {
         required: false
       },
       {
-        step: 3,
+        step: 4,
         title: 'Service-Verknüpfungen',
         description: 'Bestehende Behördenkonten mit SAAR-ID verknüpfen',
         location: 'Online-Portal',
         deadline: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000).toISOString(),
         required: false
+      }
+    ] : [
+      {
+        step: 1,
+        title: 'Altersverifikation fehlgeschlagen',
+        description: `Aktuelles Alter: ${ageVerification.age} Jahre. Erforderlich: min. 14 Jahre.`,
+        location: 'Automatische Prüfung',
+        failed: true,
+        required: true
+      },
+      {
+        step: 2,
+        title: 'Antrag pausiert',
+        description: 'Ihr Antrag wird pausiert bis Sie das Mindestalter erreichen.',
+        location: 'System',
+        required: true
       }
     ]
     
@@ -271,7 +363,10 @@ export async function POST(request: NextRequest) {
     console.log('🆔 New SAAR-ID Registration:', {
       saarId,
       name: saarIdProfile.personalInfo.firstName + ' ' + saarIdProfile.personalInfo.lastName,
+      age: ageVerification.age,
+      ageVerificationPassed: ageVerification.passed,
       city: saarIdProfile.residenceAddress.city,
+      registrationStatus: saarIdProfile.registrationStatus,
       services: saarIdProfile.authorizedServices.length
     })
     
@@ -280,17 +375,31 @@ export async function POST(request: NextRequest) {
       data: {
         saarIdProfile,
         activationSteps,
-        benefits,
-        qrCode: `https://agentland.saarland/saar-id/${saarId}`,
-        downloadApp: {
+        benefits: ageVerification.passed ? benefits : {
+          message: 'Vorteile sind nach erfolgreicher Altersverifikation verfügbar',
+          ageRequirement: 'Mindestalter: 14 Jahre für SAAR-ID Registrierung'
+        },
+        ageVerification: {
+          passed: ageVerification.passed,
+          currentAge: ageVerification.age,
+          minimumRequired: 14,
+          message: ageVerification.message
+        },
+        qrCode: ageVerification.passed ? `https://agentland.saarland/saar-id/${saarId}` : null,
+        downloadApp: ageVerification.passed ? {
           ios: 'https://apps.apple.com/de/app/saar-id',
           android: 'https://play.google.com/store/apps/details?id=de.saarland.saarid'
-        },
+        } : null,
         supportContact: {
           name: 'SAAR-ID Support Center',
           email: 'saar-id@agentland.saarland',
           phone: '+49 681 SAAR-ID (722743)',
           chatbot: 'https://agentland.saarland/chat?service=verwaltung'
+        },
+        gdprNotice: {
+          ageDataUsage: 'Ihre Altersangaben werden gemäß DSGVO verarbeitet und ausschließlich für die SAAR-ID Verifizierung verwendet.',
+          dataRetention: 'Alter und Geburtsdatum werden für die Dauer der SAAR-ID Gültigkeit gespeichert.',
+          dataRights: 'Sie haben jederzeit das Recht auf Auskunft, Berichtigung und Löschung Ihrer Daten.'
         }
       }
     })
@@ -360,7 +469,24 @@ export async function GET(request: NextRequest) {
         averageSatisfaction: null, // No data yet
         systemUptime: '100%', // System is operational
         securityLevel: 'BSI-zertifiziert',
-        supportedLanguages: ['Deutsch', 'Französisch', 'Englisch']
+        supportedLanguages: ['Deutsch', 'Französisch', 'Englisch'],
+        ageRequirements: {
+          saarId: {
+            minimumAge: 14,
+            description: 'Mindestalter für SAAR-ID Registrierung'
+          },
+          businessId: {
+            minimumAge: 18,
+            description: 'Mindestalter für Business-ID Registrierung'
+          }
+        },
+        registrationStatuses: {
+          pending: 'Antrag eingereicht, Bearbeitung steht aus',
+          in_review: 'Antrag wird geprüft',
+          approved: 'Antrag genehmigt, bereit zur Aktivierung',
+          rejected: 'Antrag abgelehnt (z.B. Altersverifikation fehlgeschlagen)',
+          active: 'Registrierung aktiv und vollständig'
+        }
       }
     })
     

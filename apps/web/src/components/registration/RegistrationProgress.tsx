@@ -1,314 +1,391 @@
 'use client'
 
-import * as React from "react"
-import { cn } from "@/lib/utils"
-import { ProgressSteps, ProgressStep } from "@/components/ui/form-components"
+import React from 'react'
+import { Card } from '@/components/ui/card'
+import { 
+  CheckCircle, 
+  Clock, 
+  AlertCircle, 
+  XCircle, 
+  FileCheck, 
+  User, 
+  Shield,
+  Calendar,
+  Phone,
+  Users,
+  Building2
+} from 'lucide-react'
 
-export interface RegistrationStep {
-  id: string
-  title: string
-  description?: string
-  completed: boolean
-  current: boolean
-  estimatedTime?: string
-  requirements?: string[]
+export type RegistrationStatus = 'pending' | 'in_review' | 'approved' | 'rejected' | 'active'
+
+interface RegistrationProgressProps {
+  status: RegistrationStatus
+  type: 'saar_id' | 'business'
+  submittedAt?: string
+  lastUpdated?: string
+  statusMessage?: string
+  nextSteps?: string[]
+  registrationId?: string
+  estimatedProcessingTime?: string
+  userAge?: number
+  applicantInfo?: {
+    name?: string
+    email?: string
+    company?: string
+  }
 }
 
-export interface NextAction {
-  step: number
-  title: string
-  description: string
-  url?: string
-  deadline?: string
-  required: boolean
-  completed?: boolean
+const statusConfig = {
+  pending: {
+    icon: Clock,
+    color: 'text-orange-500',
+    bgColor: 'bg-orange-50',
+    borderColor: 'border-orange-200',
+    title: 'Antrag eingereicht',
+    description: 'Ihr Antrag wurde erfolgreich eingereicht und wartet auf Bearbeitung.'
+  },
+  in_review: {
+    icon: FileCheck,
+    color: 'text-blue-500',
+    bgColor: 'bg-blue-50',
+    borderColor: 'border-blue-200',
+    title: 'In Bearbeitung',
+    description: 'Ihr Antrag wird derzeit von unseren Experten geprüft.'
+  },
+  approved: {
+    icon: CheckCircle,
+    color: 'text-green-500',
+    bgColor: 'bg-green-50',
+    borderColor: 'border-green-200',
+    title: 'Genehmigt',
+    description: 'Ihr Antrag wurde genehmigt und ist bereit zur Aktivierung.'
+  },
+  rejected: {
+    icon: XCircle,
+    color: 'text-red-500',
+    bgColor: 'bg-red-50',
+    borderColor: 'border-red-200',
+    title: 'Abgelehnt',
+    description: 'Ihr Antrag wurde abgelehnt. Weitere Informationen finden Sie unten.'
+  },
+  active: {
+    icon: Shield,
+    color: 'text-green-600',
+    bgColor: 'bg-green-50',
+    borderColor: 'border-green-300',
+    title: 'Aktiv',
+    description: 'Ihre Registrierung ist vollständig und aktiv.'
+  }
 }
 
-export interface RegistrationProgressProps {
-  type: 'business' | 'saar-id'
-  currentStep: number
-  totalSteps: number
-  steps: RegistrationStep[]
-  nextActions?: NextAction[]
-  businessId?: string
-  saarId?: string
-  className?: string
-}
-
-export const RegistrationProgress = ({
+const RegistrationProgress: React.FC<RegistrationProgressProps> = ({
+  status,
   type,
-  currentStep,
-  totalSteps,
-  steps,
-  nextActions = [],
-  businessId,
-  saarId,
-  className
-}: RegistrationProgressProps) => {
-  const progressPercentage = (currentStep / totalSteps) * 100
-  
-  const getStatusColor = (status: 'pending' | 'in_progress' | 'completed' | 'error') => {
+  submittedAt,
+  lastUpdated,
+  statusMessage,
+  nextSteps = [],
+  registrationId,
+  estimatedProcessingTime,
+  userAge,
+  applicantInfo
+}) => {
+  const config = statusConfig[status]
+  const Icon = config.icon
+
+  const formatDate = (dateString?: string) => {
+    if (!dateString) return ''
+    return new Date(dateString).toLocaleDateString('de-DE', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    })
+  }
+
+  const getProgressPercentage = () => {
     switch (status) {
-      case 'completed':
-        return 'text-green-600 bg-green-100 dark:text-green-400 dark:bg-green-900/20'
-      case 'in_progress':
-        return 'text-blue-600 bg-blue-100 dark:text-blue-400 dark:bg-blue-900/20'
-      case 'error':
-        return 'text-red-600 bg-red-100 dark:text-red-400 dark:bg-red-900/20'
-      default:
-        return 'text-gray-600 bg-gray-100 dark:text-gray-400 dark:bg-gray-800'
+      case 'pending': return 25
+      case 'in_review': return 50
+      case 'approved': return 75
+      case 'active': return 100
+      case 'rejected': return 0
+      default: return 0
     }
   }
-  
-  const getTypeIcon = () => {
-    if (type === 'business') {
-      return (
-        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-        </svg>
-      )
-    }
-    return (
-      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V4a2 2 0 114 0v2m-4 0a2 2 0 104 0m-4 0v2m4-6h-4m0 0v2" />
-      </svg>
-    )
+
+  const getStepStatus = (stepIndex: number) => {
+    const currentStep = getProgressPercentage() / 25
+    if (stepIndex < currentStep) return 'completed'
+    if (stepIndex === Math.floor(currentStep)) return 'current'
+    return 'upcoming'
   }
-  
+
+  const steps = type === 'saar_id' 
+    ? ['Antrag eingereicht', 'Altersverifikation', 'Dokumente prüfen', 'SAAR-ID aktiv']
+    : ['Antrag eingereicht', 'Altersverifikation', 'Behördenprüfung', 'Business-ID aktiv']
+
+  const getAgeVerificationStatus = () => {
+    if (!userAge) return 'unknown'
+    if (type === 'saar_id') {
+      return userAge >= 14 ? 'verified' : 'failed'
+    } else {
+      return userAge >= 18 ? 'verified' : 'failed'
+    }
+  }
+
+  const ageStatus = getAgeVerificationStatus()
+  const minAge = type === 'saar_id' ? 14 : 18
+
   return (
-    <div className={cn("bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800 shadow-sm", className)}>
-      {/* Header */}
-      <div className="p-6 border-b border-gray-200 dark:border-gray-800">
+    <Card className="p-6 space-y-6">
+      {/* Header with Status */}
+      <div className="flex items-start justify-between">
         <div className="flex items-center space-x-3">
-          <div className="flex-shrink-0 text-blue-600 dark:text-blue-400">
-            {getTypeIcon()}
+          <div className={`p-2 rounded-full ${config.bgColor}`}>
+            <Icon className={`w-6 h-6 ${config.color}`} />
           </div>
-          <div className="flex-1 min-w-0">
-            <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-              {type === 'business' ? 'Unternehmensregistrierung' : 'SAAR-ID Registrierung'}
-            </h2>
-            <p className="text-sm text-gray-600 dark:text-gray-400">
-              {type === 'business' && businessId && `Business-ID: ${businessId}`}
-              {type === 'saar-id' && saarId && `SAAR-ID: ${saarId}`}
+          <div>
+            <h3 className="text-lg font-semibold text-gray-900">
+              {type === 'saar_id' ? 'SAAR-ID' : 'Business-ID'} Registrierung
+            </h3>
+            <p className={`text-sm font-medium ${config.color}`}>
+              {config.title}
             </p>
           </div>
+        </div>
+        
+        {registrationId && (
           <div className="text-right">
-            <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-              {Math.round(progressPercentage)}%
-            </div>
-            <div className="text-sm text-gray-600 dark:text-gray-400">
-              Fortschritt
-            </div>
+            <p className="text-xs text-gray-500">Registrierungs-ID</p>
+            <p className="text-sm font-mono text-gray-700">{registrationId}</p>
           </div>
-        </div>
-        
-        {/* Progress Bar */}
-        <div className="mt-4">
-          <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-            <div
-              className="bg-blue-600 h-2 rounded-full transition-all duration-300 ease-out"
-              style={{ width: `${progressPercentage}%` }}
-            />
-          </div>
-          <div className="flex justify-between text-xs text-gray-600 dark:text-gray-400 mt-1">
-            <span>Schritt {currentStep} von {totalSteps}</span>
-            <span>
-              {currentStep === totalSteps ? 'Abgeschlossen' : `${totalSteps - currentStep} verbleibend`}
-            </span>
-          </div>
-        </div>
+        )}
       </div>
-      
-      {/* Steps */}
-      <div className="p-6">
-        <h3 className="text-base font-medium text-gray-900 dark:text-gray-100 mb-4">
-          Registrierungsschritte
-        </h3>
-        
-        <ProgressSteps 
-          steps={steps.map(step => ({
-            id: step.id,
-            title: step.title,
-            description: step.description,
-            completed: step.completed,
-            current: step.current
-          }))}
-        />
-        
-        {/* Step Details */}
-        <div className="mt-6 space-y-4">
-          {steps.map((step) => (
-            <div 
-              key={step.id}
-              className={cn(
-                "rounded-lg border p-4 transition-all duration-200",
-                step.current 
-                  ? "border-blue-200 bg-blue-50 dark:border-blue-800 dark:bg-blue-900/20" 
-                  : step.completed
-                  ? "border-green-200 bg-green-50 dark:border-green-800 dark:bg-green-900/20"
-                  : "border-gray-200 bg-gray-50 dark:border-gray-700 dark:bg-gray-800/50"
-              )}
-            >
-              <div className="flex items-start space-x-3">
-                <div className={cn(
-                  "flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-sm font-medium",
-                  step.completed 
-                    ? "bg-green-600 text-white" 
-                    : step.current
-                    ? "bg-blue-600 text-white"
-                    : "bg-gray-300 text-gray-600 dark:bg-gray-600 dark:text-gray-300"
-                )}>
-                  {step.completed ? (
-                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                    </svg>
-                  ) : (
-                    <span>{steps.findIndex(s => s.id === step.id) + 1}</span>
-                  )}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <h4 className="text-sm font-medium text-gray-900 dark:text-gray-100">
-                    {step.title}
-                  </h4>
-                  {step.description && (
-                    <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                      {step.description}
-                    </p>
-                  )}
-                  {step.estimatedTime && (
-                    <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">
-                      Geschätzte Zeit: {step.estimatedTime}
-                    </p>
-                  )}
-                  {step.requirements && step.requirements.length > 0 && (
-                    <div className="mt-2">
-                      <p className="text-xs font-medium text-gray-700 dark:text-gray-300">
-                        Erforderliche Dokumente:
-                      </p>
-                      <ul className="text-xs text-gray-600 dark:text-gray-400 mt-1 space-y-1">
-                        {step.requirements.map((req, idx) => (
-                          <li key={idx} className="flex items-center space-x-1">
-                            <span className="w-1 h-1 bg-gray-400 rounded-full flex-shrink-0" />
-                            <span>{req}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-      
-      {/* Next Actions */}
-      {nextActions.length > 0 && (
-        <div className="border-t border-gray-200 dark:border-gray-800 p-6">
-          <h3 className="text-base font-medium text-gray-900 dark:text-gray-100 mb-4">
-            Nächste Schritte
-          </h3>
-          
-          <div className="space-y-3">
-            {nextActions.map((action) => (
-              <div 
-                key={action.step}
-                className={cn(
-                  "flex items-start space-x-3 p-3 rounded-lg border",
-                  action.completed 
-                    ? "border-green-200 bg-green-50 dark:border-green-800 dark:bg-green-900/20"
-                    : action.required
-                    ? "border-red-200 bg-red-50 dark:border-red-800 dark:bg-red-900/20"
-                    : "border-gray-200 bg-gray-50 dark:border-gray-700 dark:bg-gray-800/50"
-                )}
-              >
-                <div className={cn(
-                  "flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium",
-                  action.completed 
-                    ? "bg-green-600 text-white"
-                    : action.required
-                    ? "bg-red-600 text-white"
-                    : "bg-blue-600 text-white"
-                )}>
-                  {action.completed ? (
-                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                    </svg>
-                  ) : (
-                    <span>{action.step}</span>
-                  )}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <h4 className="text-sm font-medium text-gray-900 dark:text-gray-100">
-                        {action.title}
-                        {action.required && (
-                          <span className="ml-1 text-red-500">*</span>
-                        )}
-                      </h4>
-                      <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                        {action.description}
-                      </p>
-                      {action.deadline && (
-                        <p className="text-xs text-orange-600 dark:text-orange-400 mt-1">
-                          Frist: {new Date(action.deadline).toLocaleDateString('de-DE')}
-                        </p>
-                      )}
-                    </div>
-                    {action.url && !action.completed && (
-                      <a
-                        href={action.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex-shrink-0 ml-3 inline-flex items-center px-3 py-1 border border-transparent text-xs font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
-                      >
-                        Öffnen
-                        <svg className="ml-1 w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                        </svg>
-                      </a>
-                    )}
-                  </div>
-                </div>
-              </div>
-            ))}
+
+      {/* Applicant Information */}
+      {applicantInfo && (
+        <div className="bg-gray-50 p-4 rounded-lg">
+          <div className="flex items-center space-x-2 mb-2">
+            {type === 'business' ? (
+              <Building2 className="w-4 h-4 text-gray-400" />
+            ) : (
+              <User className="w-4 h-4 text-gray-400" />
+            )}
+            <h4 className="text-sm font-medium text-gray-900">Antragsteller</h4>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
+            {applicantInfo.name && (
+              <p><span className="text-gray-500">Name:</span> {applicantInfo.name}</p>
+            )}
+            {applicantInfo.email && (
+              <p><span className="text-gray-500">E-Mail:</span> {applicantInfo.email}</p>
+            )}
+            {applicantInfo.company && (
+              <p><span className="text-gray-500">Unternehmen:</span> {applicantInfo.company}</p>
+            )}
+            {userAge && (
+              <p>
+                <span className="text-gray-500">Alter:</span> {userAge} Jahre
+                <span className={`ml-2 text-xs px-2 py-1 rounded-full ${
+                  ageStatus === 'verified' 
+                    ? 'bg-green-100 text-green-700' 
+                    : ageStatus === 'failed'
+                    ? 'bg-red-100 text-red-700'
+                    : 'bg-gray-100 text-gray-700'
+                }`}>
+                  {ageStatus === 'verified' && '✓ Berechtigt'}
+                  {ageStatus === 'failed' && `✗ Min. ${minAge} Jahre erforderlich`}
+                  {ageStatus === 'unknown' && 'Prüfung ausstehend'}
+                </span>
+              </p>
+            )}
           </div>
         </div>
       )}
-      
-      {/* Support Contact */}
-      <div className="border-t border-gray-200 dark:border-gray-800 p-6 bg-gray-50 dark:bg-gray-800/50">
-        <div className="flex items-center space-x-3">
-          <div className="flex-shrink-0">
-            <svg className="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192L5.636 18.364M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z" />
-            </svg>
-          </div>
-          <div>
-            <h4 className="text-sm font-medium text-gray-900 dark:text-gray-100">
-              Benötigen Sie Hilfe?
-            </h4>
-            <p className="text-sm text-gray-600 dark:text-gray-400">
-              Unser Support-Team steht Ihnen bei Fragen zur Verfügung.
-            </p>
-            <div className="flex items-center space-x-4 mt-2">
-              <a 
-                href={`mailto:${type === 'business' ? 'business' : 'saar-id'}@agentland.saarland`}
-                className="text-sm text-blue-600 dark:text-blue-400 hover:underline"
-              >
-                E-Mail Support
-              </a>
-              <a 
-                href={`/chat?service=${type === 'business' ? 'wirtschaft' : 'verwaltung'}`}
-                className="text-sm text-blue-600 dark:text-blue-400 hover:underline"
-              >
-                Live Chat
-              </a>
+
+      {/* Age Verification Alert */}
+      {userAge && ageStatus === 'failed' && (
+        <div className="bg-red-50 border border-red-200 p-4 rounded-lg">
+          <div className="flex items-start space-x-2">
+            <XCircle className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
+            <div>
+              <h4 className="text-sm font-medium text-red-900">Altersverifikation fehlgeschlagen</h4>
+              <p className="text-sm text-red-700 mt-1">
+                Für eine {type === 'saar_id' ? 'SAAR-ID' : 'Business-ID'} Registrierung ist ein Mindestalter von {minAge} Jahren erforderlich. 
+                Ihr angegebenes Alter beträgt {userAge} Jahre.
+              </p>
+              <p className="text-sm text-red-600 mt-2 font-medium">
+                Ihr Antrag kann erst nach Erreichen des Mindestalters bearbeitet werden.
+              </p>
             </div>
           </div>
         </div>
+      )}
+
+      {/* Status Description */}
+      <div className={`p-4 rounded-lg border ${config.bgColor} ${config.borderColor}`}>
+        <p className="text-sm text-gray-700">{config.description}</p>
+        {statusMessage && (
+          <p className="text-sm text-gray-600 mt-2 italic">{statusMessage}</p>
+        )}
       </div>
-    </div>
+
+      {/* Progress Bar */}
+      <div className="space-y-3">
+        <div className="flex justify-between text-sm text-gray-600">
+          <span>Fortschritt</span>
+          <span>{getProgressPercentage()}%</span>
+        </div>
+        <div className="w-full bg-gray-200 rounded-full h-2">
+          <div
+            className={`h-2 rounded-full transition-all duration-500 ${
+              status === 'rejected' || ageStatus === 'failed' ? 'bg-red-500' : 'bg-blue-600'
+            }`}
+            style={{ width: `${getProgressPercentage()}%` }}
+          />
+        </div>
+      </div>
+
+      {/* Step Indicators */}
+      <div className="flex justify-between items-center">
+        {steps.map((step, index) => {
+          const stepStatus = getStepStatus(index)
+          // Special handling for age verification step
+          const isAgeStep = step.includes('Altersverifikation')
+          const stepFailed = isAgeStep && ageStatus === 'failed'
+          
+          return (
+            <div key={index} className="flex flex-col items-center space-y-2">
+              <div
+                className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium transition-colors duration-300 ${
+                  stepFailed
+                    ? 'bg-red-500 text-white'
+                    : stepStatus === 'completed'
+                    ? 'bg-green-500 text-white'
+                    : stepStatus === 'current'
+                    ? 'bg-blue-500 text-white'
+                    : 'bg-gray-200 text-gray-500'
+                }`}
+              >
+                {stepFailed ? (
+                  <XCircle className="w-4 h-4" />
+                ) : stepStatus === 'completed' ? (
+                  <CheckCircle className="w-4 h-4" />
+                ) : (
+                  index + 1
+                )}
+              </div>
+              <span
+                className={`text-xs text-center max-w-16 ${
+                  stepFailed
+                    ? 'text-red-600 font-medium'
+                    : stepStatus === 'completed' || stepStatus === 'current'
+                    ? 'text-gray-900 font-medium'
+                    : 'text-gray-500'
+                }`}
+              >
+                {step}
+              </span>
+            </div>
+          )
+        })}
+      </div>
+
+      {/* Timeline Information */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t border-gray-200">
+        {submittedAt && (
+          <div className="flex items-center space-x-2">
+            <Calendar className="w-4 h-4 text-gray-400" />
+            <div>
+              <p className="text-xs text-gray-500">Eingereicht am</p>
+              <p className="text-sm text-gray-700">{formatDate(submittedAt)}</p>
+            </div>
+          </div>
+        )}
+        
+        {lastUpdated && (
+          <div className="flex items-center space-x-2">
+            <Clock className="w-4 h-4 text-gray-400" />
+            <div>
+              <p className="text-xs text-gray-500">Zuletzt aktualisiert</p>
+              <p className="text-sm text-gray-700">{formatDate(lastUpdated)}</p>
+            </div>
+          </div>
+        )}
+        
+        {estimatedProcessingTime && status !== 'active' && status !== 'rejected' && ageStatus !== 'failed' && (
+          <div className="flex items-center space-x-2 md:col-span-2">
+            <AlertCircle className="w-4 h-4 text-orange-400" />
+            <div>
+              <p className="text-xs text-gray-500">Geschätzte Bearbeitungszeit</p>
+              <p className="text-sm text-orange-600 font-medium">{estimatedProcessingTime}</p>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* GDPR & Privacy Information */}
+      <div className="bg-blue-50 p-4 rounded-lg">
+        <div className="flex items-start space-x-2">
+          <Shield className="w-4 h-4 text-blue-500 flex-shrink-0 mt-0.5" />
+          <div>
+            <h4 className="text-sm font-medium text-blue-900">Datenschutz & Altersverifikation</h4>
+            <p className="text-xs text-blue-700 mt-1">
+              Ihre Altersangaben werden gemäß DSGVO verarbeitet und ausschließlich für die 
+              {type === 'saar_id' ? ' SAAR-ID' : ' Business-ID'} Verifizierung verwendet. 
+              Die Daten werden nach abgeschlossener Registrierung oder nach gesetzlichen Aufbewahrungsfristen gelöscht.
+            </p>
+            {userAge && (
+              <p className="text-xs text-blue-600 mt-2">
+                <strong>Altersverifikation:</strong> {userAge} Jahre (Erforderlich: min. {minAge} Jahre)
+              </p>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Next Steps */}
+      {nextSteps.length > 0 && ageStatus !== 'failed' && (
+        <div className="space-y-3">
+          <h4 className="text-sm font-medium text-gray-900 flex items-center space-x-2">
+            <User className="w-4 h-4" />
+            <span>Nächste Schritte</span>
+          </h4>
+          <ul className="space-y-2">
+            {nextSteps.map((step, index) => (
+              <li key={index} className="flex items-start space-x-2">
+                <span className="flex-shrink-0 w-5 h-5 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-xs font-medium">
+                  {index + 1}
+                </span>
+                <span className="text-sm text-gray-700">{step}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {/* Contact Information for Support */}
+      <div className="bg-gray-50 p-4 rounded-lg">
+        <div className="flex items-center space-x-2 mb-2">
+          <Phone className="w-4 h-4 text-gray-400" />
+          <h4 className="text-sm font-medium text-gray-900">Fragen? Wir helfen gerne!</h4>
+        </div>
+        <p className="text-xs text-gray-600">
+          Bei Fragen zur Registrierung kontaktieren Sie uns über das Chat-System oder per E-Mail: 
+          <a href="mailto:support@agentland.saarland" className="text-blue-600 hover:underline ml-1">
+            support@agentland.saarland
+          </a>
+        </p>
+        {ageStatus === 'failed' && (
+          <p className="text-xs text-red-600 mt-2">
+            <strong>Hinweis:</strong> Bei Fragen zur Altersverifikation wenden Sie sich bitte an unser Support-Team.
+          </p>
+        )}
+      </div>
+    </Card>
   )
 }
+
+export default RegistrationProgress

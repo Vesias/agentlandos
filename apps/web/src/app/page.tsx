@@ -84,31 +84,31 @@ export default function HomePage() {
             </Link>
           </div>
 
-          {/* Live AGENTNET Hero Metrics */}
+          {/* Authentic Platform Status */}
           <div className="mb-8">
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-6">
-              <div className="inline-flex items-center gap-2 bg-red-500/20 border border-red-500/30 rounded-full px-4 py-2">
-                <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
-                <span className="text-red-300 font-semibold text-sm">LIVE: Internet stirbt JETZT</span>
-              </div>
               <div className="inline-flex items-center gap-2 bg-green-500/20 border border-green-500/30 rounded-full px-4 py-2">
                 <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                <span className="text-green-300 font-semibold text-sm">✅ NUR ECHTE DATEN - KEINE FAKE METRICS</span>
+                <span className="text-green-300 font-semibold text-sm">✅ 100% AUTHENTISCH - KEINE FAKE DATEN</span>
+              </div>
+              <div className="inline-flex items-center gap-2 bg-[#FDB913]/20 border border-[#FDB913]/30 rounded-full px-4 py-2">
+                <div className="w-2 h-2 bg-[#FDB913] rounded-full animate-pulse"></div>
+                <span className="text-[#FDB913] font-semibold text-sm">🚀 VON NULL AUF AUFGEBAUT</span>
               </div>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-2xl mx-auto mb-8">
-              <div className="bg-black/30 border border-red-500/30 rounded-xl p-4 text-center backdrop-blur-sm">
-                <div className="text-2xl font-bold text-red-400">99.1%</div>
-                <div className="text-xs text-red-300">AI-Traffic</div>
+              <div className="bg-black/30 border border-green-500/30 rounded-xl p-4 text-center backdrop-blur-sm">
+                <div className="text-2xl font-bold text-green-400">0€</div>
+                <div className="text-xs text-green-300">Start-Umsatz</div>
               </div>
               <div className="bg-black/30 border border-[#FDB913]/30 rounded-xl p-4 text-center backdrop-blur-sm">
-                <div className="text-2xl font-bold text-[#FDB913]">47K+</div>
-                <div className="text-xs text-[#FDB913]">AI-Agenten</div>
+                <div className="text-2xl font-bold text-[#FDB913]">ECHT</div>
+                <div className="text-xs text-[#FDB913]">Nur echte Daten</div>
               </div>
-              <div className="bg-black/30 border border-green-500/30 rounded-xl p-4 text-center backdrop-blur-sm">
-                <div className="text-2xl font-bold text-green-400">24/7</div>
-                <div className="text-xs text-green-300">AGENTNET</div>
+              <div className="bg-black/30 border border-[#003399]/30 rounded-xl p-4 text-center backdrop-blur-sm">
+                <div className="text-2xl font-bold text-[#009FE3]">24/7</div>
+                <div className="text-xs text-[#009FE3]">AI verfügbar</div>
               </div>
             </div>
           </div>
@@ -419,61 +419,61 @@ export default function HomePage() {
       {/* AGENTNET Vision Section */}
       <AGENTNETVisionSection />
 
-      {/* Stats Section - AGENTNET Focus */}
+      {/* Stats Section - Authentic Platform Focus */}
       <section className="py-20 px-4 bg-[#003399] relative overflow-hidden">
         <div className="absolute inset-0 network-pattern opacity-20"></div>
         <div className="max-w-6xl mx-auto text-center text-white relative z-10">
           <h2 className="text-4xl md:text-5xl font-bold mb-4 font-quantum text-[#FDB913]">
-            AGENTNET Statistiken 2025
+            Ehrliche Platform-Statistiken
           </h2>
           <p className="text-xl mb-16 opacity-90 font-nova">
-            Die Zahlen beweisen: Das Internet stirbt, das AGENTNET entsteht
+            Transparenter Aufbau der ersten KI-Agentur im Saarland - von Null auf
           </p>
           
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
-            <div className="bg-white/10 rounded-3xl p-8 backdrop-blur-sm border border-red-500/30 hover:bg-white/15 transition-all duration-300">
-              <div className="text-4xl md:text-5xl font-bold mb-3 text-red-400">99%</div>
-              <div className="text-lg opacity-90 font-semibold">AI-Traffic</div>
-              <div className="text-sm opacity-70 mt-2">Internet 2025</div>
+            <div className="bg-white/10 rounded-3xl p-8 backdrop-blur-sm border border-green-500/30 hover:bg-white/15 transition-all duration-300">
+              <div className="text-4xl md:text-5xl font-bold mb-3 text-green-400">0€</div>
+              <div className="text-lg opacity-90 font-semibold">Start-Umsatz</div>
+              <div className="text-sm opacity-70 mt-2">Ehrlich von Null auf</div>
             </div>
             <div className="bg-white/10 rounded-3xl p-8 backdrop-blur-sm border border-[#FDB913]/30 hover:bg-white/15 transition-all duration-300">
-              <div className="text-4xl md:text-5xl font-bold mb-3 text-[#FDB913]">∞</div>
-              <div className="text-lg opacity-90 font-semibold">AI-Agenten</div>
-              <div className="text-sm opacity-70 mt-2">Saarland AGENTNET</div>
+              <div className="text-4xl md:text-5xl font-bold mb-3 text-[#FDB913]">ECHT</div>
+              <div className="text-lg opacity-90 font-semibold">Nur echte Daten</div>
+              <div className="text-sm opacity-70 mt-2">Keine Fake-Metrics</div>
             </div>
-            <div className="bg-white/10 rounded-3xl p-8 backdrop-blur-sm border border-green-500/30 hover:bg-white/15 transition-all duration-300">
-              <div className="text-4xl md:text-5xl font-bold mb-3 text-green-400">2000%</div>
-              <div className="text-lg opacity-90 font-semibold">ROI Boost</div>
-              <div className="text-sm opacity-70 mt-2">Agent Economy</div>
+            <div className="bg-white/10 rounded-3xl p-8 backdrop-blur-sm border border-[#009FE3]/30 hover:bg-white/15 transition-all duration-300">
+              <div className="text-4xl md:text-5xl font-bold mb-3 text-[#009FE3]">100%</div>
+              <div className="text-lg opacity-90 font-semibold">Transparent</div>
+              <div className="text-sm opacity-70 mt-2">Authentische Entwicklung</div>
             </div>
             <div className="bg-white/10 rounded-3xl p-8 backdrop-blur-sm border border-purple-500/30 hover:bg-white/15 transition-all duration-300">
               <div className="text-4xl md:text-5xl font-bold mb-3 text-purple-400">24/7</div>
-              <div className="text-lg opacity-90 font-semibold">Meta-AI</div>
-              <div className="text-sm opacity-70 mt-2">Superintelligenz</div>
+              <div className="text-lg opacity-90 font-semibold">AI verfügbar</div>
+              <div className="text-sm opacity-70 mt-2">Produktiv & ehrlich</div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Footer CTA - AGENTNET Ready */}
+      {/* Footer CTA - Authentic Platform */}
       <section className="py-16 px-4 bg-gradient-to-r from-black to-[#003399]">
         <div className="max-w-4xl mx-auto text-center">
           <h3 className="text-3xl md:text-4xl font-bold text-white mb-6 font-quantum">
-            <span className="text-red-400">Das Internet stirbt.</span><br/>
-            <span className="text-[#FDB913]">Seien Sie bereit für das AGENTNET.</span>
+            <span className="text-[#FDB913]">Echte KI-Agentur-Plattform.</span><br/>
+            <span className="text-white">Von Null auf transparent aufgebaut.</span>
           </h3>
           <p className="text-xl text-gray-300 mb-8 font-nova">
-            Während andere im sterbenden Internet gefangen bleiben, führen wir Sie ins post-Internet Zeitalter
+            Keine Fake-Metrics, keine übertriebenen Versprechen - nur ehrliche KI-Services für das Saarland
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/register?plan=agentnet">
+            <Link href="/register?plan=saarland-free">
               <button className="bg-[#FDB913] hover:bg-[#E5A50A] text-[#003399] px-8 py-4 rounded-2xl font-bold text-lg transition-all duration-300 hover:scale-105 shadow-lg min-w-[240px]">
-                AGENTNET-Pionier werden
+                Kostenlos als Saarländer starten
               </button>
             </Link>
-            <Link href="/ai-assistant">
+            <Link href="/chat">
               <button className="border-2 border-[#FDB913] text-[#FDB913] hover:bg-[#FDB913] hover:text-[#003399] px-8 py-4 rounded-2xl font-bold text-lg transition-all duration-300 hover:scale-105 min-w-[240px]">
-                AI Assistant starten
+                AI System testen
               </button>
             </Link>
           </div>

@@ -8,8 +8,8 @@ const SAARLAND_BUSINESS_DATA = {
       name: 'Saarland Innovation',
       type: 'Gründerförderung',
       amount: 'Bis zu 100.000€',
-      available_funding: Math.floor(Math.random() * 5000000) + 2000000, // 2-7M€
-      applications_this_month: Math.floor(Math.random() * 50) + 20,
+      available_funding: "Information on request", // Real funding amounts vary
+      applications_this_month: "Current data not available",
       approval_rate: 0.68,
       deadline: 'Laufend',
       website: 'https://www.invest-in-saarland.com/foerderung',
@@ -20,8 +20,8 @@ const SAARLAND_BUSINESS_DATA = {
       name: 'Digitalisierungsbonus',
       type: 'Digitalisierung',
       amount: 'Bis zu 15.000€',
-      available_funding: Math.floor(Math.random() * 1000000) + 500000, // 0.5-1.5M€
-      applications_this_month: Math.floor(Math.random() * 80) + 40,
+      available_funding: "Information on request", // Real amounts vary
+      applications_this_month: "Current data not available",
       approval_rate: 0.75,
       deadline: '31.12.2024',
       website: 'https://www.saarland.de/digitalisierungsbonus',
@@ -32,8 +32,8 @@ const SAARLAND_BUSINESS_DATA = {
       name: 'StartUp Saar',
       type: 'Existenzgründung',
       amount: 'Bis zu 50.000€',
-      available_funding: Math.floor(Math.random() * 2000000) + 1000000,
-      applications_this_month: Math.floor(Math.random() * 30) + 15,
+      available_funding: "Information on request",
+      applications_this_month: "Current data not available",
       approval_rate: 0.72,
       deadline: 'Quartalweise',
       website: 'https://www.startup.saarland',
@@ -43,7 +43,7 @@ const SAARLAND_BUSINESS_DATA = {
   economic_indicators: {
     unemployment_rate: 6.2,
     gdp_growth: 2.1,
-    new_business_registrations_this_month: Math.floor(Math.random() * 200) + 150,
+    new_business_registrations_this_month: "Official data pending",
     business_confidence_index: 67.5,
     export_volume_change: 3.8,
     innovation_index: 72.3
@@ -93,12 +93,12 @@ export async function GET(request: NextRequest) {
       economic_indicators: {
         ...SAARLAND_BUSINESS_DATA.economic_indicators,
         last_updated: new Date().toISOString(),
-        active_funding_queries_today: Math.floor(Math.random() * 100) + 50
+        active_funding_queries_today: 0
       },
       funding_programs: SAARLAND_BUSINESS_DATA.funding_programs.map(program => ({
         ...program,
-        available_funding: Math.floor(Math.random() * 5000000) + 1000000,
-        current_applications_processing: Math.floor(Math.random() * 20) + 5
+        available_funding: program.available_funding,
+        current_applications_processing: "Information on request"
       }))
     };
 

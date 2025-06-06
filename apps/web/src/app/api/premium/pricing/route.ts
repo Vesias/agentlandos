@@ -94,12 +94,12 @@ async function analyzeUserProfile(userId: string | null) {
     };
   }
 
-  // Simuliere User-Analyse basierend auf User-ID
-  const isGrenzpendler = userId.includes('pendler') || Math.random() > 0.7;
-  const dailyApiCalls = Math.floor(Math.random() * 200);
-  const businessQueries = Math.floor(Math.random() * 10);
-  const governmentAffiliation = userId.includes('gov') || Math.random() > 0.95;
-  const apiInterest = userId.includes('dev') || Math.random() > 0.8;
+  // Real User-Analyse needed - no fake random data
+  const isGrenzpendler = userId.includes('pendler') || false; // Real detection needed
+  const dailyApiCalls = 0; // Real usage tracking needed
+  const businessQueries = 0; // Real query analysis needed
+  const governmentAffiliation = userId.includes('gov') || false; // Real affiliation check
+  const apiInterest = userId.includes('dev') || false; // Real interest tracking needed
 
   return {
     userId,

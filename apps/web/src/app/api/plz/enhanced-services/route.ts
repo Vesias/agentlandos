@@ -209,9 +209,10 @@ async function checkRealTimeAvailability(service: any): Promise<any> {
   } else if (currentHour >= 12 && currentHour <= 13) {
     status = 'busy'
     averageWaitTime = 45
-  } else if (Math.random() > 0.7) {
-    status = 'busy'
-    averageWaitTime = Math.floor(Math.random() * 30 + 10)
+  } else {
+    // Real availability checking needed - no random status
+    status = 'available'
+    averageWaitTime = 15 // Default wait time
   }
   
   return {

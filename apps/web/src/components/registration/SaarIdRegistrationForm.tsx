@@ -10,6 +10,7 @@ interface SaarIdFormData {
     firstName: string
     lastName: string
     dateOfBirth: string
+    age: number
     placeOfBirth: string
     nationality: string
     gender?: 'male' | 'female' | 'diverse'
@@ -43,6 +44,7 @@ export default function SaarIdRegistrationForm() {
       firstName: '',
       lastName: '',
       dateOfBirth: '',
+      age: 0,
       placeOfBirth: '',
       nationality: 'deutsch'
     },
@@ -73,12 +75,26 @@ export default function SaarIdRegistrationForm() {
     }))
   }
 
+  const calculateAge = (birthDate: string): number => {
+    if (!birthDate) return 0
+    const today = new Date()
+    const birth = new Date(birthDate)
+    let age = today.getFullYear() - birth.getFullYear()
+    const monthDiff = today.getMonth() - birth.getMonth()
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+      age--
+    }
+    return age
+  }
+
   const validateStep = (step: number): boolean => {
     switch (step) {
       case 1:
+        const age = calculateAge(formData.personalInfo.dateOfBirth)
         return !!(formData.personalInfo.firstName && 
                  formData.personalInfo.lastName && 
-                 formData.personalInfo.dateOfBirth)
+                 formData.personalInfo.dateOfBirth &&
+                 age >= 14) // Minimum age for SAAR-ID
       case 2:
         return !!(formData.residenceAddress.street && 
                  formData.residenceAddress.houseNumber && 
@@ -166,10 +182,23 @@ export default function SaarIdRegistrationForm() {
                 <input
                   type="date"
                   value={formData.personalInfo.dateOfBirth}
-                  onChange={(e) => updateFormData('personalInfo', 'dateOfBirth', e.target.value)}
+                  onChange={(e) => {
+                    const newAge = calculateAge(e.target.value)
+                    updateFormData('personalInfo', 'dateOfBirth', e.target.value)
+                    updateFormData('personalInfo', 'age', newAge)
+                  }}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
+                  max={new Date().toISOString().split('T')[0]}
                   required
                 />
+                {formData.personalInfo.dateOfBirth && (
+                  <p className="text-xs text-gray-500 mt-1">
+                    Alter: {calculateAge(formData.personalInfo.dateOfBirth)} Jahre
+                    {calculateAge(formData.personalInfo.dateOfBirth) < 14 && (
+                      <span className="text-red-500 ml-2">Mindestalter: 14 Jahre</span>
+                    )}
+                  </p>
+                )}
               </div>
               
               <div>
@@ -180,6 +209,18 @@ export default function SaarIdRegistrationForm() {
                   onChange={(e) => updateFormData('personalInfo', 'placeOfBirth', e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
                 />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium mb-1">Alter</label>
+                <input
+                  type="number"
+                  value={formData.personalInfo.age}
+                  readOnly
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-50 text-gray-600"
+                  placeholder="Wird automatisch berechnet"
+                />
+                <p className="text-xs text-gray-500 mt-1">Basierend auf Geburtsdatum</p>
               </div>
               
               <div>

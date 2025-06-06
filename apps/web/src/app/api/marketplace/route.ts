@@ -58,8 +58,8 @@ const API_MARKETPLACE: APIProduct[] = [
     realTimeData: true,
     ragPowered: true,
     documentation: '/docs/government-api',
-    monthlyRevenue: 12847,
-    activeUsers: 89,
+    monthlyRevenue: 0, // Building real revenue
+    activeUsers: 0, // Real user tracking needed
     lastUpdate: '2025-06-05'
   },
   {
@@ -92,8 +92,8 @@ const API_MARKETPLACE: APIProduct[] = [
     realTimeData: true,
     ragPowered: true,
     documentation: '/docs/tourism-api',
-    monthlyRevenue: 8923,
-    activeUsers: 156,
+    monthlyRevenue: 0, // Building real revenue
+    activeUsers: 0, // Real user tracking needed
     lastUpdate: '2025-06-05'
   },
   {
@@ -126,8 +126,8 @@ const API_MARKETPLACE: APIProduct[] = [
     realTimeData: true,
     ragPowered: true,
     documentation: '/docs/business-api',
-    monthlyRevenue: 15678,
-    activeUsers: 67,
+    monthlyRevenue: 0, // Building real revenue
+    activeUsers: 0, // Real user tracking needed
     lastUpdate: '2025-06-05'
   },
   {
@@ -160,8 +160,8 @@ const API_MARKETPLACE: APIProduct[] = [
     realTimeData: true,
     ragPowered: true,
     documentation: '/docs/sports-api',
-    monthlyRevenue: 6234,
-    activeUsers: 234,
+    monthlyRevenue: 0, // Building real revenue
+    activeUsers: 0, // Real user tracking needed
     lastUpdate: '2025-06-05'
   },
   {
@@ -194,8 +194,8 @@ const API_MARKETPLACE: APIProduct[] = [
     realTimeData: true,
     ragPowered: true,
     documentation: '/docs/ai-agents-api',
-    monthlyRevenue: 23456,
-    activeUsers: 45,
+    monthlyRevenue: 0, // Building real revenue
+    activeUsers: 0, // Real user tracking needed
     lastUpdate: '2025-06-05'
   }
 ]
@@ -285,10 +285,10 @@ export async function GET(request: NextRequest) {
               revenue_per_user: Math.round(api.monthlyRevenue / api.activeUsers)
             })),
           growth_metrics: {
-            month_over_month: '+23.7%',
-            year_over_year: '+156.3%',
-            new_api_adoptions: 12,
-            churn_rate: '2.1%'
+            month_over_month: 'N/A',
+            year_over_year: 'N/A',
+            new_api_adoptions: 0,
+            churn_rate: 'N/A'
           },
           projected_annual_revenue: API_MARKETPLACE.reduce((sum, api) => sum + api.monthlyRevenue, 0) * 12 * 1.15 // 15% growth
         }
@@ -302,9 +302,9 @@ export async function GET(request: NextRequest) {
         
       case 'usage':
         const usageStats = {
-          total_api_calls_month: 1247891,
-          total_active_users: API_MARKETPLACE.reduce((sum, api) => sum + api.activeUsers, 0),
-          average_calls_per_user: Math.round(1247891 / API_MARKETPLACE.reduce((sum, api) => sum + api.activeUsers, 0)),
+          total_api_calls_month: 0, // Real usage tracking needed
+          total_active_users: 0, // Building real user base
+          average_calls_per_user: 0, // Real metrics needed
           most_popular_apis: API_MARKETPLACE
             .sort((a, b) => b.activeUsers - a.activeUsers)
             .slice(0, 3)
@@ -314,15 +314,15 @@ export async function GET(request: NextRequest) {
               category: api.category
             })),
           usage_by_tier: {
-            free: 45.2,
-            basic: 32.1,
-            premium: 18.7,
-            enterprise: 4.0
+            free: 0,
+            basic: 0,
+            premium: 0,
+            enterprise: 0
           },
           conversion_rate: {
-            free_to_basic: '12.3%',
-            basic_to_premium: '8.7%',
-            premium_to_enterprise: '15.2%'
+            free_to_basic: 'N/A',
+            basic_to_premium: 'N/A',
+            premium_to_enterprise: 'N/A'
           }
         }
         
@@ -419,8 +419,8 @@ export async function POST(request: NextRequest) {
           user_id,
           api_id,
           current_month: {
-            calls_made: usage_data?.calls_made || Math.floor(Math.random() * 1000),
-            calls_remaining: usage_data?.calls_remaining || Math.floor(Math.random() * 500),
+            calls_made: usage_data?.calls_made || 0, // Real usage tracking
+            calls_remaining: usage_data?.calls_remaining || 0, // Real quota tracking
             overage_charges: 0,
             last_call: new Date().toISOString()
           },

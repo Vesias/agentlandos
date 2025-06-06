@@ -143,28 +143,11 @@ const LEADERBOARDS = {
   }
 }
 
-// Mock user data (replace with real database)
-let MOCK_USERS = [
-  {
-    id: 'user_1',
-    name: 'Max Mustermann',
-    location: 'Saarbrücken',
-    points: 1250,
-    badges: ['saar-resident', 'fc-fan', 'premium-member'],
-    streak: 15,
-    level: 8,
-    premium: true
-  },
-  {
-    id: 'user_2',
-    name: 'Anna Schmidt',
-    location: 'Homburg',
-    points: 890,
-    badges: ['saar-resident', 'news-junkie'],
-    streak: 7,
-    level: 6,
-    premium: false
-  }
+// Demo user data for badge system testing (replace with real database)
+// Note: Real user count should come from Supabase analytics
+let DEMO_USERS = [
+  // Demo users for badge system functionality testing
+  // Real community will be built from actual user registrations
 ]
 
 function calculateLevel(points: number): number {
@@ -210,7 +193,7 @@ export async function GET(request: NextRequest) {
           return NextResponse.json({ error: 'User ID required' }, { status: 400 })
         }
         
-        const user = MOCK_USERS.find(u => u.id === user_id) || {
+        const user = DEMO_USERS.find(u => u.id === user_id) || {
           id: user_id,
           name: 'Neuer User',
           location: 'Saarland',
@@ -236,7 +219,7 @@ export async function GET(request: NextRequest) {
         const category = searchParams.get('category') || 'monthly'
         const leaderboard = LEADERBOARDS[category as keyof typeof LEADERBOARDS]
         
-        const sortedUsers = [...MOCK_USERS]
+        const sortedUsers = [...DEMO_USERS]
           .sort((a, b) => b.points - a.points)
           .slice(0, 10)
           .map((user, index) => ({
@@ -262,8 +245,8 @@ export async function GET(request: NextRequest) {
       default:
         return NextResponse.json({
           message: 'Saarland Community - Gemeinsam stark! 🤝',
-          total_users: MOCK_USERS.length,
-          total_points_distributed: MOCK_USERS.reduce((sum, user) => sum + user.points, 0),
+          total_users: 0, // Real user count from Supabase needed
+          total_points_distributed: 0, // Real points tracking needed
           active_badges: Object.keys(BADGE_SYSTEM).length,
           leaderboards: Object.keys(LEADERBOARDS),
           success: true
@@ -286,8 +269,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'User ID required' }, { status: 400 })
     }
     
-    // Find or create user
-    let user = MOCK_USERS.find(u => u.id === user_id)
+    // Find or create user in demo system (replace with real database)
+    let user = DEMO_USERS.find(u => u.id === user_id)
     if (!user) {
       user = {
         id: user_id,
@@ -299,7 +282,7 @@ export async function POST(request: NextRequest) {
         level: 1,
         premium: false
       }
-      MOCK_USERS.push(user)
+      DEMO_USERS.push(user)
     }
     
     switch (type) {

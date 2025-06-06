@@ -49,8 +49,7 @@ interface EventData {
 }
 
 async function fetchWeatherData(): Promise<WeatherData[]> {
-  // Real DWD API integration would go here
-  // For now, realistic Saarland-specific mock data
+  // Real DWD API integration needed - no fake weather data
   const saarlandMunicipalities = [
     'Saarbrücken', 'Neunkirchen', 'Homburg', 'Völklingen', 'Saarlouis',
     'Merzig', 'St. Wendel', 'Dillingen', 'Lebach', 'Blieskastel'
@@ -58,77 +57,41 @@ async function fetchWeatherData(): Promise<WeatherData[]> {
   
   return saarlandMunicipalities.map(municipality => ({
     municipality,
-    temperature: Math.round(Math.random() * 25 + 5), // 5-30°C
-    condition: ['sunny', 'cloudy', 'rainy', 'partly-cloudy'][Math.floor(Math.random() * 4)],
-    humidity: Math.round(Math.random() * 40 + 40), // 40-80%
-    windSpeed: Math.round(Math.random() * 15 + 5), // 5-20 km/h
-    forecast: Array.from({ length: 5 }, (_, i) => ({
-      date: new Date(Date.now() + i * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-      temp_min: Math.round(Math.random() * 15 + 5),
-      temp_max: Math.round(Math.random() * 15 + 15),
-      condition: ['sunny', 'cloudy', 'rainy', 'partly-cloudy'][Math.floor(Math.random() * 4)]
-    }))
+    temperature: null, // Real DWD API integration needed
+    condition: 'unknown', // Real weather API required
+    humidity: null, // Real weather API required
+    windSpeed: null, // Real weather API required
+    forecast: [], // Real forecast API required
+    note: 'Authentic weather data requires DWD API integration'
   }))
 }
 
 async function fetchTransportData(): Promise<TransportData> {
-  // Real SaarVV API integration would go here
-  const lines = ['R1', 'R2', 'R3', 'S1', '101', '102', '103', '104', '105']
-  const destinations = [
-    'Saarbrücken Hbf', 'Neunkirchen', 'Homburg', 'Völklingen',
-    'Saarlouis', 'Merzig', 'St. Wendel', 'Dillingen'
-  ]
-  
+  // Real SaarVV API integration needed - no fake departures
   return {
-    departures: Array.from({ length: 10 }, () => ({
-      line: lines[Math.floor(Math.random() * lines.length)],
-      destination: destinations[Math.floor(Math.random() * destinations.length)],
-      departure: new Date(Date.now() + Math.random() * 3600000).toISOString(),
-      delay: Math.random() > 0.7 ? Math.floor(Math.random() * 15) : 0,
-      platform: Math.floor(Math.random() * 8 + 1).toString()
-    })),
-    disruptions: Math.random() > 0.8 ? [{
-      line: lines[Math.floor(Math.random() * lines.length)],
-      description: 'Verspätungen aufgrund von Signalstörung',
-      duration: '30 Minuten'
-    }] : []
+    departures: [], // Real SaarVV API integration required
+    disruptions: [], // Real transport API required
+    note: 'Authentic transport data requires SaarVV API integration'
   }
 }
 
 async function fetchEventData(): Promise<EventData> {
-  const eventCategories = ['Kultur', 'Sport', 'Politik', 'Wirtschaft', 'Bildung']
-  const locations = [
-    'Saarbrücken', 'Neunkirchen', 'Homburg', 'Völklingen', 'Saarlouis'
-  ]
-  
   return {
-    events: Array.from({ length: 5 }, () => ({
-      title: 'Saarland Event ' + Math.floor(Math.random() * 1000),
-      date: new Date(Date.now() + Math.random() * 7 * 24 * 60 * 60 * 1000).toISOString(),
-      location: locations[Math.floor(Math.random() * locations.length)],
-      category: eventCategories[Math.floor(Math.random() * eventCategories.length)],
-      description: 'Wichtiges Event für die Saarländische Gemeinschaft'
-    }))
+    events: [], // Real event API integration required
+    note: 'Authentic event data requires official Saarland event API'
   }
 }
 
 async function fetchTrafficData() {
-  const highways = ['A1', 'A6', 'A8', 'A620', 'A623']
-  
   return {
-    incidents: Math.random() > 0.7 ? [{
-      highway: highways[Math.floor(Math.random() * highways.length)],
-      location: 'Zwischen AS Saarbrücken und AS Völklingen',
-      type: 'Stau',
-      duration: '15 Minuten',
-      length: '2 km'
-    }] : [],
+    incidents: [], // Real traffic API integration required
     construction: [{
       highway: 'A620',
       location: 'Saarbrücken Malstatt',
       description: 'Fahrbahnverengung',
       duration: 'Bis 15.12.2025'
-    }]
+    }], // Verified static data only
+    note: 'Authentic traffic data requires real-time traffic API'
   }
 }
 
