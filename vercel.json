@@ -1,25 +1,14 @@
 {
-  "version": 2,
-  "builds": [
-    {
-      "src": "apps/web/package.json",
-      "use": "@vercel/next",
-      "config": {
-        "distDir": ".next"
-      }
-    }
-  ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "apps/web/$1"
-    }
-  ],
-  "installCommand": "pnpm install --frozen-lockfile",
-  "buildCommand": "cd apps/web && pnpm run build",
-  "outputDirectory": "apps/web/.next",
+  "installCommand": "npm install",
+  "buildCommand": "npm run build",
   "framework": "nextjs",
+  "outputDirectory": "apps/web/.next",
   "env": {
     "NEXT_PUBLIC_API_URL": "/api"
+  },
+  "functions": {
+    "apps/web/src/app/api/*/route.ts": {
+      "maxDuration": 30
+    }
   }
 }
