@@ -23,7 +23,7 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* Title - Professional */}
+          {/* Title - Professional with proper heading hierarchy */}
           <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold mb-6 text-white font-quantum">
             <span className="block">AGENTLAND</span>
             <span className="block text-[#FDB913] font-light">.SAARLAND</span>
@@ -31,12 +31,12 @@ export default function HomePage() {
 
           {/* New KI-Agentur Value Prop */}
           <div className="mb-6">
-            <p className="text-2xl sm:text-3xl text-[#FDB913] mb-2 max-w-4xl mx-auto font-quantum font-bold leading-tight">
+            <h2 className="text-2xl sm:text-3xl text-[#FDB913] mb-2 max-w-4xl mx-auto font-quantum font-bold leading-tight">
               DIE ERSTE KI-AGENTUR IM SAARLAND
-            </p>
-            <p className="text-xl sm:text-2xl text-white/90 mb-4 max-w-3xl mx-auto font-nova leading-relaxed">
+            </h2>
+            <h3 className="text-xl sm:text-2xl text-white/90 mb-4 max-w-3xl mx-auto font-nova leading-relaxed">
               Unternehmensumsätze effizient steigern durch Zukunftstechnologie HEUTE
-            </p>
+            </h3>
           </div>
           
           {/* Urgency Message */}
