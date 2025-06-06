@@ -302,7 +302,7 @@ export default function EnhancedMultiAgentChat() {
   return (
     <div className="max-w-4xl mx-auto h-[80vh] flex flex-col bg-white rounded-3xl shadow-xl border border-gray-100">
       {/* Header */}
-      <div className="bg-gradient-to-r from-[#003399] to-[#009FE3] p-6 rounded-t-3xl">
+      <div className="bg-gradient-to-r from-[#003399] to-[#0277bd] p-6 rounded-t-3xl">
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-2xl font-bold text-white flex items-center gap-2">

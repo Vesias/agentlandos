@@ -364,7 +364,7 @@ export default function InteractiveSaarlandMap({
       {/* Enhanced Legend */}
       <div className="absolute bottom-4 left-4 bg-white rounded-lg shadow-lg p-4 text-xs z-[999] max-w-xs">
         <div className="flex items-center gap-2 mb-3">
-          <div className="w-4 h-4 bg-gradient-to-r from-[#003399] to-[#009FE3] rounded"></div>
+          <div className="w-4 h-4 bg-gradient-to-r from-[#003399] to-[#0277bd] rounded"></div>
           <span className="font-bold text-[#003399]">Saarland POIs</span>
         </div>
         

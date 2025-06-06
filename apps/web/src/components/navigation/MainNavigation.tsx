@@ -141,7 +141,7 @@ export default function MainNavigation() {
                   value={userIntent}
                   onChange={(e) => setUserIntent(e.target.value)}
                   placeholder="Suchen Sie nach Unternehmenslösungen, Services oder Beratung..."
-                  className="w-full pl-12 pr-4 py-3.5 bg-neutral-50 border border-neutral-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 focus:bg-white transition-all duration-300 text-sm font-professional"
+                  className="w-full pl-12 pr-4 py-3.5 bg-white border-2 border-technical-silver-300 rounded-xl focus:ring-3 focus:ring-saarland-blue-300 focus:border-saarland-blue-600 focus:bg-white transition-all duration-300 text-sm font-professional text-neutral-gray-800 placeholder:text-neutral-gray-500 shadow-sm hover:border-saarland-blue-400"
                   onFocus={() => setSmartMenuOpen(true)}
                   onBlur={() => setTimeout(() => setSmartMenuOpen(false), 200)}
                 />
@@ -226,21 +226,21 @@ export default function MainNavigation() {
               <LiveUserCounter />
               
               {/* Professional Service Access */}
-              <button className="p-3 bg-saarland-blue-700 hover:bg-saarland-blue-800 text-white rounded-lg hover:shadow-md transition-all duration-300 group focus:ring-2 focus:ring-saarland-blue-500 focus:ring-offset-2">
+              <button className="p-3 bg-saarland-blue-700 hover:bg-saarland-blue-800 text-white rounded-lg hover:shadow-lg transition-all duration-300 group focus:ring-3 focus:ring-saarland-blue-300 focus:ring-offset-2 shadow-md border border-saarland-blue-600" aria-label="Voice Input">
                 <Mic className="w-5 h-5 group-hover:scale-105 transition-transform" />
               </button>
               
-              <button className="p-3 bg-innovation-cyan-600 hover:bg-innovation-cyan-700 text-white rounded-lg hover:shadow-md transition-all duration-300 group focus:ring-2 focus:ring-innovation-cyan-500 focus:ring-offset-2">
+              <button className="p-3 bg-innovation-cyan-600 hover:bg-innovation-cyan-700 text-white rounded-lg hover:shadow-lg transition-all duration-300 group focus:ring-3 focus:ring-innovation-cyan-300 focus:ring-offset-2 shadow-md border border-innovation-cyan-500" aria-label="Camera Input">
                 <Camera className="w-5 h-5 group-hover:scale-105 transition-transform" />
               </button>
               
               {/* Professional Community Button */}
               <Link
                 href="/community"
-                className={`px-5 py-3 rounded-lg font-professional font-semibold transition-all duration-300 flex items-center space-x-2 focus:ring-2 focus:ring-saarland-blue-500 focus:ring-offset-2 ${
+                className={`px-5 py-3 rounded-lg font-professional font-semibold transition-all duration-300 flex items-center space-x-2 focus:ring-3 focus:ring-saarland-blue-300 focus:ring-offset-2 shadow-md border ${
                   pathname === '/community'
-                    ? 'bg-saarland-blue-800 text-white shadow-md'
-                    : 'bg-saarland-blue-700 text-white hover:bg-saarland-blue-800 hover:shadow-md'
+                    ? 'bg-saarland-blue-800 text-white shadow-lg border-saarland-blue-700'
+                    : 'bg-saarland-blue-700 text-white hover:bg-saarland-blue-800 hover:shadow-lg border-saarland-blue-600'
                 }`}
               >
                 <User className="w-5 h-5" />
@@ -272,7 +272,8 @@ export default function MainNavigation() {
               {/* Professional AI Button */}
               <Link
                 href="/ai-assistant"
-                className="p-3 bg-saarland-blue-700 hover:bg-saarland-blue-800 text-white rounded-lg shadow-md active:scale-95 transition-all focus:ring-2 focus:ring-saarland-blue-500 focus:ring-offset-2"
+                className="p-3 bg-saarland-blue-700 hover:bg-saarland-blue-800 text-white rounded-lg shadow-md active:scale-95 transition-all focus:ring-3 focus:ring-saarland-blue-300 focus:ring-offset-2 border border-saarland-blue-600 hover:shadow-lg"
+                aria-label="AI Assistant"
               >
                 <Brain className="w-5 h-5" />
               </Link>
@@ -282,7 +283,7 @@ export default function MainNavigation() {
                 variant="ghost"
                 size="icon"
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="relative z-50 p-3 rounded-lg bg-technical-silver-100 hover:bg-technical-silver-200 active:scale-95 transition-all focus:ring-2 focus:ring-saarland-blue-500 focus:ring-offset-2"
+                className="relative z-50 p-3 rounded-lg bg-technical-silver-100 hover:bg-technical-silver-200 active:scale-95 transition-all focus:ring-3 focus:ring-saarland-blue-300 focus:ring-offset-2 border border-technical-silver-300 shadow-sm hover:shadow-md"
                 aria-label={mobileMenuOpen ? "Menü schließen" : "Menu öffnen"}
               >
                 {mobileMenuOpen ? <X className="w-6 h-6 text-neutral-gray-600" /> : <Menu className="w-6 h-6 text-neutral-gray-600" />}
@@ -321,7 +322,7 @@ export default function MainNavigation() {
                   <input
                     type="text"
                     placeholder="Was brauchen Sie?"
-                    className="w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-blue-500 transition-all"
+                    className="w-full pl-12 pr-4 py-3 bg-white border-2 border-technical-silver-300 rounded-2xl focus:ring-3 focus:ring-saarland-blue-300 focus:border-saarland-blue-600 transition-all text-neutral-gray-800 placeholder:text-neutral-gray-500 shadow-sm"
                   />
                 </div>
                 

@@ -18,19 +18,19 @@ export const FormField = React.forwardRef<HTMLDivElement, FormFieldProps>(
     return (
       <div ref={ref} className={cn("space-y-2", className)}>
         {label && (
-          <label className="block text-sm font-medium text-gray-900 dark:text-gray-100">
+          <label className="block text-sm font-semibold text-neutral-gray-800 dark:text-technical-silver-100 mb-1">
             {label}
-            {required && <span className="text-red-500 ml-1">*</span>}
+            {required && <span className="text-alert-red-600 ml-1 font-bold" aria-label="required">*</span>}
           </label>
         )}
         {description && (
-          <p className="text-sm text-gray-600 dark:text-gray-400 -mt-1">
+          <p className="text-sm text-neutral-gray-600 dark:text-technical-silver-300 mb-1">
             {description}
           </p>
         )}
         {children}
         {error && (
-          <p className="text-sm text-red-600 dark:text-red-400 flex items-center gap-1">
+          <p className="text-sm text-alert-red-700 dark:text-alert-red-400 flex items-center gap-1 mt-1 font-medium">
             <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
               <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
             </svg>
@@ -54,9 +54,9 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
       <input
         type={type}
         className={cn(
-          "flex h-11 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-colors",
+          "flex h-11 w-full rounded-md border-2 border-technical-silver-300 bg-white px-3 py-2 text-sm text-neutral-gray-800 font-medium ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-neutral-gray-500 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-saarland-blue-300 focus-visible:border-saarland-blue-600 disabled:cursor-not-allowed disabled:bg-technical-silver-100 disabled:text-neutral-gray-400 disabled:border-technical-silver-200 transition-all duration-200",
           "min-h-[44px] touch-manipulation", // Mobile optimization
-          error && "border-red-500 focus-visible:ring-red-500",
+          error && "border-alert-red-500 focus-visible:ring-alert-red-300 focus-visible:border-alert-red-600 bg-alert-red-50",
           className
         )}
         ref={ref}
@@ -79,9 +79,9 @@ export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
     return (
       <select
         className={cn(
-          "flex h-11 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-colors",
+          "flex h-11 w-full rounded-md border-2 border-technical-silver-300 bg-white px-3 py-2 text-sm text-neutral-gray-800 font-medium ring-offset-background focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-saarland-blue-300 focus-visible:border-saarland-blue-600 disabled:cursor-not-allowed disabled:bg-technical-silver-100 disabled:text-neutral-gray-400 disabled:border-technical-silver-200 transition-all duration-200",
           "min-h-[44px] touch-manipulation appearance-none cursor-pointer",
-          error && "border-red-500 focus-visible:ring-red-500",
+          error && "border-alert-red-500 focus-visible:ring-alert-red-300 focus-visible:border-alert-red-600 bg-alert-red-50",
           className
         )}
         ref={ref}
@@ -114,9 +114,9 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
     return (
       <textarea
         className={cn(
-          "flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 resize-vertical transition-colors",
+          "flex min-h-[80px] w-full rounded-md border-2 border-technical-silver-300 bg-white px-3 py-2 text-sm text-neutral-gray-800 font-medium ring-offset-background placeholder:text-neutral-gray-500 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-saarland-blue-300 focus-visible:border-saarland-blue-600 disabled:cursor-not-allowed disabled:bg-technical-silver-100 disabled:text-neutral-gray-400 disabled:border-technical-silver-200 resize-vertical transition-all duration-200",
           "touch-manipulation",
-          error && "border-red-500 focus-visible:ring-red-500",
+          error && "border-alert-red-500 focus-visible:ring-alert-red-300 focus-visible:border-alert-red-600 bg-alert-red-50",
           className
         )}
         ref={ref}

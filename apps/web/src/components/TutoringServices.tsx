@@ -129,7 +129,7 @@ export const TutoringServices: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <div className="bg-gradient-to-r from-[#003399] to-[#009FE3] py-12">
+      <div className="bg-gradient-to-r from-[#003399] to-[#0277bd] py-12">
         <div className="max-w-7xl mx-auto px-4 text-center text-white">
           <div className="w-20 h-20 bg-[#FDB913] rounded-2xl flex items-center justify-center mx-auto mb-6">
             <BookOpen className="w-12 h-12 text-[#003399]" />
@@ -296,7 +296,7 @@ export const TutoringServices: React.FC = () => {
                     {service.levels.map((level, index) => (
                       <span 
                         key={index}
-                        className="bg-[#009FE3] text-white px-2 py-1 rounded-full text-xs"
+                        className="bg-[#0277bd] text-white px-2 py-1 rounded-full text-xs"
                       >
                         {level}
                       </span>
@@ -327,7 +327,7 @@ export const TutoringServices: React.FC = () => {
                   {service.phone && (
                     <a 
                       href={`tel:${service.phone}`}
-                      className="flex-1 bg-[#009FE3] hover:bg-[#007AB8] text-white text-center py-2 px-3 rounded-lg transition-colors duration-300 flex items-center justify-center"
+                      className="flex-1 bg-[#0277bd] hover:bg-[#007AB8] text-white text-center py-2 px-3 rounded-lg transition-colors duration-300 flex items-center justify-center"
                     >
                       <Phone className="w-4 h-4 mr-1" />
                       Anrufen
@@ -362,7 +362,7 @@ export const TutoringServices: React.FC = () => {
         )}
 
         {/* Add Service CTA */}
-        <div className="mt-12 bg-gradient-to-r from-[#003399] to-[#009FE3] rounded-xl p-8 text-center text-white">
+        <div className="mt-12 bg-gradient-to-r from-[#003399] to-[#0277bd] rounded-xl p-8 text-center text-white">
           <h3 className="text-2xl font-bold mb-4">Sind Sie Nachhilfe-Anbieter?</h3>
           <p className="text-lg mb-6 opacity-90">
             Tragen Sie Ihren Service kostenlos ein und erreichen Sie neue Schüler im Saarland.

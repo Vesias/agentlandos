@@ -11,7 +11,7 @@ export default function HomePage() {
       {/* Hero Section - Premium Design */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
         {/* Background Pattern */}
-        <div className="absolute inset-0 bg-gradient-to-br from-[#003399] via-[#0052CC] to-[#009FE3] opacity-95"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-[#003399] via-[#0052CC] to-[#0277bd] opacity-95"></div>
         <div className="absolute inset-0 network-pattern opacity-10"></div>
         
         {/* Content */}
@@ -67,7 +67,7 @@ export default function HomePage() {
           </div>
 
           {/* FREE Saarland Special */}
-          <div className="bg-gradient-to-r from-[#003399] to-[#009FE3] rounded-3xl p-6 mb-8 max-w-2xl mx-auto text-center text-white border-2 border-[#FDB913]/50">
+          <div className="bg-gradient-to-r from-[#003399] to-[#0277bd] rounded-3xl p-6 mb-8 max-w-2xl mx-auto text-center text-white border-2 border-[#FDB913]/50">
             <div className="flex items-center justify-center gap-2 mb-4">
               <span className="text-2xl">🆓</span>
               <h3 className="text-xl font-bold text-[#FDB913]">KOSTENLOS für alle Saarländer!</h3>
@@ -107,8 +107,8 @@ export default function HomePage() {
                 <div className="text-xs text-[#FDB913]">Nur echte Daten</div>
               </div>
               <div className="bg-black/30 border border-[#003399]/30 rounded-xl p-4 text-center backdrop-blur-sm">
-                <div className="text-2xl font-bold text-[#009FE3]">24/7</div>
-                <div className="text-xs text-[#009FE3]">AI verfügbar</div>
+                <div className="text-2xl font-bold text-[#0277bd]">24/7</div>
+                <div className="text-xs text-[#0277bd]">AI verfügbar</div>
               </div>
             </div>
           </div>
@@ -209,10 +209,10 @@ export default function HomePage() {
             </div>
 
             {/* Operative Exzellenz */}
-            <div className="bg-white p-8 rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 hover:scale-105 touch-manipulation border border-[#009FE3]/20 hover:border-[#009FE3]/40 relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-[#009FE3]/5 to-transparent rounded-bl-full"></div>
+            <div className="bg-white p-8 rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 hover:scale-105 touch-manipulation border border-[#0277bd]/20 hover:border-[#0277bd]/40 relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-[#0277bd]/5 to-transparent rounded-bl-full"></div>
               <div className="relative z-10">
-                <div className="w-16 h-16 bg-gradient-to-br from-[#009FE3] to-[#007BB8] rounded-2xl flex items-center justify-center mb-6">
+                <div className="w-16 h-16 bg-gradient-to-br from-[#0277bd] to-[#007BB8] rounded-2xl flex items-center justify-center mb-6">
                   <Zap className="w-8 h-8 text-white" />
                 </div>
                 <h3 className="text-xl font-bold mb-3 text-[#003399]">
@@ -231,7 +231,7 @@ export default function HomePage() {
           {/* Service Packages - Quick Overview */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-16">
             {/* KOSTENLOS STANDARD MITGLIEDSCHAFT */}
-            <div className="bg-gradient-to-br from-[#003399] to-[#009FE3] p-6 rounded-3xl shadow-xl text-white relative overflow-hidden transform scale-110 border-4 border-[#FDB913] transition-all duration-300">
+            <div className="bg-gradient-to-br from-[#003399] to-[#0277bd] p-6 rounded-3xl shadow-xl text-white relative overflow-hidden transform scale-110 border-4 border-[#FDB913] transition-all duration-300">
               <div className="absolute top-0 right-0 bg-[#FDB913] text-[#003399] px-4 py-2 rounded-bl-xl font-bold text-sm">⭐ STANDARD</div>
               <div className="text-center pt-4">
                 <h3 className="text-2xl font-bold mb-2">🆓 KOSTENLOS</h3>
@@ -325,7 +325,7 @@ export default function HomePage() {
           </div>
 
           {/* Limitiertes Angebot CTA */}
-          <div className="bg-gradient-to-r from-[#003399] to-[#009FE3] rounded-3xl p-8 md:p-12 text-center text-white relative overflow-hidden">
+          <div className="bg-gradient-to-r from-[#003399] to-[#0277bd] rounded-3xl p-8 md:p-12 text-center text-white relative overflow-hidden">
             <div className="absolute inset-0 network-pattern opacity-10"></div>
             <div className="relative z-10">
               <div className="w-20 h-20 bg-[#FDB913] rounded-2xl flex items-center justify-center mx-auto mb-6">
@@ -441,8 +441,8 @@ export default function HomePage() {
               <div className="text-lg opacity-90 font-semibold">Nur echte Daten</div>
               <div className="text-sm opacity-70 mt-2">Keine Fake-Metrics</div>
             </div>
-            <div className="bg-white/10 rounded-3xl p-8 backdrop-blur-sm border border-[#009FE3]/30 hover:bg-white/15 transition-all duration-300">
-              <div className="text-4xl md:text-5xl font-bold mb-3 text-[#009FE3]">100%</div>
+            <div className="bg-white/10 rounded-3xl p-8 backdrop-blur-sm border border-[#0277bd]/30 hover:bg-white/15 transition-all duration-300">
+              <div className="text-4xl md:text-5xl font-bold mb-3 text-[#0277bd]">100%</div>
               <div className="text-lg opacity-90 font-semibold">Transparent</div>
               <div className="text-sm opacity-70 mt-2">Authentische Entwicklung</div>
             </div>

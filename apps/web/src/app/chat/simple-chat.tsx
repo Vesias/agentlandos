@@ -528,7 +528,7 @@ Ich helfe Ihnen gerne bei Fragen zu:
             <div className="text-center py-12 sm:py-16 bg-white/10 backdrop-blur-xl rounded-3xl border border-white/20 shadow-2xl">
               <div className="w-24 h-24 sm:w-28 sm:h-28 mx-auto mb-8 rounded-3xl flex items-center justify-center shadow-2xl ring-4 ring-white/20"
                    style={{ 
-                     background: 'linear-gradient(135deg, #009FE3 0%, #0066cc 100%)',
+                     background: 'linear-gradient(135deg, #0277bd 0%, #0066cc 100%)',
                      boxShadow: '0 20px 40px rgba(0, 159, 227, 0.3)'
                    }}>
                 <Bot className="w-12 h-12 sm:w-14 sm:h-14 text-white" />
@@ -681,7 +681,7 @@ Ich helfe Ihnen gerne bei Fragen zu:
                 style={{ 
                   background: isLoading 
                     ? 'linear-gradient(135deg, #6b7280 0%, #4b5563 100%)' 
-                    : 'linear-gradient(135deg, #009FE3 0%, #0066cc 100%)',
+                    : 'linear-gradient(135deg, #0277bd 0%, #0066cc 100%)',
                   boxShadow: '0 10px 25px rgba(0, 159, 227, 0.3)'
                 }}
                 aria-label="Nachricht senden"

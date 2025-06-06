@@ -53,7 +53,7 @@ export default function RegisterPage() {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
         <Card className="max-w-md w-full p-6 text-center">
-          <CheckCircle className="w-16 h-16 mx-auto mb-4" style={{ color: '#009FE3' }} />
+          <CheckCircle className="w-16 h-16 mx-auto mb-4" style={{ color: '#0277bd' }} />
           <h1 className="text-2xl font-bold mb-2" style={{ color: '#003399' }}>
             Erfolgreich registriert!
           </h1>
@@ -64,7 +64,7 @@ export default function RegisterPage() {
             <Button 
               onClick={() => window.location.href = '/chat'}
               className="w-full text-white"
-              style={{ backgroundColor: '#009FE3' }}
+              style={{ backgroundColor: '#0277bd' }}
             >
               Zum KI-Chat
               <ArrowRight className="w-4 h-4 ml-2" />
@@ -142,7 +142,7 @@ export default function RegisterPage() {
         <div className="mt-6 text-center">
           <p className="text-sm text-gray-600">
             Mit der Registrierung stimmen Sie unseren{' '}
-            <a href="/datenschutz" className="underline" style={{ color: '#009FE3' }}>
+            <a href="/datenschutz" className="underline" style={{ color: '#0277bd' }}>
               Datenschutzbestimmungen
             </a>{' '}
             zu.

@@ -25,7 +25,7 @@ export default function ServicesPage() {
       title: "Tourismus & Kultur",
       description: "Sehenswürdigkeiten, Events, Hotels, Restaurants, kulturelle Highlights",
       icon: MapPin,
-      color: "from-[#009FE3] to-[#007BB8]",
+      color: "from-[#0277bd] to-[#007BB8]",
       href: "/services/tourism",
       features: ["Event-Kalender", "Hotel-Buchungen", "Attraktionen", "Restaurant-Guide"]
     },
@@ -78,7 +78,7 @@ export default function ServicesPage() {
   return (
     <div className="min-h-screen bg-white">
       {/* Hero Section */}
-      <section className="relative py-20 bg-gradient-to-br from-[#003399] via-[#0052CC] to-[#009FE3] overflow-hidden">
+      <section className="relative py-20 bg-gradient-to-br from-[#003399] via-[#0052CC] to-[#0277bd] overflow-hidden">
         <div className="absolute inset-0 network-pattern opacity-10"></div>
         <div className="relative z-10 max-w-7xl mx-auto px-4 text-center text-white">
           <motion.div
@@ -182,13 +182,13 @@ export default function ServicesPage() {
                           <div className="space-y-2 mb-6">
                             {service.features.map((feature, idx) => (
                               <div key={idx} className="flex items-center text-sm text-gray-500">
-                                <div className="w-2 h-2 bg-[#009FE3] rounded-full mr-3"></div>
+                                <div className="w-2 h-2 bg-[#0277bd] rounded-full mr-3"></div>
                                 {feature}
                               </div>
                             ))}
                           </div>
                           
-                          <div className="flex items-center text-[#009FE3] font-semibold group-hover:translate-x-2 transition-transform">
+                          <div className="flex items-center text-[#0277bd] font-semibold group-hover:translate-x-2 transition-transform">
                             <span>Service erkunden</span>
                             <Zap className="w-4 h-4 ml-2" />
                           </div>
@@ -200,7 +200,7 @@ export default function ServicesPage() {
               </div>
 
               {/* Premium CTA */}
-              <div className="bg-gradient-to-r from-[#003399] to-[#009FE3] rounded-3xl p-12 text-center text-white relative overflow-hidden">
+              <div className="bg-gradient-to-r from-[#003399] to-[#0277bd] rounded-3xl p-12 text-center text-white relative overflow-hidden">
                 <div className="absolute inset-0 network-pattern opacity-10"></div>
                 <div className="relative z-10">
                   <div className="w-20 h-20 bg-[#FDB913] rounded-2xl flex items-center justify-center mx-auto mb-6">
@@ -243,7 +243,7 @@ export default function ServicesPage() {
                 </p>
               </div>
 
-              <div className="bg-gradient-to-r from-[#003399] to-[#009FE3] rounded-3xl p-8 text-center text-white relative overflow-hidden">
+              <div className="bg-gradient-to-r from-[#003399] to-[#0277bd] rounded-3xl p-8 text-center text-white relative overflow-hidden">
                 <div className="absolute inset-0 network-pattern opacity-10"></div>
                 <div className="relative z-10">
                   <div className="w-20 h-20 bg-[#FDB913] rounded-2xl flex items-center justify-center mx-auto mb-6">

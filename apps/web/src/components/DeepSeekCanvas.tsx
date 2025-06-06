@@ -44,7 +44,7 @@ export default function DeepSeekCanvas({ planningPrompt, serviceCategory, onPlan
   const [sessionId, setSessionId] = useState<string | null>(null)
   const [userCursors, setUserCursors] = useState<{ [userId: string]: { x: number; y: number; name: string; color: string } }>({})
 
-  const colors = ['#003399', '#009FE3', '#FDB913', '#dc2626', '#16a34a', '#9333ea', '#ea580c']
+  const colors = ['#003399', '#0277bd', '#FDB913', '#dc2626', '#16a34a', '#9333ea', '#ea580c']
 
   useEffect(() => {
     drawCanvas()
@@ -402,7 +402,7 @@ export default function DeepSeekCanvas({ planningPrompt, serviceCategory, onPlan
           y: startY + (index * stepHeight) + 60,
           width: 0,
           height: 20,
-          color: '#009FE3'
+          color: '#0277bd'
         })
       }
     })
@@ -1080,7 +1080,7 @@ export default function DeepSeekCanvas({ planningPrompt, serviceCategory, onPlan
           <div className="space-y-2">
             {planningSteps.map((step, index) => (
               <div key={index} className="text-sm p-2 bg-white rounded border border-gray-200">
-                <span className="font-medium" style={{ color: '#009FE3' }}>{index + 1}.</span> {step}
+                <span className="font-medium" style={{ color: '#0277bd' }}>{index + 1}.</span> {step}
               </div>
             ))}
           </div>

@@ -42,12 +42,12 @@ const navigation: NavItem[] = [
     label: 'Tourismus',
     icon: MapPin,
     href: '/tourism',
-    color: '#009FE3',
+    color: '#0277bd',
     description: 'Sehenswürdigkeiten & Events',
     subItems: [
-      { id: 'attractions', label: 'Sehenswürdigkeiten', icon: MapPin, href: '/tourism/attractions', color: '#009FE3', description: '' },
-      { id: 'events', label: 'Veranstaltungen', icon: Calendar, href: '/tourism/events', color: '#009FE3', description: '' },
-      { id: 'restaurants', label: 'Gastronomie', icon: FileText, href: '/tourism/restaurants', color: '#009FE3', description: '' }
+      { id: 'attractions', label: 'Sehenswürdigkeiten', icon: MapPin, href: '/tourism/attractions', color: '#0277bd', description: '' },
+      { id: 'events', label: 'Veranstaltungen', icon: Calendar, href: '/tourism/events', color: '#0277bd', description: '' },
+      { id: 'restaurants', label: 'Gastronomie', icon: FileText, href: '/tourism/restaurants', color: '#0277bd', description: '' }
     ]
   },
   {

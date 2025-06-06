@@ -110,20 +110,20 @@ export default function LiveAGENTNETDashboard() {
             <div className="text-sm text-gray-400">Live Sessions</div>
           </div>
 
-          <div className="bg-gradient-to-br from-[#003399]/40 to-[#009FE3]/40 border border-[#003399]/30 rounded-3xl p-8 text-center backdrop-blur-sm">
-            <TrendingUp className="w-12 h-12 text-[#009FE3] mx-auto mb-4" />
+          <div className="bg-gradient-to-br from-[#003399]/40 to-[#0277bd]/40 border border-[#003399]/30 rounded-3xl p-8 text-center backdrop-blur-sm">
+            <TrendingUp className="w-12 h-12 text-[#0277bd] mx-auto mb-4" />
             {realStats.isLoading ? (
-              <div className="text-2xl font-bold text-[#009FE3] mb-2">...</div>
+              <div className="text-2xl font-bold text-[#0277bd] mb-2">...</div>
             ) : (
-              <div className="text-4xl md:text-5xl font-bold text-[#009FE3] mb-2">{realStats.pageViewsToday}</div>
+              <div className="text-4xl md:text-5xl font-bold text-[#0277bd] mb-2">{realStats.pageViewsToday}</div>
             )}
-            <div className="text-lg font-semibold text-[#009FE3] mb-2">Seitenaufrufe heute</div>
+            <div className="text-lg font-semibold text-[#0277bd] mb-2">Seitenaufrufe heute</div>
             <div className="text-sm text-gray-400">Real-time Analytics</div>
           </div>
         </div>
 
         {/* Authentic Platform Progress */}
-        <div className="bg-gradient-to-r from-[#003399]/20 to-[#009FE3]/20 border border-[#003399]/30 rounded-3xl p-8 backdrop-blur-sm">
+        <div className="bg-gradient-to-r from-[#003399]/20 to-[#0277bd]/20 border border-[#003399]/30 rounded-3xl p-8 backdrop-blur-sm">
           <div className="text-center mb-8">
             <h3 className="text-2xl md:text-3xl font-bold text-[#FDB913] mb-2">
               🚀 AUTHENTISCHE PLATFORM-ENTWICKLUNG

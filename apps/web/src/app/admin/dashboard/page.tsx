@@ -118,7 +118,7 @@ export default function AdminDashboard() {
         </div>
 
         {/* AGENTNET Metrics */}
-        <div className="bg-gradient-to-r from-[#003399]/10 to-[#009FE3]/10 border border-[#003399]/20 rounded-3xl p-6 mb-8">
+        <div className="bg-gradient-to-r from-[#003399]/10 to-[#0277bd]/10 border border-[#003399]/20 rounded-3xl p-6 mb-8">
           <div className="text-center mb-6">
             <h2 className="text-2xl font-bold text-[#003399] mb-2">🌐 AGENTNET Status</h2>
             <p className="text-gray-600">Post-Internet Infrastruktur Aufbau</p>
@@ -208,7 +208,7 @@ export default function AdminDashboard() {
           
           <div className="w-full bg-gray-200 rounded-full h-4 mb-4">
             <div 
-              className="bg-gradient-to-r from-[#003399] to-[#009FE3] h-4 rounded-full transition-all duration-1000"
+              className="bg-gradient-to-r from-[#003399] to-[#0277bd] h-4 rounded-full transition-all duration-1000"
               style={{ width: `${progressPercentage}%` }}
             ></div>
           </div>

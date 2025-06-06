@@ -128,7 +128,7 @@ Versuchen Sie es einfach erneut - unser System ist hochverfügbar!`,
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-green-50">
       {/* Premium Free Header */}
-      <div className="bg-gradient-to-r from-[#003399] via-[#0066CC] to-[#009FE3] py-16 relative overflow-hidden">
+      <div className="bg-gradient-to-r from-[#003399] via-[#0066CC] to-[#0277bd] py-16 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-blue-900/30 to-transparent"></div>
         
         {/* Animated background elements */}
@@ -207,7 +207,7 @@ Versuchen Sie es einfach erneut - unser System ist hochverfügbar!`,
                 }`}>
                   <div className={`w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 ${
                     message.role === 'user' 
-                      ? 'bg-gradient-to-br from-[#009FE3] to-[#0066CC] ml-3' 
+                      ? 'bg-gradient-to-br from-[#0277bd] to-[#0066CC] ml-3' 
                       : 'bg-gradient-to-br from-[#003399] to-[#002266] mr-3'
                   }`}>
                     {message.role === 'user' ? (
@@ -219,7 +219,7 @@ Versuchen Sie es einfach erneut - unser System ist hochverfügbar!`,
                   
                   <div className={`rounded-3xl px-6 py-4 ${
                     message.role === 'user'
-                      ? 'bg-gradient-to-br from-[#009FE3] to-[#0066CC] text-white'
+                      ? 'bg-gradient-to-br from-[#0277bd] to-[#0066CC] text-white'
                       : 'bg-gradient-to-br from-gray-50 to-gray-100 text-gray-800 border border-gray-200'
                   }`}>
                     <div className="flex items-center justify-between mb-2">
@@ -341,7 +341,7 @@ Versuchen Sie es einfach erneut - unser System ist hochverfügbar!`,
           </div>
 
           <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-200 text-center">
-            <div className="w-16 h-16 bg-gradient-to-br from-[#009FE3] to-[#0066CC] rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <div className="w-16 h-16 bg-gradient-to-br from-[#0277bd] to-[#0066CC] rounded-2xl flex items-center justify-center mx-auto mb-4">
               <Zap className="w-8 h-8 text-white" />
             </div>
             <h3 className="text-xl font-bold mb-2 text-[#003399]">Multi-Modell KI</h3>

@@ -53,7 +53,7 @@ module.exports = {
           DEFAULT: '#e4e7ea', // Main silver
         },
         
-        // Innovation Cyan - Interactive Elements (5.2:1 contrast)
+        // Innovation Cyan - Interactive Elements (FIXED: 4.5:1+ contrast)
         'innovation-cyan': {
           50: '#f0fbff',    // hsl(199 100% 95%)
           100: '#e0f7fa',   // hsl(199 100% 90%)
@@ -61,29 +61,29 @@ module.exports = {
           300: '#81d4fa',   // hsl(199 100% 70%)
           400: '#4fc3f7',   // hsl(199 100% 60%)
           500: '#29b6f6',   // hsl(199 100% 50%)
-          600: '#039be5',   // hsl(199 100% 44%) - Primary cyan
-          700: '#0288d1',   // hsl(199 100% 38%)
-          800: '#0277bd',   // hsl(199 100% 32%)
-          900: '#01579b',   // hsl(199 100% 26%)
-          DEFAULT: '#039be5', // Primary cyan
+          600: '#0277bd',   // FIXED: Darker for 4.6:1 contrast with white
+          700: '#0277bd',   // hsl(199 100% 32%)
+          800: '#01579b',   // hsl(199 100% 26%)
+          900: '#014a7a',   // Darker variant
+          DEFAULT: '#0277bd', // FIXED: Primary cyan for WCAG AA
         },
         
-        // Warm Gold - Accents & CTAs
+        // Warm Gold - Accents & CTAs (FIXED: 4.5:1+ contrast)
         'warm-gold': {
           50: '#fffbeb',    // hsl(43 97% 95%)
           100: '#fef3c7',   // hsl(43 97% 90%)
           200: '#fde68a',   // hsl(43 97% 80%)
           300: '#fcd34d',   // hsl(43 97% 70%)
           400: '#fbbf24',   // hsl(43 97% 60%)
-          500: '#f59e0b',   // hsl(43 97% 54%) - Primary gold
-          600: '#d97706',   // hsl(43 97% 47%)
-          700: '#b45309',   // hsl(43 97% 40%)
-          800: '#92400e',   // hsl(43 97% 33%)
-          900: '#78350f',   // hsl(43 97% 26%)
-          DEFAULT: '#f59e0b', // Primary gold
+          500: '#b45309',   // FIXED: Darker for 4.7:1 contrast with white
+          600: '#b45309',   // hsl(43 97% 40%) - FIXED for white text
+          700: '#92400e',   // hsl(43 97% 33%)
+          800: '#78350f',   // hsl(43 97% 26%)
+          900: '#5c2a0b',   // Darker variant
+          DEFAULT: '#b45309', // FIXED: Primary gold for WCAG AA
         },
         
-        // Success Green - Status & Confirmations (5.8:1 contrast)
+        // Success Green - Status & Confirmations (FIXED: 4.5:1+ contrast)
         'success-green': {
           50: '#f0fdf4',    // hsl(142 70% 95%)
           100: '#dcfce7',   // hsl(142 70% 90%)
@@ -91,11 +91,11 @@ module.exports = {
           300: '#86efac',   // hsl(142 70% 70%)
           400: '#4ade80',   // hsl(142 70% 60%)
           500: '#22c55e',   // hsl(142 70% 50%)
-          600: '#16a34a',   // hsl(142 70% 41%) - Primary green
+          600: '#15803d',   // FIXED: Darker for 4.8:1 contrast with white
           700: '#15803d',   // hsl(142 70% 32%)
           800: '#166534',   // hsl(142 70% 24%)
           900: '#14532d',   // hsl(142 70% 16%)
-          DEFAULT: '#16a34a', // Primary green
+          DEFAULT: '#15803d', // FIXED: Primary green for WCAG AA
         },
         
         // Alert Red - Errors & Critical Info (6.1:1 contrast)
@@ -113,19 +113,19 @@ module.exports = {
           DEFAULT: '#dc2626', // Primary red
         },
         
-        // Neutral Gray - Text & UI (7.4:1 contrast for text)
+        // Neutral Gray - Text & UI (FIXED: 4.5:1+ contrast)
         'neutral-gray': {
           50: '#f8fafc',    // hsl(220 8% 98%)
           100: '#f1f5f9',   // hsl(220 8% 95%)
           200: '#e2e8f0',   // hsl(220 8% 90%)
           300: '#cbd5e1',   // hsl(220 8% 83%)
-          400: '#94a3b8',   // hsl(220 8% 64%)
-          500: '#64748b',   // hsl(220 8% 46%) - Body text
-          600: '#475569',   // hsl(220 8% 37%)
-          700: '#334155',   // hsl(220 8% 28%)
-          800: '#1e293b',   // hsl(220 8% 20%)
-          900: '#0f172a',   // hsl(220 8% 12%)
-          DEFAULT: '#64748b', // Body text
+          400: '#64748b',   // FIXED: Darker for 4.5:1+ contrast on light backgrounds
+          500: '#475569',   // hsl(220 8% 37%) - Body text
+          600: '#334155',   // hsl(220 8% 28%)
+          700: '#1e293b',   // hsl(220 8% 20%)
+          800: '#0f172a',   // hsl(220 8% 12%)
+          900: '#020617',   // Darker variant
+          DEFAULT: '#475569', // FIXED: Body text for WCAG AA
         },
         
         // Legacy compatibility - updated with brand colors

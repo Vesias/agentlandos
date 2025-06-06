@@ -284,7 +284,7 @@ export default function CulturePage() {
                 <Card className="p-6 hover:shadow-lg transition-shadow">
                   <div className="mb-4">
                     <h3 className="text-lg font-semibold text-gray-900">{festival.name}</h3>
-                    <p className="text-sm font-medium" style={{ color: '#009FE3' }}>{festival.period}</p>
+                    <p className="text-sm font-medium" style={{ color: '#0277bd' }}>{festival.period}</p>
                     <p className="text-xs text-gray-500">{festival.type}</p>
                   </div>
                   
@@ -330,7 +330,7 @@ export default function CulturePage() {
                       <h3 className="text-xl font-semibold text-gray-900">{institution.name}</h3>
                       <p className="text-sm text-gray-500">{institution.focus}</p>
                     </div>
-                    <span className="text-sm font-medium" style={{ color: '#009FE3' }}>
+                    <span className="text-sm font-medium" style={{ color: '#0277bd' }}>
                       {institution.visitors}
                     </span>
                   </div>
@@ -415,7 +415,7 @@ export default function CulturePage() {
             <Button 
               size="lg" 
               className="text-white"
-              style={{ backgroundColor: '#009FE3' }}
+              style={{ backgroundColor: '#0277bd' }}
               onClick={() => router.push('/chat')}
             >
               <Mic className="w-5 h-5 mr-2" />

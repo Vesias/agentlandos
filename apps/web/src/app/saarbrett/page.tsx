@@ -129,7 +129,7 @@ export default function SaarBrettPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#E3F2FD] via-[#F0F7FF] to-[#E8F4FD]">
       {/* Header */}
-      <div className="bg-gradient-to-r from-[#003399] via-[#0066CC] to-[#009FE3] text-white py-12">
+      <div className="bg-gradient-to-r from-[#003399] via-[#0066CC] to-[#0277bd] text-white py-12">
         <div className="max-w-7xl mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: -20 }}
@@ -422,7 +422,7 @@ export default function SaarBrettPage() {
       {/* Floating Action Button */}
       <button
         onClick={() => setShowCreateModal(true)}
-        className="fixed bottom-8 right-8 w-16 h-16 bg-gradient-to-r from-[#003399] to-[#009FE3] rounded-full shadow-2xl flex items-center justify-center text-white hover:scale-110 transition-all duration-300 z-50"
+        className="fixed bottom-8 right-8 w-16 h-16 bg-gradient-to-r from-[#003399] to-[#0277bd] rounded-full shadow-2xl flex items-center justify-center text-white hover:scale-110 transition-all duration-300 z-50"
       >
         <PlusCircle className="w-8 h-8" />
       </button>
@@ -430,7 +430,7 @@ export default function SaarBrettPage() {
       {/* KI Assistance Badge */}
       <div className="fixed bottom-8 left-8 bg-white/90 backdrop-blur-sm rounded-2xl p-4 shadow-xl border border-white/50 z-40">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-gradient-to-r from-[#003399] to-[#009FE3] rounded-xl flex items-center justify-center">
+          <div className="w-10 h-10 bg-gradient-to-r from-[#003399] to-[#0277bd] rounded-xl flex items-center justify-center">
             <Sparkles className="w-6 h-6 text-white" />
           </div>
           <div>

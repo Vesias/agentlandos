@@ -135,7 +135,7 @@ export default function AGENTNETVisionSection() {
         </div>
 
         {/* AGENTLAND als Gateway */}
-        <div className="bg-gradient-to-r from-[#003399] to-[#009FE3] rounded-3xl p-8 md:p-12 text-center relative overflow-hidden">
+        <div className="bg-gradient-to-r from-[#003399] to-[#0277bd] rounded-3xl p-8 md:p-12 text-center relative overflow-hidden">
           <div className="absolute inset-0 network-pattern opacity-20"></div>
           <div className="relative z-10">
             <div className="w-24 h-24 bg-[#FDB913] rounded-3xl flex items-center justify-center mx-auto mb-8">

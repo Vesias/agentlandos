@@ -165,7 +165,7 @@ export default function BehoerdenfinderAdvanced() {
           className="text-center mb-8"
         >
           <div className="flex items-center justify-center mb-4">
-            <div className="w-16 h-16 bg-gradient-to-br from-[#003399] to-[#009FE3] rounded-2xl flex items-center justify-center shadow-xl">
+            <div className="w-16 h-16 bg-gradient-to-br from-[#003399] to-[#0277bd] rounded-2xl flex items-center justify-center shadow-xl">
               <Building2 className="w-10 h-10 text-white" />
             </div>
           </div>

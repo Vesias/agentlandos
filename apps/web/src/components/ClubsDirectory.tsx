@@ -138,7 +138,7 @@ export const ClubsDirectory: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <div className="bg-gradient-to-r from-[#003399] to-[#009FE3] py-12">
+      <div className="bg-gradient-to-r from-[#003399] to-[#0277bd] py-12">
         <div className="max-w-7xl mx-auto px-4 text-center text-white">
           <div className="w-20 h-20 bg-[#FDB913] rounded-2xl flex items-center justify-center mx-auto mb-6">
             <Users className="w-12 h-12 text-[#003399]" />
@@ -163,7 +163,7 @@ export const ClubsDirectory: React.FC = () => {
               <div className="text-gray-600">Vereine</div>
             </div>
             <div className="bg-white rounded-xl p-6 text-center shadow-lg">
-              <div className="text-3xl font-bold text-[#009FE3] mb-2">
+              <div className="text-3xl font-bold text-[#0277bd] mb-2">
                 {statistics.total_members?.toLocaleString() || '0'}
               </div>
               <div className="text-gray-600">Mitglieder</div>
@@ -335,7 +335,7 @@ export const ClubsDirectory: React.FC = () => {
                       {club.facilities.slice(0, 3).map((facility, index) => (
                         <span 
                           key={index}
-                          className="bg-[#009FE3] text-white px-2 py-1 rounded-full text-xs"
+                          className="bg-[#0277bd] text-white px-2 py-1 rounded-full text-xs"
                         >
                           {facility}
                         </span>
@@ -356,7 +356,7 @@ export const ClubsDirectory: React.FC = () => {
                   {club.contact_phone && (
                     <a 
                       href={`tel:${club.contact_phone}`}
-                      className="flex-1 bg-[#009FE3] hover:bg-[#007AB8] text-white text-center py-2 px-3 rounded-lg transition-colors duration-300 flex items-center justify-center text-sm"
+                      className="flex-1 bg-[#0277bd] hover:bg-[#007AB8] text-white text-center py-2 px-3 rounded-lg transition-colors duration-300 flex items-center justify-center text-sm"
                     >
                       <Phone className="w-4 h-4 mr-1" />
                       Anrufen
@@ -416,7 +416,7 @@ export const ClubsDirectory: React.FC = () => {
         </div>
 
         {/* Add Club CTA */}
-        <div className="mt-8 bg-gradient-to-r from-[#003399] to-[#009FE3] rounded-xl p-8 text-center text-white">
+        <div className="mt-8 bg-gradient-to-r from-[#003399] to-[#0277bd] rounded-xl p-8 text-center text-white">
           <h3 className="text-2xl font-bold mb-4">Ist Ihr Verein noch nicht dabei?</h3>
           <p className="text-lg mb-6 opacity-90">
             Tragen Sie Ihren Verein kostenlos ein und erreichen Sie neue Mitglieder im Saarland.

@@ -87,7 +87,7 @@ export default function ChatPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-green-50">
       {/* Enhanced Header */}
-      <div className="bg-gradient-to-r from-[#003399] via-[#0066CC] to-[#009FE3] py-12 relative overflow-hidden">
+      <div className="bg-gradient-to-r from-[#003399] via-[#0066CC] to-[#0277bd] py-12 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-blue-900/20 to-transparent"></div>
         <div className="max-w-4xl mx-auto px-4 text-center text-white relative z-10">
           <div className="w-20 h-20 bg-gradient-to-br from-[#FDB913] to-[#FFD700] rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-2xl transform hover:scale-105 transition-transform">
@@ -127,7 +127,7 @@ export default function ChatPage() {
                 }`}>
                   <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
                     message.role === 'user' 
-                      ? 'bg-[#009FE3] ml-3' 
+                      ? 'bg-[#0277bd] ml-3' 
                       : 'bg-[#003399] mr-3'
                   }`}>
                     {message.role === 'user' ? (
@@ -138,7 +138,7 @@ export default function ChatPage() {
                   </div>
                   <div className={`rounded-2xl px-4 py-3 ${
                     message.role === 'user'
-                      ? 'bg-[#009FE3] text-white'
+                      ? 'bg-[#0277bd] text-white'
                       : 'bg-gray-100 text-gray-800'
                   }`}>
                     <p className="text-sm md:text-base whitespace-pre-wrap">{message.content}</p>
@@ -196,7 +196,7 @@ export default function ChatPage() {
         </div>
 
         {/* Premium CTA */}
-        <div className="mt-8 bg-gradient-to-r from-[#003399] to-[#009FE3] rounded-3xl p-8 text-center text-white">
+        <div className="mt-8 bg-gradient-to-r from-[#003399] to-[#0277bd] rounded-3xl p-8 text-center text-white">
           <div className="w-16 h-16 bg-[#FDB913] rounded-2xl flex items-center justify-center mx-auto mb-4">
             <Star className="w-8 h-8 text-[#003399]" />
           </div>

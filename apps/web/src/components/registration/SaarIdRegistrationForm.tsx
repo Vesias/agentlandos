@@ -393,7 +393,7 @@ export default function SaarIdRegistrationForm() {
       case 5:
         return (
           <div className="text-center space-y-6">
-            <CheckCircle className="w-16 h-16 mx-auto" style={{ color: '#009FE3' }} />
+            <CheckCircle className="w-16 h-16 mx-auto" style={{ color: '#0277bd' }} />
             <div>
               <h3 className="text-xl font-bold mb-2" style={{ color: '#003399' }}>
                 SAAR-ID erfolgreich beantragt!
@@ -531,7 +531,7 @@ export default function SaarIdRegistrationForm() {
                 onClick={handleSubmit}
                 disabled={isLoading}
                 className="text-white"
-                style={{ backgroundColor: '#009FE3' }}
+                style={{ backgroundColor: '#0277bd' }}
               >
                 {isLoading ? 'Wird verarbeitet...' : 'SAAR-ID beantragen'}
               </Button>
