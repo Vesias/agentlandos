@@ -1,7 +1,8 @@
-import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
+import { supabaseServer } from './src/lib/supabase';
 
 export async function middleware(request: NextRequest) {
+  // Apply security headers to all requests
   const response = NextResponse.next();
   
   // Basic security headers
@@ -14,7 +15,27 @@ export async function middleware(request: NextRequest) {
   response.headers.set('X-Powered-By', 'AGENTLAND.SAARLAND');
   response.headers.set('X-Region', 'Saarland');
   response.headers.set('X-Version', '2.0.0');
+
+  // Check authentication for protected paths
+  const protectedPaths = ['/chat', '/admin'];
+  const { pathname } = request.nextUrl;
   
+  if (protectedPaths.some(p => pathname.startsWith(p))) {
+    const token = request.cookies.get('sb:token')?.value;
+    if (!token) {
+      return NextResponse.redirect(new URL('/auth?mode=login', request.url));
+    }
+
+    try {
+      const { data: { user } } = await supabaseServer.auth.getUser(token);
+      if (!user) {
+        return NextResponse.redirect(new URL('/auth?mode=login', request.url));
+      }
+    } catch (error) {
+      return NextResponse.redirect(new URL('/auth?mode=login', request.url));
+    }
+  }
+
   return response;
 }
 
