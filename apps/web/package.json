@@ -8,9 +8,16 @@
     "vercel-build": "pnpm install && next build",
     "start": "next start",
     "lint": "next lint",
+    "lint:fix": "next lint --fix",
     "typecheck": "tsc --noEmit",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
     "test-supabase": "cd ../../ && node scripts/test-supabase.js",
-    "setup-database": "bash ../../scripts/setup-database.sh"
+    "setup-database": "bash ../../scripts/setup-database.sh",
+    "prepare": "cd ../../ && husky install"
   },
   "dependencies": {
     "@ai-sdk/deepseek": "^0.2.14",
@@ -22,7 +29,7 @@
     "@langchain/community": "^0.3.45",
     "@langchain/core": "^0.3.57",
     "@langchain/google-genai": "^0.2.10",
-    "@langchain/langgraph": "^0.3.0",
+    "@langchain/langgraph": "^0.3.1",
     "@langchain/openai": "^0.5.12",
     "@pinecone-database/pinecone": "^6.1.0",
     "@radix-ui/react-dialog": "^1.1.14",
@@ -30,7 +37,7 @@
     "@radix-ui/react-slot": "^1.2.3",
     "@radix-ui/react-tooltip": "^1.2.7",
     "@stripe/stripe-js": "^7.3.1",
-    "@supabase/supabase-js": "^2.49.10",
+    "@supabase/supabase-js": "^2.50.0",
     "@tanstack/react-query": "^5.80.6",
     "@types/leaflet": "^1.9.18",
     "@types/pg": "^8.15.4",
@@ -53,20 +60,38 @@
     "tailwind-merge": "^2.6.0",
     "tailwindcss-animate": "^1.0.7",
     "workbox-webpack-plugin": "^7.3.0",
-    "zod": "^3.25.55",
+    "zod": "^3.25.56",
     "zustand": "^4.5.7"
   },
   "devDependencies": {
+    "@commitlint/cli": "^19.8.1",
+    "@commitlint/config-conventional": "^19.8.1",
+    "@playwright/test": "^1.52.0",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.3.0",
     "@types/node": "^20.19.0",
     "@types/react": "^18.3.23",
     "@types/react-dom": "^18.3.7",
-    "@vercel/node": "^2.3.0",
+    "@vercel/node": "^2.15.10",
     "autoprefixer": "^10.4.21",
     "eslint": "^8.57.1",
     "eslint-config-next": "14.1.0",
+    "husky": "^8.0.3",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "30.0.0-beta.3",
+    "lint-staged": "^16.1.0",
     "pa11y": "^9.0.0",
     "postcss": "^8.5.4",
     "tailwindcss": "^3.4.17",
     "typescript": "^5.8.3"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md,css}": [
+      "prettier --write"
+    ]
   }
 }

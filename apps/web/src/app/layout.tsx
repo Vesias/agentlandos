@@ -1,98 +1,115 @@
-import type { Metadata, Viewport } from 'next'
-import { Inter, Manrope, Source_Serif_4 } from 'next/font/google'
-import './globals.css'
-import Providers from './providers'
-import GlobalTutorial from '@/components/GlobalTutorial'
-import MainNavigation from '@/components/navigation/MainNavigation'
-import { AnalyticsProvider } from '@/components/AnalyticsProvider'
+import type { Metadata, Viewport } from "next";
+import { Inter, Manrope, Source_Serif_4 } from "next/font/google";
+import "./globals.css";
+import Providers from "./providers";
+import GlobalTutorial from "@/components/GlobalTutorial";
+import MainNavigation from "@/components/navigation/MainNavigation";
+import { AnalyticsProvider } from "@/components/AnalyticsProvider";
 
 // Professional German/French optimized fonts
-const inter = Inter({ 
-  subsets: ['latin', 'latin-ext'],
-  variable: '--font-inter',
-  display: 'swap',
-  weight: ['400', '500', '600', '700', '800']
-})
+const inter = Inter({
+  subsets: ["latin", "latin-ext"],
+  variable: "--font-inter",
+  display: "swap",
+  weight: ["400", "500", "600", "700", "800"],
+});
 
 // Enterprise-grade geometric sans-serif - excellent for German umlauts and French accents
 const manrope = Manrope({
-  subsets: ['latin', 'latin-ext'],
-  variable: '--font-professional',
-  display: 'swap',
-  weight: ['400', '500', '600', '700', '800']
-})
+  subsets: ["latin", "latin-ext"],
+  variable: "--font-professional",
+  display: "swap",
+  weight: ["400", "500", "600", "700", "800"],
+});
 
 // Sophisticated serif for body text - optimized for readability in multiple languages
 const sourceSerif = Source_Serif_4({
-  subsets: ['latin', 'latin-ext'],
-  variable: '--font-serif',
-  display: 'swap',
-  weight: ['400', '500', '600', '700']
-})
+  subsets: ["latin", "latin-ext"],
+  variable: "--font-serif",
+  display: "swap",
+  weight: ["400", "500", "600", "700"],
+});
 
 export const viewport: Viewport = {
-  width: 'device-width',
+  width: "device-width",
   initialScale: 1,
-  themeColor: '#003399',
-  colorScheme: 'light'
-}
+  themeColor: "#003399",
+  colorScheme: "light",
+};
 
 export const metadata: Metadata = {
-  title: 'AGENTLAND.SAARLAND - KI-Agentur für das Saarland',
-  description: 'Die erste KI-Agentur im Saarland. Real-time Services, AI-powered document assistance, und enhanced PLZ-based service discovery.',
-  keywords: ['Saarland', 'KI', 'AI', 'Agentland', 'Services', 'Real-time', 'AGENTNET'],
-  authors: [{ name: 'AGENTLAND.SAARLAND Team' }],
-  creator: 'AGENTLAND.SAARLAND',
-  publisher: 'AGENTLAND.SAARLAND',
-  robots: 'index, follow',
+  metadataBase: new URL("https://agentland.saarland"),
+  title: "AGENTLAND.SAARLAND - KI-Agentur für das Saarland",
+  description:
+    "Die erste KI-Agentur im Saarland. Real-time Services, AI-powered document assistance, und enhanced PLZ-based service discovery.",
+  keywords: [
+    "Saarland",
+    "KI",
+    "AI",
+    "Agentland",
+    "Services",
+    "Real-time",
+    "AGENTNET",
+  ],
+  authors: [{ name: "AGENTLAND.SAARLAND Team" }],
+  creator: "AGENTLAND.SAARLAND",
+  publisher: "AGENTLAND.SAARLAND",
+  robots: "index, follow",
   openGraph: {
-    type: 'website',
-    locale: 'de_DE',
-    url: 'https://agentland.saarland',
-    title: 'AGENTLAND.SAARLAND - KI-Agentur für das Saarland',
-    description: 'Die erste KI-Agentur im Saarland mit real-time services und AI-powered assistance.',
-    siteName: 'AGENTLAND.SAARLAND',
+    type: "website",
+    locale: "de_DE",
+    url: "https://agentland.saarland",
+    title: "AGENTLAND.SAARLAND - KI-Agentur für das Saarland",
+    description:
+      "Die erste KI-Agentur im Saarland mit real-time services und AI-powered assistance.",
+    siteName: "AGENTLAND.SAARLAND",
     images: [
       {
-        url: '/og-image-professional.svg',
+        url: "/og-image-professional.svg",
         width: 1200,
         height: 630,
-        alt: 'AGENTLAND.SAARLAND - Digitale Exzellenz für Unternehmen'
-      }
-    ]
+        alt: "AGENTLAND.SAARLAND - Digitale Exzellenz für Unternehmen",
+      },
+    ],
   },
   twitter: {
-    card: 'summary_large_image',
-    title: 'AGENTLAND.SAARLAND - KI-Agentur für das Saarland',
-    description: 'Die erste KI-Agentur im Saarland mit real-time services und AI-powered assistance.',
-    images: ['/og-image-professional.svg']
+    card: "summary_large_image",
+    title: "AGENTLAND.SAARLAND - KI-Agentur für das Saarland",
+    description:
+      "Die erste KI-Agentur im Saarland mit real-time services und AI-powered assistance.",
+    images: ["/og-image-professional.svg"],
   },
-  manifest: '/manifest.json',
+  manifest: "/manifest.json",
   icons: {
-    icon: '/favicon-professional.svg',
-    apple: '/pwa/icon-192x192.svg'
-  }
-}
+    icon: "/favicon-professional.svg",
+    apple: "/pwa/icon-192x192.svg",
+  },
+};
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
-    <html 
-      lang="de" 
+    <html
+      lang="de"
       className={`${inter.variable} ${manrope.variable} ${sourceSerif.variable}`}
     >
       <head>
         {/* Performance optimization */}
         <link rel="dns-prefetch" href="//fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.googleapis.com" crossOrigin="anonymous" />
+        <link
+          rel="preconnect"
+          href="https://fonts.googleapis.com"
+          crossOrigin="anonymous"
+        />
         <link rel="preconnect" href="https://agentland.saarland" />
-        
+
         {/* Brandbook CSS Variables */}
-        <style dangerouslySetInnerHTML={{
-          __html: `
+        <style
+          dangerouslySetInnerHTML={{
+            __html: `
             :root {
               /* Professional Business Colors - Enterprise Grade */
               --color-primary-blue: #1e40af;      /* Professional blue */
@@ -171,20 +188,19 @@ export default function RootLayout({
                 transform: scale(1.05);
               }
             }
-          `
-        }} />
+          `,
+          }}
+        />
       </head>
       <body className="font-serif text-slate-700 bg-white antialiased">
         <Providers>
           <AnalyticsProvider>
             <MainNavigation />
-            <main>
-              {children}
-            </main>
+            <main>{children}</main>
             <GlobalTutorial />
           </AnalyticsProvider>
         </Providers>
       </body>
     </html>
-  )
+  );
 }
