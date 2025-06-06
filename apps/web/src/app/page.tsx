@@ -70,7 +70,7 @@ export default function HomePage() {
           <div className="bg-gradient-to-r from-[#003399] to-[#009FE3] rounded-3xl p-6 mb-8 max-w-2xl mx-auto text-center text-white border-2 border-[#FDB913]/50">
             <div className="flex items-center justify-center gap-2 mb-4">
               <span className="text-2xl">🆓</span>
-              <h3 className="text-xl font-bold text-[#FDB913]">KOSTENLOS für alle Saarlänger!</h3>
+              <h3 className="text-xl font-bold text-[#FDB913]">KOSTENLOS für alle Saarländer!</h3>
               <span className="text-2xl">🏛️</span>
             </div>
             <p className="text-white/90 mb-4">
@@ -79,7 +79,7 @@ export default function HomePage() {
             </p>
             <Link href="/register?plan=saarland-free">
               <button className="bg-[#FDB913] hover:bg-[#E5A50A] text-[#003399] px-6 py-3 rounded-xl font-bold transition-all duration-300 hover:scale-105">
-                Jetzt kostenlos als Saarlänger registrieren
+                Jetzt kostenlos als Saarländer registrieren
               </button>
             </Link>
           </div>
@@ -238,7 +238,7 @@ export default function HomePage() {
                 <div className="text-3xl font-bold mb-4">0€<span className="text-lg text-blue-100">/Monat</span></div>
                 <div className="bg-[#FDB913]/20 border border-[#FDB913]/30 rounded-xl p-3 mb-4">
                   <div className="text-lg font-bold text-[#FDB913]">Standard-Mitgliedschaft</div>
-                  <div className="text-sm text-blue-100">Kostenlos für alle Saarlänger</div>
+                  <div className="text-sm text-blue-100">Kostenlos für alle Saarländer</div>
                 </div>
                 <ul className="text-sm text-blue-100 space-y-2 mb-6 text-left">
                   <li>• 10 KI-Anfragen/Tag</li>
@@ -248,7 +248,7 @@ export default function HomePage() {
                 </ul>
                 <Link href="/register?plan=saarland-free">
                   <button className="w-full bg-[#FDB913] hover:bg-[#E5A50A] text-[#003399] py-3 rounded-xl font-bold transition-all duration-300">
-                    Als Saarlänger starten
+                    Als Saarländer starten
                   </button>
                 </Link>
               </div>
