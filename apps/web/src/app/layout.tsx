@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google'
 import './globals.css'
 import Providers from './providers'
 import GlobalTutorial from '@/components/GlobalTutorial'
+import MainNavigation from '@/components/navigation/MainNavigation'
 
 // Brandbook-compliant fonts
 const inter = Inter({ 
@@ -201,7 +202,10 @@ export default function RootLayout({
       </head>
       <body className="font-nova text-neutral-gray bg-white antialiased">
         <Providers>
-          {children}
+          <MainNavigation />
+          <main>
+            {children}
+          </main>
           <GlobalTutorial />
         </Providers>
       </body>

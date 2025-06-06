@@ -70,6 +70,49 @@ export class DatabaseService {
     if (error) throw new Error(error.message)
     return data || []
   }
+
+  // Real user analytics methods - NO FAKE DATA
+  static async getTotalUsers(): Promise<number> {
+    const { count, error } = await supabaseServer
+      .from('users')
+      .select('*', { count: 'exact', head: true })
+    
+    if (error) {
+      console.error('Error getting total users:', error.message)
+      return 0
+    }
+    return count || 0
+  }
+
+  static async getUsersRegisteredToday(): Promise<number> {
+    const today = new Date().toISOString().split('T')[0]
+    const { count, error } = await supabaseServer
+      .from('users')
+      .select('*', { count: 'exact', head: true })
+      .gte('created_at', today)
+    
+    if (error) {
+      console.error('Error getting users registered today:', error.message)
+      return 0
+    }
+    return count || 0
+  }
+
+  static async getActiveSessions(): Promise<number> {
+    // Get sessions active in the last 30 minutes
+    const thirtyMinutesAgo = new Date(Date.now() - 30 * 60 * 1000).toISOString()
+    const { count, error } = await supabaseServer
+      .from('user_analytics')
+      .select('*', { count: 'exact', head: true })
+      .gte('created_at', thirtyMinutesAgo)
+      .eq('event', 'session_activity')
+    
+    if (error) {
+      console.error('Error getting active sessions:', error.message)
+      return 0
+    }
+    return count || 0
+  }
 }
 
 export class AuthService {
