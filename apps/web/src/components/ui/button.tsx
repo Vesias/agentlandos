@@ -14,12 +14,12 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         className={cn(
           "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-all duration-200 ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 touch-manipulation active:scale-95",
           {
-            'default': "bg-primary text-primary-foreground shadow hover:bg-primary/90 active:bg-primary/95 touch:active:bg-primary/95",
-            'destructive': "bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90 active:bg-destructive/95 touch:active:bg-destructive/95",
-            'outline': "border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground active:bg-accent/90 touch:active:bg-accent/90",
-            'secondary': "bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80 active:bg-secondary/85 touch:active:bg-secondary/85",
-            'ghost': "hover:bg-accent hover:text-accent-foreground active:bg-accent/90 touch:active:bg-accent/90",
-            'link': "text-primary underline-offset-4 hover:underline active:text-primary/90 touch:active:text-primary/90",
+            'default': "bg-saarland-blue-700 text-white shadow hover:bg-saarland-blue-800 active:bg-saarland-blue-900 focus:ring-2 focus:ring-saarland-blue-500 focus:ring-offset-2",
+            'destructive': "bg-alert-red-600 text-white shadow-sm hover:bg-alert-red-700 active:bg-alert-red-800 focus:ring-2 focus:ring-alert-red-500 focus:ring-offset-2",
+            'outline': "border-2 border-saarland-blue-700 bg-transparent text-saarland-blue-700 shadow-sm hover:bg-saarland-blue-50 hover:text-saarland-blue-800 active:bg-saarland-blue-100 focus:ring-2 focus:ring-saarland-blue-500 focus:ring-offset-2",
+            'secondary': "bg-innovation-cyan-600 text-white shadow-sm hover:bg-innovation-cyan-700 active:bg-innovation-cyan-800 focus:ring-2 focus:ring-innovation-cyan-500 focus:ring-offset-2",
+            'ghost': "text-saarland-blue-700 hover:bg-saarland-blue-50 hover:text-saarland-blue-800 active:bg-saarland-blue-100 focus:ring-2 focus:ring-saarland-blue-500 focus:ring-offset-2",
+            'link': "text-saarland-blue-700 underline-offset-4 hover:underline hover:text-saarland-blue-800 active:text-saarland-blue-900 focus:ring-2 focus:ring-saarland-blue-500 focus:ring-offset-2",
           }[variant],
           {
             'default': "h-11 px-6 py-3 text-base xs:h-10 xs:px-4 xs:py-2 xs:text-sm sm:h-11 sm:px-6 sm:py-3 sm:text-base min-h-[44px]",
