@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# AGENT_LAND_SAARLAND - Vercel Deployment Helper
+# AGENTLAND.SAARLAND - Vercel Deployment Helper
 # ==============================================
 
-echo "🚀 AGENT_LAND_SAARLAND - Deployment Vorbereitung"
+echo "🚀 AGENTLAND.SAARLAND - Deployment Vorbereitung"
 echo "=============================================="
 
 # Schritt 1: Überprüfe Node.js Version
@@ -55,4 +55,4 @@ echo "   - REDIS_URL"
 echo ""
 echo "2. Deploye mit: npx vercel --prod"
 echo ""
-echo "🌟 Viel Erfolg mit AGENT_LAND_SAARLAND!"
+echo "🌟 Viel Erfolg mit AGENTLAND.SAARLAND!"
