@@ -1,6 +1,6 @@
 {
-  "buildCommand": "npm run vercel-build",
-  "installCommand": "npm install",
+  "buildCommand": "pnpm vercel-build",
+  "installCommand": "pnpm install",
   "env": {
     "NEXT_PUBLIC_API_URL": "/api"
   },
