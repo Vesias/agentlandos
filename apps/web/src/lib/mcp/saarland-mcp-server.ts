@@ -1,629 +1,511 @@
 /**
- * Model Context Protocol (MCP) Server for Saarland Data Access
- * Provides structured access to internal Saarland data & tools
- * Compatible with Anthropic's MCP specification
+ * Saarland MCP (Model Context Protocol) Server
+ * Provides structured access to Saarland-specific data and services
  */
 
 import { supabase } from '@/lib/supabase'
 
-export interface MCPResource {
+interface MCPResource {
   uri: string
   name: string
   description: string
-  mimeType: string
-  metadata?: Record<string, any>
+  mimeType?: string
 }
 
-export interface MCPTool {
+interface MCPTool {
   name: string
   description: string
   inputSchema: any
-  handler: (args: any) => Promise<any>
 }
 
-export interface MCPPrompt {
+interface MCPPrompt {
   name: string
   description: string
   arguments?: any[]
-  template: string
 }
 
 export class SaarlandMCPServer {
-  private resources: Map<string, MCPResource> = new Map()
-  private tools: Map<string, MCPTool> = new Map()
-  private prompts: Map<string, MCPPrompt> = new Map()
+  private resources: MCPResource[] = [
+    {
+      uri: 'saarland://data/municipalities',
+      name: 'Saarland Municipalities',
+      description: 'Complete list of all municipalities in Saarland with PLZ codes',
+      mimeType: 'application/json'
+    },
+    {
+      uri: 'saarland://data/authorities',
+      name: 'Government Authorities',
+      description: 'Directory of all government offices and authorities in Saarland',
+      mimeType: 'application/json'
+    },
+    {
+      uri: 'saarland://data/business-services',
+      name: 'Business Services',
+      description: 'Available business registration and support services',
+      mimeType: 'application/json'
+    },
+    {
+      uri: 'saarland://data/tourism-attractions',
+      name: 'Tourism Attractions',
+      description: 'Tourist attractions, events, and points of interest',
+      mimeType: 'application/json'
+    }
+  ]
 
-  constructor() {
-    this.initializeResources()
-    this.initializeTools()
-    this.initializePrompts()
-  }
-
-  private initializeResources() {
-    // Saarland administrative resources
-    this.resources.set('saarland://authorities/all', {
-      uri: 'saarland://authorities/all',
-      name: 'Saarland Administrative Authorities',
-      description: 'Complete directory of Saarland public authorities and services',
-      mimeType: 'application/json',
-      metadata: {
-        category: 'administration',
-        updateFrequency: 'weekly',
-        source: 'official'
-      }
-    })
-
-    // Business and economic data
-    this.resources.set('saarland://business/directory', {
-      uri: 'saarland://business/directory',
-      name: 'Saarland Business Directory',
-      description: 'Comprehensive business database including startups, SMEs, and corporations',
-      mimeType: 'application/json',
-      metadata: {
-        category: 'business',
-        updateFrequency: 'daily',
-        coverage: 'complete'
-      }
-    })
-
-    // Tourism and cultural resources
-    this.resources.set('saarland://tourism/attractions', {
-      uri: 'saarland://tourism/attractions',
-      name: 'Saarland Tourist Attractions',
-      description: 'Detailed information about tourist attractions, events, and accommodations',
-      mimeType: 'application/json',
-      metadata: {
-        category: 'tourism',
-        updateFrequency: 'hourly',
-        languages: ['de', 'fr', 'en']
-      }
-    })
-
-    // Real-time data streams
-    this.resources.set('saarland://realtime/weather', {
-      uri: 'saarland://realtime/weather',
-      name: 'Saarland Weather Data',
-      description: 'Real-time weather information for all Saarland regions',
-      mimeType: 'application/json',
-      metadata: {
-        category: 'realtime',
-        updateFrequency: 'every_15_minutes',
-        provider: 'DWD'
-      }
-    })
-
-    // Transportation data
-    this.resources.set('saarland://transport/saarVV', {
-      uri: 'saarland://transport/saarVV',
-      name: 'SaarVV Public Transport',
-      description: 'Real-time public transport schedules and disruptions',
-      mimeType: 'application/json',
-      metadata: {
-        category: 'transport',
-        updateFrequency: 'realtime',
-        coverage: 'saarland_complete'
-      }
-    })
-  }
-
-  private initializeTools() {
-    // PLZ (Postal Code) Lookup Tool
-    this.tools.set('saarland_plz_lookup', {
-      name: 'saarland_plz_lookup',
-      description: 'Look up detailed information for Saarland postal codes including municipality, district, and services',
+  private tools: MCPTool[] = [
+    {
+      name: 'lookup_plz',
+      description: 'Look up postal code information for Saarland locations',
       inputSchema: {
         type: 'object',
         properties: {
-          plz: {
-            type: 'string',
-            pattern: '^66[0-9]{3}$',
-            description: 'Saarland postal code (66xxx format)'
-          },
-          includeServices: {
-            type: 'boolean',
-            default: true,
-            description: 'Include local services and authorities'
-          }
+          plz: { type: 'string', description: 'Postal code to lookup' },
+          location: { type: 'string', description: 'City or location name' }
         },
-        required: ['plz']
-      },
-      handler: async (args) => {
-        try {
-          const { data, error } = await supabase
-            .from('saarland_plz_data')
-            .select('*')
-            .eq('plz', args.plz)
-            .single()
-
-          if (error) throw error
-
-          if (args.includeServices) {
-            const { data: services } = await supabase
-              .from('saarland_services')
-              .select('*')
-              .eq('plz', args.plz)
-
-            return {
-              success: true,
-              plzData: data,
-              services: services || [],
-              timestamp: new Date().toISOString()
-            }
-          }
-
-          return {
-            success: true,
-            plzData: data,
-            timestamp: new Date().toISOString()
-          }
-
-        } catch (error) {
-          return {
-            success: false,
-            error: error instanceof Error ? error.message : 'PLZ lookup failed',
-            timestamp: new Date().toISOString()
-          }
-        }
+        anyOf: [
+          { required: ['plz'] },
+          { required: ['location'] }
+        ]
       }
-    })
-
-    // Authority Contact Tool
-    this.tools.set('saarland_authority_contact', {
-      name: 'saarland_authority_contact',
-      description: 'Get contact information and services for Saarland authorities',
+    },
+    {
+      name: 'find_authority',
+      description: 'Find the appropriate government authority for a service',
       inputSchema: {
         type: 'object',
         properties: {
-          serviceType: {
-            type: 'string',
-            enum: ['passport', 'business_registration', 'building_permit', 'tax', 'social_services'],
-            description: 'Type of service needed'
-          },
-          location: {
-            type: 'string',
-            description: 'Municipality or postal code'
-          }
+          service: { type: 'string', description: 'Type of service needed' },
+          location: { type: 'string', description: 'City or PLZ' }
         },
-        required: ['serviceType']
-      },
-      handler: async (args) => {
-        try {
-          let query = supabase
-            .from('saarland_authorities')
-            .select('*')
-            .contains('services', [args.serviceType])
-
-          if (args.location) {
-            query = query.or(`municipality.eq.${args.location},plz.eq.${args.location}`)
-          }
-
-          const { data, error } = await query
-
-          if (error) throw error
-
-          return {
-            success: true,
-            authorities: data,
-            serviceType: args.serviceType,
-            location: args.location,
-            timestamp: new Date().toISOString()
-          }
-
-        } catch (error) {
-          return {
-            success: false,
-            error: error instanceof Error ? error.message : 'Authority lookup failed',
-            timestamp: new Date().toISOString()
-          }
-        }
+        required: ['service']
       }
-    })
-
-    // Business Registration Tool
-    this.tools.set('saarland_business_registration', {
-      name: 'saarland_business_registration',
-      description: 'Get business registration requirements and process information for Saarland',
+    },
+    {
+      name: 'business_registration_info',
+      description: 'Get business registration requirements and process information',
       inputSchema: {
         type: 'object',
         properties: {
-          businessType: {
-            type: 'string',
-            enum: ['sole_proprietorship', 'gmbh', 'ug', 'ag', 'partnership'],
-            description: 'Type of business entity'
-          },
-          industry: {
-            type: 'string',
-            description: 'Industry sector'
-          },
-          municipality: {
-            type: 'string',
-            description: 'Planned business location'
-          }
+          businessType: { type: 'string', description: 'Type of business to register' },
+          location: { type: 'string', description: 'Intended business location' }
         },
         required: ['businessType']
-      },
-      handler: async (args) => {
-        try {
-          const { data: requirements, error } = await supabase
-            .from('business_registration_requirements')
-            .select('*')
-            .eq('business_type', args.businessType)
-
-          if (error) throw error
-
-          const { data: authorities } = await supabase
-            .from('saarland_authorities')
-            .select('*')
-            .contains('services', ['business_registration'])
-            .eq('municipality', args.municipality || 'Saarbrücken')
-
-          return {
-            success: true,
-            requirements: requirements || [],
-            relevantAuthorities: authorities || [],
-            businessType: args.businessType,
-            estimatedProcessingTime: '5-10 business days',
-            costs: {
-              registration: '26€',
-              notary: '100-300€ (for GmbH/UG)',
-              chamber_fee: '150-300€'
-            },
-            timestamp: new Date().toISOString()
-          }
-
-        } catch (error) {
-          return {
-            success: false,
-            error: error instanceof Error ? error.message : 'Business registration lookup failed',
-            timestamp: new Date().toISOString()
-          }
-        }
       }
-    })
-
-    // Event & Tourism Information Tool
-    this.tools.set('saarland_tourism_events', {
-      name: 'saarland_tourism_events',
-      description: 'Get current and upcoming events, attractions, and tourism information',
+    },
+    {
+      name: 'tourism_events',
+      description: 'Get current and upcoming tourism events in Saarland',
       inputSchema: {
         type: 'object',
         properties: {
-          category: {
-            type: 'string',
-            enum: ['culture', 'sports', 'festivals', 'nature', 'museums', 'all'],
-            default: 'all',
-            description: 'Event category filter'
-          },
-          timeframe: {
-            type: 'string',
-            enum: ['today', 'week', 'month', 'season'],
-            default: 'week',
-            description: 'Time period for events'
-          },
-          location: {
-            type: 'string',
-            description: 'Specific location or region'
-          }
-        }
-      },
-      handler: async (args) => {
-        try {
-          const now = new Date()
-          let endDate = new Date()
-
-          switch (args.timeframe) {
-            case 'today':
-              endDate.setDate(now.getDate() + 1)
-              break
-            case 'week':
-              endDate.setDate(now.getDate() + 7)
-              break
-            case 'month':
-              endDate.setMonth(now.getMonth() + 1)
-              break
-            case 'season':
-              endDate.setMonth(now.getMonth() + 3)
-              break
-          }
-
-          let query = supabase
-            .from('saarland_events')
-            .select('*')
-            .gte('event_date', now.toISOString())
-            .lte('event_date', endDate.toISOString())
-
-          if (args.category && args.category !== 'all') {
-            query = query.eq('category', args.category)
-          }
-
-          if (args.location) {
-            query = query.ilike('location', `%${args.location}%`)
-          }
-
-          const { data: events, error } = await query.order('event_date', { ascending: true })
-
-          if (error) throw error
-
-          return {
-            success: true,
-            events: events || [],
-            category: args.category,
-            timeframe: args.timeframe,
-            location: args.location,
-            count: events?.length || 0,
-            timestamp: new Date().toISOString()
-          }
-
-        } catch (error) {
-          return {
-            success: false,
-            error: error instanceof Error ? error.message : 'Events lookup failed',
-            timestamp: new Date().toISOString()
-          }
+          category: { type: 'string', description: 'Event category (culture, sports, festivals, etc.)' },
+          location: { type: 'string', description: 'Specific location or region' },
+          dateRange: { type: 'string', description: 'Date range (e.g., "next month", "summer 2025")' }
         }
       }
-    })
-  }
+    }
+  ]
 
-  private initializePrompts() {
-    // Saarland-specific prompt templates
-    this.prompts.set('saarland_official_response', {
-      name: 'saarland_official_response',
-      description: 'Generate official-style responses for Saarland administrative queries',
+  private prompts: MCPPrompt[] = [
+    {
+      name: 'official_response_template',
+      description: 'Template for official government responses',
       arguments: [
-        { name: 'query', description: 'User query' },
-        { name: 'context', description: 'Relevant context data' },
-        { name: 'authority', description: 'Responsible authority' }
-      ],
-      template: `Sie haben eine Anfrage zu: {query}
-
-Basierend auf aktuellen Informationen der zuständigen Behörde ({authority}):
-
-{context}
-
-Für weitere Informationen oder Terminvereinbarungen wenden Sie sich bitte direkt an:
-{authority}
-
-Diese Antwort wurde automatisch generiert und entspricht dem aktuellen Stand der Saarländischen Verwaltung.`
-    })
-
-    this.prompts.set('saarland_business_advice', {
-      name: 'saarland_business_advice',
-      description: 'Provide structured business advice for Saarland entrepreneurs',
+        { name: 'service', description: 'Government service being addressed' },
+        { name: 'citizen_query', description: 'Original citizen inquiry' }
+      ]
+    },
+    {
+      name: 'business_guidance',
+      description: 'Comprehensive business setup guidance for Saarland',
       arguments: [
-        { name: 'businessType', description: 'Type of business' },
-        { name: 'stage', description: 'Business stage (planning, starting, growing)' },
-        { name: 'industry', description: 'Industry sector' }
-      ],
-      template: `Geschäftsberatung für das Saarland - {businessType} im Bereich {industry}
-
-Phase: {stage}
-
-**Standortvorteile Saarland:**
-- Zentrale Lage in Europa (DE/FR/LU Grenzregion)
-- Starke Forschungsinfrastruktur (Universität des Saarlandes, DFKI)
-- Förderungsfreundliches Klima
-- Niedrige Gründungskosten
-
-**Nächste Schritte:**
-1. Geschäftskonzept finalisieren
-2. Förderungsmöglichkeiten prüfen
-3. Behördengänge koordinieren
-4. Netzwerk aufbauen
-
-**Kontakte:**
-- IHK Saarland: Allgemeine Beratung
-- GTAI: Standortförderung
-- Wirtschaftsförderung: Regionale Unterstützung`
-    })
-
-    this.prompts.set('saarland_tourism_guide', {
-      name: 'saarland_tourism_guide',
-      description: 'Create personalized tourism recommendations for Saarland',
+        { name: 'business_type', description: 'Type of business being established' },
+        { name: 'funding_needed', description: 'Whether funding information is needed' }
+      ]
+    },
+    {
+      name: 'tourism_recommendation',
+      description: 'Personalized tourism recommendations for Saarland visitors',
       arguments: [
-        { name: 'interests', description: 'Tourist interests' },
-        { name: 'duration', description: 'Visit duration' },
-        { name: 'season', description: 'Season/time of visit' }
-      ],
-      template: `Ihr persönlicher Saarland-Guide für {duration} im {season}
+        { name: 'visitor_interests', description: 'Visitor interests and preferences' },
+        { name: 'duration', description: 'Length of visit' },
+        { name: 'season', description: 'Time of year for visit' }
+      ]
+    }
+  ]
 
-**Basierend auf Ihren Interessen: {interests}**
-
-🌟 **Must-See Highlights:**
-- Saarschleife: Deutschlands schönste Flussschleife
-- Völklinger Hütte: UNESCO Welterbe
-- Saarbrücken: Kultur & Shopping
-
-🍽️ **Kulinarische Tipps:**
-- Dibbelabbes (Saarländisches Nationalgericht)
-- Lyoner Wurst
-- Geheiratete (Saarländische Spezialität)
-
-🚗 **Mobilität:**
-- Saarland Card für öffentliche Verkehrsmittel
-- Fahrradverleih an vielen Standorten
-- Grenzüberschreitende Verbindungen
-
-**Aktuelle Events:** [Dynamisch basierend auf Besuchszeit]`
-    })
-  }
-
-  // MCP Protocol Methods
   async listResources(): Promise<MCPResource[]> {
-    return Array.from(this.resources.values())
+    return this.resources
   }
 
   async getResource(uri: string): Promise<any> {
-    const resource = this.resources.get(uri)
-    if (!resource) {
-      throw new Error(`Resource not found: ${uri}`)
-    }
-
-    // Route to appropriate data source based on URI
     switch (uri) {
-      case 'saarland://authorities/all':
+      case 'saarland://data/municipalities':
+        return await this.getMunicipalitiesData()
+      
+      case 'saarland://data/authorities':
         return await this.getAuthoritiesData()
       
-      case 'saarland://business/directory':
-        return await this.getBusinessData()
+      case 'saarland://data/business-services':
+        return await this.getBusinessServicesData()
       
-      case 'saarland://tourism/attractions':
+      case 'saarland://data/tourism-attractions':
         return await this.getTourismData()
       
-      case 'saarland://realtime/weather':
-        return await this.getWeatherData()
-      
-      case 'saarland://transport/saarVV':
-        return await this.getTransportData()
-      
       default:
-        throw new Error(`Handler not implemented for: ${uri}`)
+        throw new Error(`Resource not found: ${uri}`)
     }
   }
 
   async listTools(): Promise<MCPTool[]> {
-    return Array.from(this.tools.values())
+    return this.tools
   }
 
   async callTool(name: string, args: any): Promise<any> {
-    const tool = this.tools.get(name)
-    if (!tool) {
-      throw new Error(`Tool not found: ${name}`)
+    switch (name) {
+      case 'lookup_plz':
+        return await this.lookupPLZ(args)
+      
+      case 'find_authority':
+        return await this.findAuthority(args)
+      
+      case 'business_registration_info':
+        return await this.getBusinessRegistrationInfo(args)
+      
+      case 'tourism_events':
+        return await this.getTourismEvents(args)
+      
+      default:
+        throw new Error(`Tool not found: ${name}`)
     }
-
-    return await tool.handler(args)
   }
 
   async listPrompts(): Promise<MCPPrompt[]> {
-    return Array.from(this.prompts.values())
+    return this.prompts
   }
 
-  async getPrompt(name: string, args?: any): Promise<string> {
-    const prompt = this.prompts.get(name)
-    if (!prompt) {
-      throw new Error(`Prompt not found: ${name}`)
+  async getPrompt(name: string, args: any): Promise<string> {
+    switch (name) {
+      case 'official_response_template':
+        return this.generateOfficialResponseTemplate(args)
+      
+      case 'business_guidance':
+        return this.generateBusinessGuidance(args)
+      
+      case 'tourism_recommendation':
+        return this.generateTourismRecommendation(args)
+      
+      default:
+        throw new Error(`Prompt not found: ${name}`)
     }
-
-    let template = prompt.template
-    
-    if (args) {
-      Object.entries(args).forEach(([key, value]) => {
-        template = template.replace(new RegExp(`{${key}}`, 'g'), String(value))
-      })
-    }
-
-    return template
   }
 
-  // Data source methods
-  private async getAuthoritiesData() {
+  // Data retrieval methods
+  private async getMunicipalitiesData(): Promise<any> {
     try {
       const { data, error } = await supabase
-        .from('saarland_authorities')
+        .from('saarland_municipalities')
         .select('*')
         .order('name')
 
       if (error) throw error
-
-      return {
-        data,
-        metadata: {
-          totalAuthorities: data?.length || 0,
-          lastUpdated: new Date().toISOString(),
-          source: 'official_registry'
-        }
-      }
+      return data || []
     } catch (error) {
-      throw new Error(`Failed to fetch authorities data: ${error}`)
-    }
-  }
-
-  private async getBusinessData() {
-    try {
-      const { data, error } = await supabase
-        .from('saarland_businesses')
-        .select('*')
-        .limit(1000)
-
-      if (error) throw error
-
       return {
-        data,
-        metadata: {
-          totalBusinesses: data?.length || 0,
-          lastUpdated: new Date().toISOString(),
-          source: 'business_registry'
-        }
-      }
-    } catch (error) {
-      throw new Error(`Failed to fetch business data: ${error}`)
-    }
-  }
-
-  private async getTourismData() {
-    try {
-      const { data, error } = await supabase
-        .from('saarland_attractions')
-        .select('*')
-        .eq('active', true)
-
-      if (error) throw error
-
-      return {
-        data,
-        metadata: {
-          totalAttractions: data?.length || 0,
-          lastUpdated: new Date().toISOString(),
-          source: 'tourism_board'
-        }
-      }
-    } catch (error) {
-      throw new Error(`Failed to fetch tourism data: ${error}`)
-    }
-  }
-
-  private async getWeatherData() {
-    // Mock weather data - in production, integrate with DWD API
-    return {
-      data: {
-        current: {
-          temperature: 18,
-          condition: 'partly_cloudy',
-          humidity: 65,
-          windSpeed: 12
-        },
-        forecast: [
-          { date: '2025-01-07', high: 20, low: 10, condition: 'sunny' },
-          { date: '2025-01-08', high: 16, low: 8, condition: 'rainy' }
+        error: 'Failed to fetch municipalities data',
+        fallback: [
+          { name: 'Saarbrücken', plz: '66111-66133', type: 'Landeshauptstadt' },
+          { name: 'Neunkirchen', plz: '66538-66540', type: 'Kreisstadt' },
+          { name: 'Homburg', plz: '66424', type: 'Universitätsstadt' },
+          { name: 'St. Wendel', plz: '66606', type: 'Kreisstadt' }
         ]
-      },
-      metadata: {
-        provider: 'DWD',
-        lastUpdated: new Date().toISOString(),
-        updateInterval: '15_minutes'
       }
     }
   }
 
-  private async getTransportData() {
-    // Mock transport data - in production, integrate with saarVV API
+  private async getAuthoritiesData(): Promise<any> {
     return {
-      data: {
-        disruptions: [],
-        realTimeUpdates: {
-          buses: 'operational',
-          trains: 'delays_expected',
-          lastUpdate: new Date().toISOString()
+      landesebene: [
+        {
+          name: 'Ministerium für Inneres, Bauen und Sport',
+          address: 'Franz-Josef-Röder-Str. 21, 66119 Saarbrücken',
+          phone: '0681 501-00',
+          services: ['Innere Sicherheit', 'Baurecht', 'Sport']
+        },
+        {
+          name: 'Ministerium für Wirtschaft, Innovation, Digitales und Energie',
+          address: 'Franz-Josef-Röder-Str. 17, 66119 Saarbrücken',
+          phone: '0681 501-00',
+          services: ['Wirtschaftsförderung', 'Digitalisierung', 'Energie']
         }
+      ],
+      kommunal: [
+        {
+          name: 'Bürgeramt Saarbrücken',
+          address: 'Gerberstraße 4-6, 66111 Saarbrücken',
+          phone: '0681 905-1234',
+          services: ['Personalausweis', 'Meldewesen', 'Gewerbeanmeldung']
+        }
+      ]
+    }
+  }
+
+  private async getBusinessServicesData(): Promise<any> {
+    return {
+      registration: {
+        types: ['Einzelunternehmen', 'GmbH', 'UG', 'AG', 'Freiberufler'],
+        requirements: ['Personalausweis', 'Geschäftskonzept', 'Nachweis Qualifikation'],
+        costs: { gewerbeanmeldung: '26€', handelsregister: '150€' },
+        duration: '1-4 Wochen'
       },
-      metadata: {
-        provider: 'saarVV',
-        coverage: 'saarland_complete',
-        lastUpdated: new Date().toISOString()
+      funding: [
+        {
+          name: 'Saarland Innovation Fonds',
+          amount: 'bis 250.000€',
+          target: 'Innovative Startups',
+          contact: 'innovation@saarland.de'
+        },
+        {
+          name: 'EXIST-Gründerstipendium',
+          amount: 'bis 75.000€',
+          target: 'Hochschulgründungen',
+          contact: 'exist@uni-saarland.de'
+        }
+      ]
+    }
+  }
+
+  private async getTourismData(): Promise<any> {
+    return {
+      highlights: [
+        {
+          name: 'Saarschleife',
+          type: 'Naturschauspiel',
+          location: 'Mettlach',
+          description: 'Deutschlands schönste Flussschleife'
+        },
+        {
+          name: 'Völklinger Hütte',
+          type: 'UNESCO Welterbe',
+          location: 'Völklingen',
+          description: 'Industriekultur und Welterbe'
+        },
+        {
+          name: 'Bostalsee',
+          type: 'Freizeitsee',
+          location: 'Nohfelden',
+          description: 'Wassersport und Erholung'
+        }
+      ],
+      events: [
+        {
+          name: 'Altstadtfest Saarbrücken',
+          date: 'Juni 2025',
+          type: 'Stadtfest',
+          location: 'Saarbrücken Altstadt'
+        }
+      ]
+    }
+  }
+
+  // Tool implementations
+  private async lookupPLZ(args: any): Promise<any> {
+    const { plz, location } = args
+    
+    // Simplified PLZ lookup
+    const plzData = {
+      '66111': { city: 'Saarbrücken', district: 'Alt-Saarbrücken' },
+      '66424': { city: 'Homburg', district: 'Innenstadt' },
+      '66606': { city: 'St. Wendel', district: 'Innenstadt' }
+    }
+
+    if (plz && plzData[plz]) {
+      return {
+        plz,
+        ...plzData[plz],
+        services: ['Bürgeramt', 'Standesamt', 'Gewerbeamt']
       }
     }
+
+    if (location) {
+      const found = Object.entries(plzData).find(([_, data]) => 
+        data.city.toLowerCase().includes(location.toLowerCase())
+      )
+      
+      if (found) {
+        const [foundPLZ, data] = found
+        return {
+          plz: foundPLZ,
+          ...data,
+          services: ['Bürgeramt', 'Standesamt', 'Gewerbeamt']
+        }
+      }
+    }
+
+    return { error: 'PLZ oder Ort nicht gefunden' }
+  }
+
+  private async findAuthority(args: any): Promise<any> {
+    const { service, location } = args
+    
+    const serviceMap = {
+      'personalausweis': {
+        authority: 'Bürgeramt',
+        phone: '0681 905-1234',
+        address: 'Gerberstraße 4-6, 66111 Saarbrücken'
+      },
+      'gewerbeanmeldung': {
+        authority: 'Gewerbeamt',
+        phone: '0681 905-2345',
+        address: 'Rathausplatz 1, 66111 Saarbrücken'
+      },
+      'bauen': {
+        authority: 'Bauamt',
+        phone: '0681 905-3456',
+        address: 'Rathausplatz 1, 66111 Saarbrücken'
+      }
+    }
+
+    const found = serviceMap[service.toLowerCase()]
+    if (found) {
+      return {
+        service,
+        location: location || 'Saarbrücken',
+        ...found,
+        openingHours: 'Mo-Fr 8-16 Uhr, Sa 9-13 Uhr'
+      }
+    }
+
+    return { error: `Service ${service} nicht gefunden` }
+  }
+
+  private async getBusinessRegistrationInfo(args: any): Promise<any> {
+    const { businessType, location } = args
+    
+    return {
+      businessType,
+      location: location || 'Saarland',
+      requirements: [
+        'Personalausweis oder Reisepass',
+        'Geschäftskonzept',
+        'Nachweis der fachlichen Eignung (je nach Branche)',
+        'Gewerbeanmeldung (26€)'
+      ],
+      process: [
+        '1. Gewerbeanmeldung beim Gewerbeamt',
+        '2. Anmeldung bei der IHK/HWK',
+        '3. Steuerliche Erfassung beim Finanzamt',
+        '4. Anmeldung bei der Berufsgenossenschaft'
+      ],
+      duration: '1-4 Wochen',
+      costs: {
+        gewerbeanmeldung: '26€',
+        handelsregister: '150€ (für GmbH/UG)',
+        notar: '200-500€ (für GmbH/UG)'
+      }
+    }
+  }
+
+  private async getTourismEvents(args: any): Promise<any> {
+    const { category, location, dateRange } = args
+    
+    return {
+      events: [
+        {
+          name: 'Altstadtfest Saarbrücken',
+          category: 'kultur',
+          location: 'Saarbrücken',
+          date: '2025-06-14 bis 2025-06-16',
+          description: 'Traditionelles Fest in der Saarbrücker Altstadt'
+        },
+        {
+          name: 'Saarschleife Wanderfestival',
+          category: 'sport',
+          location: 'Mettlach',
+          date: '2025-05-10 bis 2025-05-12',
+          description: 'Wanderungen rund um die berühmte Saarschleife'
+        }
+      ],
+      filters: { category, location, dateRange }
+    }
+  }
+
+  // Prompt generators
+  private generateOfficialResponseTemplate(args: any): string {
+    const { service, citizen_query } = args
+    
+    return `Sehr geehrte Damen und Herren,
+
+vielen Dank für Ihre Anfrage bezüglich ${service}.
+
+${citizen_query ? `Zu Ihrer Frage: "${citizen_query}"` : ''}
+
+Für diese Dienstleistung benötigen Sie folgende Unterlagen:
+- [Spezifische Dokumente auflisten]
+
+Die Bearbeitungszeit beträgt in der Regel [Zeitangabe].
+Die Kosten belaufen sich auf [Kostenangabe].
+
+Termine können Sie online unter saarbruecken.de/termine oder telefonisch unter 0681 905-1234 vereinbaren.
+
+Mit freundlichen Grüßen
+[Amt/Behörde]`
+  }
+
+  private generateBusinessGuidance(args: any): string {
+    const { business_type, funding_needed } = args
+    
+    return `Gründungsberatung ${business_type} im Saarland
+
+1. RECHTLICHE GRUNDLAGEN
+${business_type === 'GmbH' ? '- Mindestkapital: 25.000€' : '- Keine Mindestkapitalanforderung'}
+- Gewerbeanmeldung erforderlich
+- Handelsregistereintrag ${business_type === 'GmbH' || business_type === 'UG' ? 'erforderlich' : 'optional'}
+
+2. GRÜNDUNGSSCHRITTE
+- Gewerbeanmeldung beim örtlichen Gewerbeamt (26€)
+- Anmeldung bei IHK Saarland
+- Steuerliche Erfassung beim Finanzamt
+- Anmeldung bei Berufsgenossenschaft
+
+${funding_needed === 'yes' ? `
+3. FÖRDERMÖGLICHKEITEN
+- Saarland Innovation Fonds (bis 250.000€)
+- EXIST-Gründerstipendium (bis 75.000€)
+- EU-Regionalförderung
+- Mikrokreditfonds Deutschland
+` : ''}
+
+KONTAKT
+IHK Saarland: 0681 9520-0
+Wirtschaftsförderung: 0681 501-4200`
+  }
+
+  private generateTourismRecommendation(args: any): string {
+    const { visitor_interests, duration, season } = args
+    
+    return `Saarland Tourismusempfehlung
+
+EMPFOHLENE HIGHLIGHTS
+${visitor_interests?.includes('natur') ? '🌊 Saarschleife - Deutschlands schönste Flussschleife' : ''}
+${visitor_interests?.includes('kultur') ? '🏭 Völklinger Hütte - UNESCO Welterbe' : ''}
+${visitor_interests?.includes('aktiv') ? '🏊 Bostalsee - Wassersport und Wandern' : ''}
+
+DAUER: ${duration || '2-3 Tage'}
+SAISON: ${season || 'Ganzjährig'}
+
+${season === 'sommer' ? `
+SOMMER-HIGHLIGHTS
+- Baden am Bostalsee
+- Wandern im Bliesgau
+- Biergärten in Saarbrücken
+` : ''}
+
+PRAKTISCHE INFOS
+- SaarVV Tageskarte: 10,40€
+- Tourist-Info: +49 681 3877060
+- Unterkünfte: saarland.de/hotels`
   }
 }
 
-// Singleton instance
 export const saarlandMCPServer = new SaarlandMCPServer()

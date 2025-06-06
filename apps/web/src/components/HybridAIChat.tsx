@@ -6,7 +6,9 @@ const CopilotProvider = (() => {
   try {
     return require('@copilotkit/react-core').CopilotProvider
   } catch {
-    return ({ children }: { children: React.ReactNode }) => <>{children}</>
+    const Fallback = ({ children }: { children: React.ReactNode }) => <>{children}</>
+    Fallback.displayName = 'CopilotProvider'
+    return Fallback
   }
 })()
 
@@ -22,7 +24,9 @@ const CopilotSidebar = (() => {
   try {
     return require('@copilotkit/react-ui').CopilotSidebar
   } catch {
-    return () => <div>CopilotKit not available</div>
+    const Fallback = () => <div>CopilotKit not available</div>
+    Fallback.displayName = 'CopilotSidebar'
+    return Fallback
   }
 })()
 // Import guards for optional dependencies
@@ -91,7 +95,7 @@ export default function HybridAIChat({
       voice_enabled: enableVoice,
       websearch_enabled: enableWebSearch
     })
-  }, [])
+  }, [mode, initialCategory, enableVoice, enableWebSearch, trackEvent])
 
   // Copilot Kit Actions for LLM Orchestration
   useCopilotAction({
