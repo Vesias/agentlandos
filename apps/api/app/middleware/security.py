@@ -12,6 +12,9 @@ import logging
 from datetime import datetime, timedelta
 import hashlib
 import json
+import asyncio
+
+from app.services import audit_log
 
 logger = logging.getLogger(__name__)
 
@@ -242,12 +245,22 @@ class SecurityMiddleware:
             'user_agent': request.headers.get('user-agent', ''),
             'content_length': getattr(response, 'content_length', 0)
         }
-        
+
         # Kritische Events extra loggen
         if response.status_code >= 400:
             logger.warning(f"HTTP Error: {json.dumps(log_data)}")
         elif request.url.path.startswith('/auth/'):
             logger.info(f"Auth Request: {json.dumps(log_data)}")
+
+        # Persist audit log asynchronously
+        asyncio.create_task(
+            audit_log.log_event(
+                event_type="http_request",
+                actor_id=None,
+                ip_address=log_data['client_ip'],
+                metadata=log_data,
+            )
+        )
     
     def _is_suspicious_user_agent(self, user_agent: str) -> bool:
         """
