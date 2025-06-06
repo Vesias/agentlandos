@@ -147,3 +147,5 @@ payment_secrets.json
 # Logs with potential secrets
 *.log
 logs/
+!apps/web/src/lib/
+!apps/web/src/lib/supabase.ts
