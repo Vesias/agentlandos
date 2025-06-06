@@ -44,6 +44,20 @@ export function useVoiceRecognition(options: UseVoiceRecognitionOptions = {}) {
   const recognitionRef = useRef<SpeechRecognition | null>(null)
   const finalTranscriptRef = useRef('')
 
+  // Store callbacks in refs to avoid useEffect dependencies
+  const onResultRef = useRef(onResult)
+  const onErrorRef = useRef(onError)
+  const onStartRef = useRef(onStart)
+  const onEndRef = useRef(onEnd)
+
+  // Update refs when callbacks change
+  useEffect(() => {
+    onResultRef.current = onResult
+    onErrorRef.current = onError
+    onStartRef.current = onStart
+    onEndRef.current = onEnd
+  })
+
   // Check browser support on mount
   useEffect(() => {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
@@ -59,7 +73,7 @@ export function useVoiceRecognition(options: UseVoiceRecognitionOptions = {}) {
       recognition.maxAlternatives = maxAlternatives
 
       // Handle speech recognition results
-      recognition.onresult = (event) => {
+      recognition.onresult = (event: SpeechRecognitionEvent) => {
         let interimTranscript = ''
         let finalTranscript = finalTranscriptRef.current
 
@@ -82,32 +96,32 @@ export function useVoiceRecognition(options: UseVoiceRecognitionOptions = {}) {
         }))
 
         // Call onResult callback if provided
-        if (onResult) {
-          onResult(finalTranscript || interimTranscript, !!finalTranscript)
+        if (onResultRef.current) {
+          onResultRef.current(finalTranscript || interimTranscript, !!finalTranscript)
         }
       }
 
       // Handle recognition start
       recognition.onstart = () => {
         setState(prev => ({ ...prev, isListening: true, error: null }))
-        onStart?.()
+        onStartRef.current?.()
       }
 
       // Handle recognition end
       recognition.onend = () => {
         setState(prev => ({ ...prev, isListening: false }))
-        onEnd?.()
+        onEndRef.current?.()
       }
 
       // Handle recognition errors
-      recognition.onerror = (event) => {
+      recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
         const errorMessage = getErrorMessage(event.error)
         setState(prev => ({
           ...prev,
           isListening: false,
           error: errorMessage
         }))
-        onError?.(errorMessage)
+        onErrorRef.current?.(errorMessage)
       }
 
       // Handle no speech detected
@@ -123,7 +137,7 @@ export function useVoiceRecognition(options: UseVoiceRecognitionOptions = {}) {
         recognitionRef.current.stop()
       }
     }
-  }, [language, continuous, interimResults, maxAlternatives, onResult, onError, onStart, onEnd])
+  }, [language, continuous, interimResults, maxAlternatives])
 
   // Start listening
   const startListening = useCallback(() => {
@@ -212,10 +226,55 @@ function getErrorMessage(error: string): string {
   }
 }
 
-// Extend Window interface for TypeScript
+// TypeScript declarations for Speech Recognition API
 declare global {
+  interface SpeechRecognitionEvent extends Event {
+    resultIndex: number
+    results: SpeechRecognitionResultList
+  }
+
+  interface SpeechRecognitionErrorEvent extends Event {
+    error: string
+    message?: string
+  }
+
+  interface SpeechRecognitionResult {
+    [index: number]: SpeechRecognitionAlternative
+    length: number
+    isFinal: boolean
+  }
+
+  interface SpeechRecognitionResultList {
+    [index: number]: SpeechRecognitionResult
+    length: number
+  }
+
+  interface SpeechRecognitionAlternative {
+    transcript: string
+    confidence: number
+  }
+
+  interface SpeechRecognition extends EventTarget {
+    continuous: boolean
+    interimResults: boolean
+    lang: string
+    maxAlternatives: number
+    start(): void
+    stop(): void
+    abort(): void
+    onresult: ((event: SpeechRecognitionEvent) => void) | null
+    onerror: ((event: SpeechRecognitionErrorEvent) => void) | null
+    onstart: (() => void) | null
+    onend: (() => void) | null
+    onspeechend: (() => void) | null
+  }
+
+  interface SpeechRecognitionConstructor {
+    new(): SpeechRecognition
+  }
+
   interface Window {
-    SpeechRecognition: typeof SpeechRecognition
-    webkitSpeechRecognition: typeof SpeechRecognition
+    SpeechRecognition: SpeechRecognitionConstructor
+    webkitSpeechRecognition: SpeechRecognitionConstructor
   }
 }
