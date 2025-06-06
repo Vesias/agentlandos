@@ -7,6 +7,8 @@ from typing import AsyncGenerator
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from slowapi.middleware import SlowAPIMiddleware
+from app.core.rate_limiter import limiter, RateLimitExceeded, _rate_limit_exceeded_handler
 
 from app.core.config import settings
 from app.db.database import create_db_and_tables, engine
@@ -39,6 +41,11 @@ app = FastAPI(
     docs_url="/api/docs",
     redoc_url="/api/redoc",
 )
+
+# Rate Limiting mit SlowAPI
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+app.add_middleware(SlowAPIMiddleware)
 
 # SICHERHEITS-KONFIGURATION für regionale Zugriffe
 # KRITISCH: Restriktive CORS-Policy für Produktionsumgebung
@@ -77,6 +84,7 @@ app.include_router(performance.router, tags=["Performance-Monitoring"])
 
 
 @app.get("/", tags=["Root"])
+@limiter.limit("100/minute")
 async def root():
     """
     Wurzel-Endpunkt der API
