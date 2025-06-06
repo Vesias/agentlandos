@@ -27,8 +27,12 @@ export async function middleware(request: NextRequest) {
     }
 
     try {
-      const { data: { user } } = await supabaseServer.auth.getUser(token);
-      if (!user) {
+      if (supabaseServer) {
+        const { data: { user } } = await supabaseServer.auth.getUser(token);
+        if (!user) {
+          return NextResponse.redirect(new URL('/auth?mode=login', request.url));
+        }
+      } else {
         return NextResponse.redirect(new URL('/auth?mode=login', request.url));
       }
     } catch (error) {
