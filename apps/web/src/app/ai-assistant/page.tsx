@@ -8,6 +8,7 @@ import {
   Lightbulb, Target, CheckCircle, AlertCircle
 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
+import VoiceRecording from '@/components/VoiceRecording'
 
 interface Message {
   id: string
@@ -273,14 +274,9 @@ Haben Sie eine spezifischere Frage, oder soll ich Ihnen bei einem konkreten Prob
     sendMessage(action.prompt)
   }
 
-  const startVoiceInput = () => {
+  const handleVoiceTranscript = (transcript: string) => {
+    setInputText(transcript)
     setInputMode('voice')
-    setIsRecording(true)
-    // Simulate voice recording
-    setTimeout(() => {
-      setIsRecording(false)
-      setInputText('Spracheingabe erkannt: Wie kann ich mein Unternehmen digitalisieren?')
-    }, 3000)
   }
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -509,16 +505,13 @@ Haben Sie eine spezifischere Frage, oder soll ich Ihnen bei einem konkreten Prob
                 <div className="flex items-center gap-3">
                   {/* Input Method Buttons */}
                   <div className="flex items-center gap-2">
-                    <button
-                      onClick={startVoiceInput}
-                      className={`p-3 rounded-2xl transition-all ${
-                        isRecording 
-                          ? 'bg-red-500 text-white animate-pulse' 
-                          : 'bg-gradient-to-r from-blue-500 to-purple-600 text-white hover:shadow-lg'
-                      }`}
-                    >
-                      <Mic className="w-5 h-5" />
-                    </button>
+                    <VoiceRecording
+                      onTranscript={handleVoiceTranscript}
+                      autoSend={false}
+                      showLanguageSelector={false}
+                      disabled={isLoading}
+                      className="flex-shrink-0"
+                    />
                     
                     <button
                       onClick={() => fileInputRef.current?.click()}

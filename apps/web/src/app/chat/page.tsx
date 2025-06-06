@@ -2,6 +2,7 @@
 
 import React, { useState, useRef, useEffect } from 'react'
 import { Send, Bot, User, Loader2, Star, MessageSquare } from 'lucide-react'
+import VoiceRecording from '@/components/VoiceRecording'
 
 interface Message {
   id: string
@@ -26,6 +27,10 @@ export default function ChatPage() {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages])
+
+  const handleVoiceTranscript = (transcript: string) => {
+    setInput(transcript)
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -176,14 +181,23 @@ export default function ChatPage() {
           {/* Input Form */}
           <div className="border-t border-gray-200 p-6">
             <form onSubmit={handleSubmit} className="flex space-x-4">
-              <input
-                type="text"
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                placeholder="Stellen Sie Ihre Frage über das Saarland..."
-                className="flex-1 px-4 py-3 border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-[#003399] focus:border-transparent text-base"
-                disabled={isLoading}
-              />
+              <div className="flex-1 flex space-x-3">
+                <input
+                  type="text"
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  placeholder="Stellen Sie Ihre Frage über das Saarland..."
+                  className="flex-1 px-4 py-3 border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-[#003399] focus:border-transparent text-base"
+                  disabled={isLoading}
+                />
+                <VoiceRecording
+                  onTranscript={handleVoiceTranscript}
+                  autoSend={false}
+                  showLanguageSelector={false}
+                  disabled={isLoading}
+                  className="flex-shrink-0"
+                />
+              </div>
               <button
                 type="submit"
                 disabled={isLoading || !input.trim()}

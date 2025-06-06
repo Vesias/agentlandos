@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { Send, Loader2, Download, Share2, RefreshCw, Bot, User, FileText, Map, Calculator, Presentation } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import VoiceRecording from './VoiceRecording'
 
 interface Message {
   id: string
@@ -169,6 +170,11 @@ export default function DeepSeekServiceChat({
     }
   }
 
+  // Handle voice transcript
+  const handleVoiceTranscript = (transcript: string) => {
+    setInput(transcript)
+  }
+
   // Export canvas data
   const handleExportCanvas = (canvas: CanvasData) => {
     const blob = new Blob([JSON.stringify(canvas, null, 2)], { type: 'application/json' })
@@ -314,16 +320,25 @@ export default function DeepSeekServiceChat({
       {/* Input */}
       <div className="border-t border-gray-200 p-4">
         <div className="flex space-x-2">
-          <input
-            ref={inputRef}
-            type="text"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyPress={handleKeyPress}
-            placeholder={config.placeholder}
-            disabled={isLoading}
-            className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100"
-          />
+          <div className="flex-1 flex space-x-2">
+            <input
+              ref={inputRef}
+              type="text"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyPress={handleKeyPress}
+              placeholder={config.placeholder}
+              disabled={isLoading}
+              className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100"
+            />
+            <VoiceRecording
+              onTranscript={handleVoiceTranscript}
+              autoSend={false}
+              showLanguageSelector={false}
+              disabled={isLoading}
+              className="flex-shrink-0"
+            />
+          </div>
           <Button
             onClick={() => handleSendMessage()}
             disabled={!input.trim() || isLoading}
