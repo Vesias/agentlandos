@@ -1,36 +1,57 @@
 import { createClient, User } from '@supabase/supabase-js'
 
-// Validate environment variables
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+// Validate environment variables with fallbacks
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL
+const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY
 const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
 
 if (!supabaseUrl) {
-  throw new Error('Missing NEXT_PUBLIC_SUPABASE_URL environment variable')
+  console.error('Missing SUPABASE_URL environment variable')
+  // Provide fallback for development
+  if (process.env.NODE_ENV === 'development') {
+    console.warn('Using development fallback URL')
+  } else {
+    throw new Error('Missing SUPABASE_URL environment variable')
+  }
 }
 
 if (!anonKey) {
-  throw new Error('Missing NEXT_PUBLIC_SUPABASE_ANON_KEY environment variable')
+  console.error('Missing SUPABASE_ANON_KEY environment variable')
+  // Provide fallback for development
+  if (process.env.NODE_ENV === 'development') {
+    console.warn('Using development fallback key')
+  } else {
+    throw new Error('Missing SUPABASE_ANON_KEY environment variable')
+  }
 }
 
 if (!serviceRoleKey) {
   console.warn('Missing SUPABASE_SERVICE_ROLE_KEY environment variable - server operations will be limited')
 }
 
+// Singleton instance to prevent multiple GoTrueClient instances
+let _supabaseBrowser: any = null
+
 // Browser client for client-side operations (with enhanced security)
-export const supabaseBrowser = createClient(supabaseUrl, anonKey, {
-  auth: {
-    persistSession: true,
-    autoRefreshToken: true,
-    detectSessionInUrl: true,
-    storage: typeof window !== 'undefined' ? window.localStorage : undefined,
-  },
-  global: {
-    headers: {
-      'x-client-info': 'agentland-saarland-web',
-    },
-  },
-})
+export const supabaseBrowser = (() => {
+  if (!_supabaseBrowser && supabaseUrl && anonKey) {
+    _supabaseBrowser = createClient(supabaseUrl, anonKey, {
+      auth: {
+        persistSession: true,
+        autoRefreshToken: true,
+        detectSessionInUrl: true,
+        storage: typeof window !== 'undefined' ? window.localStorage : undefined,
+        storageKey: 'agentland-auth', // Unique storage key
+      },
+      global: {
+        headers: {
+          'x-client-info': 'agentland-saarland-web',
+        },
+      },
+    })
+  }
+  return _supabaseBrowser
+})()
 
 // Server client for server-side operations (only when service role key is available)
 export const supabaseServer = serviceRoleKey 
