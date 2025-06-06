@@ -1,0 +1,17 @@
+{
+  "DE": {
+    "allowance": 11604,
+    "flat_rate": 0.42,
+    "description": "Top income tax rate for Germany 2024"
+  },
+  "FR": {
+    "allowance": 10225,
+    "flat_rate": 0.45,
+    "description": "Top income tax rate for France 2024"
+  },
+  "LU": {
+    "allowance": 11570,
+    "flat_rate": 0.42,
+    "description": "Top income tax rate for Luxembourg 2024"
+  }
+}

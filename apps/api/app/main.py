@@ -12,7 +12,16 @@ from app.core.rate_limiter import limiter, RateLimitExceeded, _rate_limit_exceed
 
 from app.core.config import settings
 from app.db.database import create_db_and_tables, engine
-from app.api import agents_router, auth, health, users, enhanced_agents, realtime, performance
+from app.api import (
+    agents_router,
+    auth,
+    health,
+    users,
+    enhanced_agents,
+    realtime,
+    performance,
+    cross_border,
+)
 from app.middleware.performance import PerformanceMiddleware, MemoryOptimizationMiddleware
 
 
@@ -81,6 +90,7 @@ app.include_router(agents_router.router, prefix="/api/v1", tags=["KI-Agenten"])
 app.include_router(enhanced_agents.router, tags=["Enhanced KI-Agenten"])
 app.include_router(realtime.router, tags=["Echtzeit-Daten"])
 app.include_router(performance.router, tags=["Performance-Monitoring"])
+app.include_router(cross_border.router, tags=["Cross-Border"])
 
 
 @app.get("/", tags=["Root"])
