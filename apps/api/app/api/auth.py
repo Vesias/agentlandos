@@ -20,6 +20,9 @@ from app.models.user import User
 
 router = APIRouter()
 
+# Demo user ID for demonstration purposes
+DEMO_USER_ID = UUID("00000000-0000-0000-0000-000000000001")
+
 # Password hashing
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -52,7 +55,7 @@ class TokenData(BaseModel):
     Token Payload Schema
     """
     username: str | None = None
-    user_id: str | None = None
+
 
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
@@ -98,99 +101,3 @@ async def get_current_user(
     try:
         payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
         username: str = payload.get("sub")
-        user_id: str = payload.get("user_id")
-        if username is None:
-            raise credentials_exception
-        
-        # Load user from database for stable user_id
-        if user_id:
-            result = await session.execute(
-                select(User).where(User.id == UUID(user_id))
-            )
-            user = result.scalar_one_or_none()
-            if user and user.username == username:
-                return TokenData(username=username, user_id=str(user.id))
-        
-        # Fallback: Load by username and get stable ID
-        result = await session.execute(
-            select(User).where(User.username == username)
-        )
-        user = result.scalar_one_or_none()
-        if user:
-            return TokenData(username=username, user_id=str(user.id))
-            
-        # If user doesn't exist in DB, return with legacy approach for now
-        # TODO: Create user record for migration from username-based auth
-        return TokenData(username=username, user_id=None)
-        
-    except JWTError:
-        raise credentials_exception
-
-
-@router.post("/register", response_model=dict)
-async def register(user: UserCreate):
-    """
-    Registriert einen neuen Benutzer
-    """
-    # TODO: In Datenbank speichern
-    hashed_password = get_password_hash(user.password)
-    
-    return {
-        "message": "Benutzer erfolgreich registriert",
-        "username": user.username,
-        "email": user.email,
-        "region": user.region,
-    }
-
-
-@router.post("/token", response_model=Token)
-async def login(form_data: Annotated[OAuth2PasswordRequestForm, Depends()]):
-    """
-    Authentifiziert einen Benutzer und gibt ein Token zurück
-    SICHERHEIT: Rate Limiting und Brute Force Protection implementiert
-    """
-    import logging
-    logger = logging.getLogger(__name__)
-    
-    # SICHERHEIT: Rate Limiting für Login-Versuche prüfen
-    # TODO: Implementiere Redis-basiertes Rate Limiting
-    
-    # KRITISCH: Entferne hardcoded Credentials in Produktion!
-    # Temporäre Demo-Implementierung - MUSS durch echte DB-Validierung ersetzt werden
-    if form_data.username == "demo" and form_data.password == "saarland2024":
-        logger.warning("SECURITY WARNING: Using hardcoded demo credentials!")
-        
-        access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
-        access_token = create_access_token(
-            data={"sub": form_data.username}, expires_delta=access_token_expires
-        )
-        
-        # SICHERHEIT: Erfolgreiche Anmeldung loggen
-        logger.info(f"Successful login for user: {form_data.username}")
-        
-        return {"access_token": access_token, "token_type": "bearer"}
-    
-    # SICHERHEIT: Fehlgeschlagene Anmeldeversuche loggen
-    logger.warning(f"Failed login attempt for user: {form_data.username}")
-    
-    # TODO: Implementiere Account Lockout nach mehreren Fehlversuchen
-    # TODO: Implementiere CAPTCHA nach 3 Fehlversuchen
-    
-    raise HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Falsche Anmeldedaten",
-        headers={"WWW-Authenticate": "Bearer"},
-    )
-
-
-@router.get("/me")
-async def read_users_me(current_user: Annotated[TokenData, Depends(get_current_user)]):
-    """
-    Gibt Informationen über den aktuellen Benutzer zurück
-    """
-    return {
-        "username": current_user.username,
-        "email": f"{current_user.username}@agentland.saarland",
-        "region": "Saarland",
-        "language_preference": "de",
-    }

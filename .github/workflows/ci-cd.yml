@@ -11,6 +11,7 @@ on:
     PYTHON_VERSION: '3.9'
     SUPABASE_PROJECT_ID: ${{ secrets.SUPABASE_PROJECT_ID }}
     SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+    OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
 
 jobs:
   # Code Quality & Testing
