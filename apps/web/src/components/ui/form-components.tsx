@@ -50,12 +50,17 @@ export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> 
 
 export const Input = React.forwardRef<HTMLInputElement, InputProps>(
   ({ className, type, error, ...props }, ref) => {
+    // Enhanced mobile optimization
+    const inputType = type === 'text' && props.inputMode ? type : type
+    
     return (
       <input
-        type={type}
+        type={inputType}
         className={cn(
-          "flex h-11 w-full rounded-md border-2 border-technical-silver-300 bg-white px-3 py-2 text-sm text-neutral-gray-800 font-medium ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-neutral-gray-500 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-saarland-blue-300 focus-visible:border-saarland-blue-600 disabled:cursor-not-allowed disabled:bg-technical-silver-100 disabled:text-neutral-gray-400 disabled:border-technical-silver-200 transition-all duration-200",
-          "min-h-[44px] touch-manipulation", // Mobile optimization
+          "flex h-12 w-full rounded-lg border-2 border-technical-silver-300 bg-white px-4 py-3 text-base text-neutral-gray-800 font-medium ring-offset-background file:border-0 file:bg-transparent file:text-base file:font-medium placeholder:text-neutral-gray-500 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-saarland-blue-300 focus-visible:border-saarland-blue-600 disabled:cursor-not-allowed disabled:bg-technical-silver-100 disabled:text-neutral-gray-400 disabled:border-technical-silver-200 transition-all duration-200",
+          "min-h-[48px] touch-manipulation text-mobile-safe", // Enhanced mobile optimization
+          "focus:ring-3 focus:ring-saarland-blue-300 focus:border-saarland-blue-600 focus:bg-white", // Enhanced focus states
+          "active:bg-saarland-blue-50/30", // Touch feedback
           error && "border-alert-red-500 focus-visible:ring-alert-red-300 focus-visible:border-alert-red-600 bg-alert-red-50",
           className
         )}
@@ -77,28 +82,39 @@ export interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElemen
 export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
   ({ className, error, options, placeholder, children, ...props }, ref) => {
     return (
-      <select
-        className={cn(
-          "flex h-11 w-full rounded-md border-2 border-technical-silver-300 bg-white px-3 py-2 text-sm text-neutral-gray-800 font-medium ring-offset-background focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-saarland-blue-300 focus-visible:border-saarland-blue-600 disabled:cursor-not-allowed disabled:bg-technical-silver-100 disabled:text-neutral-gray-400 disabled:border-technical-silver-200 transition-all duration-200",
-          "min-h-[44px] touch-manipulation appearance-none cursor-pointer",
-          error && "border-alert-red-500 focus-visible:ring-alert-red-300 focus-visible:border-alert-red-600 bg-alert-red-50",
-          className
-        )}
-        ref={ref}
-        {...props}
-      >
-        {placeholder && (
-          <option value="" disabled>
-            {placeholder}
-          </option>
-        )}
-        {options.map((option) => (
-          <option key={option.value} value={option.value}>
-            {option.label}
-          </option>
-        ))}
-        {children}
-      </select>
+      <div className="relative">
+        <select
+          className={cn(
+            "flex h-12 w-full rounded-lg border-2 border-technical-silver-300 bg-white px-4 py-3 text-base text-neutral-gray-800 font-medium ring-offset-background focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-saarland-blue-300 focus-visible:border-saarland-blue-600 disabled:cursor-not-allowed disabled:bg-technical-silver-100 disabled:text-neutral-gray-400 disabled:border-technical-silver-200 transition-all duration-200",
+            "min-h-[48px] touch-manipulation appearance-none cursor-pointer text-mobile-safe",
+            "focus:ring-3 focus:ring-saarland-blue-300 focus:border-saarland-blue-600 focus:bg-white",
+            "active:bg-saarland-blue-50/30",
+            "pr-12", // Space for custom arrow
+            error && "border-alert-red-500 focus-visible:ring-alert-red-300 focus-visible:border-alert-red-600 bg-alert-red-50",
+            className
+          )}
+          ref={ref}
+          {...props}
+        >
+          {placeholder && (
+            <option value="" disabled>
+              {placeholder}
+            </option>
+          )}
+          {options.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+          {children}
+        </select>
+        {/* Custom dropdown arrow for better mobile UX */}
+        <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+          <svg className="w-5 h-5 text-neutral-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          </svg>
+        </div>
+      </div>
     )
   }
 )
@@ -114,8 +130,10 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
     return (
       <textarea
         className={cn(
-          "flex min-h-[80px] w-full rounded-md border-2 border-technical-silver-300 bg-white px-3 py-2 text-sm text-neutral-gray-800 font-medium ring-offset-background placeholder:text-neutral-gray-500 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-saarland-blue-300 focus-visible:border-saarland-blue-600 disabled:cursor-not-allowed disabled:bg-technical-silver-100 disabled:text-neutral-gray-400 disabled:border-technical-silver-200 resize-vertical transition-all duration-200",
-          "touch-manipulation",
+          "flex min-h-[120px] w-full rounded-lg border-2 border-technical-silver-300 bg-white px-4 py-3 text-base text-neutral-gray-800 font-medium ring-offset-background placeholder:text-neutral-gray-500 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-saarland-blue-300 focus-visible:border-saarland-blue-600 disabled:cursor-not-allowed disabled:bg-technical-silver-100 disabled:text-neutral-gray-400 disabled:border-technical-silver-200 resize-vertical transition-all duration-200",
+          "touch-manipulation text-mobile-safe",
+          "focus:ring-3 focus:ring-saarland-blue-300 focus:border-saarland-blue-600 focus:bg-white",
+          "active:bg-saarland-blue-50/30",
           error && "border-alert-red-500 focus-visible:ring-alert-red-300 focus-visible:border-alert-red-600 bg-alert-red-50",
           className
         )}
@@ -138,13 +156,14 @@ export const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
     const checkboxId = id || React.useId()
     
     return (
-      <div className="flex items-start space-x-3">
+      <div className="flex items-start space-x-3 min-h-[48px]">
         <input
           type="checkbox"
           id={checkboxId}
           className={cn(
-            "mt-1 h-4 w-4 min-h-[16px] min-w-[16px] rounded border border-input text-primary focus:ring-2 focus:ring-ring focus:ring-offset-2 transition-colors cursor-pointer",
-            "touch-manipulation",
+            "mt-2 h-5 w-5 min-h-[20px] min-w-[20px] rounded border-2 border-technical-silver-300 text-saarland-blue-700 focus:ring-3 focus:ring-saarland-blue-300 focus:ring-offset-2 transition-colors cursor-pointer",
+            "touch-manipulation bg-white checked:bg-saarland-blue-700 checked:border-saarland-blue-700",
+            "active:scale-95 transition-transform duration-150",
             className
           )}
           ref={ref}

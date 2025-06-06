@@ -177,7 +177,7 @@ const businessServices: BusinessService[] = [
   {
     id: 'ai-gruendungsberatung',
     title: 'KI-Enhanced Gründungsberatung',
-    description: 'Revolutionary startup consulting with AI analysis and real-time market intelligence',
+    description: 'Innovative Startup-Beratung mit KI-Analyse und Echtzeit-Marktintelligenz',
     icon: Lightbulb,
     features: [
       'AI-powered business model validation',
@@ -411,7 +411,7 @@ export default function BusinessPage() {
             <br />Saarland 2025
           </h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
-            Revolutionäre Unternehmensförderung mit KI-Optimierung, Real-time Analytics 
+            Innovative Unternehmensförderung mit KI-Optimierung, Real-time Analytics 
             und Cross-Border Intelligence für maximalen Erfolg
           </p>
           
@@ -493,7 +493,7 @@ export default function BusinessPage() {
               KI-Enhanced Förderprogramme
             </h2>
             <p className="text-gray-600 max-w-2xl mx-auto">
-              Revolutionäre Förderung mit künstlicher Intelligenz, Real-time Processing 
+              Innovative Förderung mit künstlicher Intelligenz, Real-time Processing 
               und Premium-Features für maximale Erfolgswahrscheinlichkeit
             </p>
           </div>
@@ -785,7 +785,7 @@ export default function BusinessPage() {
               Ihr KI-optimierter Weg zur Förderung
             </h2>
             <p className="text-gray-600">
-              Revolutionärer 5-Schritte-Prozess mit künstlicher Intelligenz 
+              Innovativer 5-Schritte-Prozess mit künstlicher Intelligenz 
               und Premium-Beratung für maximale Erfolgschancen
             </p>
           </div>
@@ -1060,7 +1060,7 @@ export default function BusinessPage() {
             transition={{ duration: 0.6 }}
           >
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              Revolutionieren Sie Ihr Business im Saarland
+              Modernisieren Sie Ihr Business im Saarland
             </h2>
             <p className="text-xl mb-8 text-blue-100 max-w-3xl mx-auto">
               Starten Sie jetzt mit unserer KI-gestützten Unternehmensberatung, 

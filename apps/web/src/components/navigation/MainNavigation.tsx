@@ -12,7 +12,7 @@ import {
 import { Button } from '@/components/ui/button'
 import LiveUserCounter from '@/components/ui/live-user-counter'
 
-// New 2027 UX: Intent-based Quick Actions
+// Moderne KI: Intelligente Schnellaktionen
 const quickActions = [
   { 
     id: 'smart-chat',
@@ -21,7 +21,7 @@ const quickActions = [
     description: 'Intelligenter KI-Assistent für alle Anfragen',
     gradient: 'from-blue-500 to-purple-600',
     href: '/ai-assistant',
-    features: ['Adaptive Responses', 'Multi-Modal Input', 'Real-time Data']
+    features: ['Anpassungsfähige Antworten', 'Multimodale Eingabe', 'Echtzeit-Daten']
   },
   { 
     id: 'instant-help',
@@ -30,7 +30,7 @@ const quickActions = [
     description: 'Schnelle Antworten auf häufige Fragen',
     gradient: 'from-green-500 to-teal-600',
     href: '/instant-help',
-    features: ['Voice Input', 'Image Upload', 'Document Analysis']
+    features: ['Spracheingabe', 'Bild-Upload', 'Dokumentenanalyse']
   },
   { 
     id: 'smart-services',
@@ -185,7 +185,7 @@ export default function MainNavigation() {
                         <div className="p-6">
                           <h4 className="text-sm font-semibold text-gray-900 mb-4 flex items-center gap-2">
                             <Zap className="w-4 h-4 text-yellow-500" />
-                            Quick Actions - 2027 UX
+                            Schnellzugriff - Moderne KI
                           </h4>
                           <div className="grid grid-cols-2 gap-3">
                             {quickActions.map((action) => (
@@ -251,42 +251,49 @@ export default function MainNavigation() {
         </div>
       </nav>
 
-      {/* Professional Mobile Navigation */}
-      <nav className="md:hidden fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-xl border-b border-neutral-200 shadow-lg safe-top">
+      {/* Verbesserte mobile Navigation - Leistungsoptimiert */}
+      <nav className="md:hidden fixed top-0 left-0 right-0 z-50 bg-white/98 backdrop-blur-xl border-b border-neutral-200 shadow-lg safe-top will-change-transform">
         <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between h-18">
-            {/* Professional Mobile Logo */}
-            <Link href="/" className="flex items-center space-x-2 group">
+          <div className="flex items-center justify-between h-16 touch-manipulation">
+            {/* Verbessertes mobiles Logo - Touch-optimiert */}
+            <Link href="/" className="flex items-center space-x-2 group min-h-[44px] min-w-[44px] p-2 -m-2 rounded-lg active:scale-95 transition-transform touch-manipulation">
               <div className="relative">
                 <img 
                   src="/images/logo-agentland-saarland-professional.svg" 
                   alt="AGENTLAND.SAARLAND" 
                   className="h-8 w-auto transition-transform group-hover:scale-105"
+                  loading="eager"
+                  decoding="sync"
                 />
                 <div className="absolute -top-1 -right-1 w-2 h-2 bg-saarland-500 rounded-full animate-pulse"></div>
               </div>
             </Link>
 
-            {/* Professional Mobile Actions */}
-            <div className="flex items-center space-x-2">
-              {/* Professional AI Button */}
+            {/* Verbesserte mobile Aktionen - Touch-optimiert */}
+            <div className="flex items-center space-x-3">
+              {/* Verbesserter KI-Assistent-Button */}
               <Link
                 href="/ai-assistant"
-                className="p-3 bg-saarland-blue-700 hover:bg-saarland-blue-800 text-white rounded-lg shadow-md active:scale-95 transition-all focus:ring-3 focus:ring-saarland-blue-300 focus:ring-offset-2 border border-saarland-blue-600 hover:shadow-lg"
-                aria-label="AI Assistant"
+                className="min-h-[48px] min-w-[48px] p-3 bg-saarland-blue-700 hover:bg-saarland-blue-800 text-white rounded-xl shadow-md active:scale-95 transition-all duration-200 focus:ring-3 focus:ring-saarland-blue-300 focus:ring-offset-2 border border-saarland-blue-600 hover:shadow-lg touch-manipulation"
+                aria-label="AI Assistant öffnen"
               >
-                <Brain className="w-5 h-5" />
+                <Brain className="w-6 h-6" />
               </Link>
               
-              {/* Professional Menu Button */}
+              {/* Verbesserter Menü-Button */}
               <Button
                 variant="ghost"
                 size="icon"
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="relative z-50 p-3 rounded-lg bg-technical-silver-100 hover:bg-technical-silver-200 active:scale-95 transition-all focus:ring-3 focus:ring-saarland-blue-300 focus:ring-offset-2 border border-technical-silver-300 shadow-sm hover:shadow-md"
-                aria-label={mobileMenuOpen ? "Menü schließen" : "Menu öffnen"}
+                className="relative z-50 min-h-[48px] min-w-[48px] p-3 rounded-xl bg-technical-silver-100 hover:bg-technical-silver-200 active:scale-95 transition-all duration-200 focus:ring-3 focus:ring-saarland-blue-300 focus:ring-offset-2 border border-technical-silver-300 shadow-sm hover:shadow-md touch-manipulation"
+                aria-label={mobileMenuOpen ? "Menü schließen" : "Hauptmenü öffnen"}
               >
-                {mobileMenuOpen ? <X className="w-6 h-6 text-neutral-gray-600" /> : <Menu className="w-6 h-6 text-neutral-gray-600" />}
+                <motion.div
+                  animate={{ rotate: mobileMenuOpen ? 90 : 0 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  {mobileMenuOpen ? <X className="w-6 h-6 text-neutral-gray-600" /> : <Menu className="w-6 h-6 text-neutral-gray-600" />}
+                </motion.div>
               </Button>
             </div>
           </div>
@@ -305,24 +312,27 @@ export default function MainNavigation() {
           )}
         </AnimatePresence>
 
-        {/* Revolutionary 2027 Mobile Menu Panel */}
-        <AnimatePresence>
+        {/* Verbessertes mobiles Menü-Panel - Leistungsoptimiert */}
+        <AnimatePresence mode="wait">
           {mobileMenuOpen && (
             <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-              className="fixed top-20 left-4 right-4 bg-white rounded-3xl shadow-2xl z-40 overflow-hidden border border-gray-100"
+              initial={{ opacity: 0, scale: 0.95, y: -10 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: -10 }}
+              transition={{ type: 'spring', stiffness: 400, damping: 25, mass: 0.8 }}
+              className="fixed top-20 left-4 right-4 bg-white rounded-2xl shadow-xl z-40 overflow-hidden border border-gray-100 will-change-transform"
+              style={{ maxHeight: 'calc(100vh - 6rem)', overflowY: 'auto' }}
             >
-              <div className="p-6 space-y-6">
-                {/* Smart Search Mobile */}
+              <div className="p-4 space-y-5 mobile-scroll" style={{ maxHeight: 'calc(100vh - 10rem)' }}>
+                {/* Verbesserte mobile Suche */}
                 <div className="relative">
-                  <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
                   <input
                     type="text"
-                    placeholder="Was brauchen Sie?"
-                    className="w-full pl-12 pr-4 py-3 bg-white border-2 border-technical-silver-300 rounded-2xl focus:ring-3 focus:ring-saarland-blue-300 focus:border-saarland-blue-600 transition-all text-neutral-gray-800 placeholder:text-neutral-gray-500 shadow-sm"
+                    placeholder="Suchen Sie Services, Hilfe oder Informationen..."
+                    className="w-full pl-12 pr-4 py-4 bg-white border-2 border-technical-silver-300 rounded-2xl focus:ring-3 focus:ring-saarland-blue-300 focus:border-saarland-blue-600 transition-all duration-200 text-neutral-gray-800 placeholder:text-neutral-gray-500 shadow-sm text-mobile-safe min-h-[48px] touch-manipulation"
+                    inputMode="search"
+                    enterKeyHint="search"
                   />
                 </div>
                 
@@ -348,7 +358,7 @@ export default function MainNavigation() {
                   ))}
                 </div>
                 
-                {/* Enhanced Community */}
+                {/* Verbesserte Community */}
                 <Link
                   href="/community"
                   onClick={() => setMobileMenuOpen(false)}
@@ -417,8 +427,8 @@ export default function MainNavigation() {
         </AnimatePresence>
       </nav>
 
-      {/* Spacer to push content below enhanced nav */}
-      <div className="h-20 md:h-20" />
+      {/* Verbesserter Abstandshalter für mobile Navigation */}
+      <div className="h-16 md:h-20" />
     </>
   )
 }

@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { enhancedAI } from '@/services/ai/enhanced-ai-service'
 import { SaarlandWeatherService } from '@/services/weather-service'
 import { embeddingsService } from '@/services/embeddings-enhanced'
 
@@ -23,7 +24,6 @@ export async function POST(request: NextRequest) {
     }
 
     const keywords = message.toLowerCase().trim()
-    let response = ''
     let agentName = 'SAAR-GPT'
 
     // Enhanced categorization using embeddings + fallback
@@ -47,6 +47,8 @@ export async function POST(request: NextRequest) {
         category = 'admin'
       } else if (keywords.includes('förder') || keywords.includes('business') || keywords.includes('startup')) {
         category = 'business'
+      } else if (keywords.includes('agentland') || keywords.includes('lohnt sich')) {
+        category = 'agentland'
       }
     }
 
@@ -61,9 +63,33 @@ export async function POST(request: NextRequest) {
       })
     }
 
-    // Generate response based on category
-    switch(category) {
-      case 'weather':
+    // Use Enhanced AI Service first, then fallback to specialized handlers
+    let response = ''
+    let aiSuccess = false
+    
+    try {
+      console.log('🤖 Calling Enhanced AI Service...')
+      const aiResult = await enhancedAI.processQuery(message, 'chat', category)
+      
+      if (aiResult.success && aiResult.response && aiResult.response.trim().length > 20) {
+        response = aiResult.response
+        aiSuccess = true
+        agentName = 'SAAR-GPT AI'
+        console.log('✅ Enhanced AI Service successful')
+      } else {
+        console.log('🔄 Enhanced AI Service returned short response, using fallback')
+        throw new Error('AI response too short or unsuccessful')
+      }
+    } catch (aiError) {
+      console.log('🔄 Enhanced AI Service failed, using specialized handlers:', aiError)
+      aiSuccess = false
+    }
+
+    // If AI didn't succeed, use specialized handlers as fallback
+    if (!aiSuccess) {
+      console.log('🔧 Using specialized fallback handlers for category:', category)
+      switch(category) {
+        case 'weather':
         try {
           // Use timeout for weather service
           const weatherPromise = Promise.race([
@@ -266,27 +292,31 @@ Ich helfe Ihnen gerne bei:
 • Erweiterte Saarland-Datenbank
 
 Stellen Sie mir einfach Ihre Frage!`
+      }
     }
 
-    // Enhance response with embeddings context
+    // Enhance response with embeddings context (if we have a response)
     let enhancedResponse = response
-    try {
-      enhancedResponse = await embeddingsService.enhanceResponse(message, response)
-    } catch (enhancementError) {
-      console.log('🔄 Response enhancement unavailable, using base response')
+    if (response && !aiSuccess) {
+      try {
+        enhancedResponse = await embeddingsService.enhanceResponse(message, response)
+      } catch (enhancementError) {
+        console.log('🔄 Response enhancement unavailable, using base response')
+      }
     }
 
     const responseData = {
       success: true,
-      message: enhancedResponse,
+      message: enhancedResponse || response,
       agent_name: agentName,
       category: category,
-      confidence: enhancedResponse !== response ? 0.98 : 0.95, // Higher confidence with enhancement
+      confidence: aiSuccess ? 0.98 : (enhancedResponse !== response ? 0.95 : 0.90),
       regional_context: 'AGENTLAND.SAARLAND',
       timestamp: new Date().toISOString(),
       responseTime: Date.now() - startTime,
       cached: false,
-      enhanced: enhancedResponse !== response
+      enhanced: enhancedResponse !== response,
+      ai_powered: aiSuccess
     }
 
     // Cache the response

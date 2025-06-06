@@ -254,31 +254,244 @@ export const mobileUtils = {
     }
   },
 
-  // Optimize for low battery
+  // Enhanced battery optimization
   optimizeForLowBattery: async () => {
     const batteryInfo = await mobileUtils.getBatteryInfo()
     
     if (batteryInfo && batteryInfo.level < 20 && !batteryInfo.charging) {
-      // Reduce animations
+      // Reduce animations and transitions
       document.documentElement.style.setProperty('--animation-duration', '0s')
+      document.documentElement.classList.add('low-battery-mode')
       
-      // Reduce background processes
+      // Reduce background processes and visual effects
       const reducedMotionCSS = `
-        *, *::before, *::after {
+        .low-battery-mode *, 
+        .low-battery-mode *::before, 
+        .low-battery-mode *::after {
           animation-duration: 0.01ms !important;
           animation-iteration-count: 1 !important;
           transition-duration: 0.01ms !important;
+          backdrop-filter: none !important;
+          box-shadow: none !important;
+        }
+        .low-battery-mode .bg-gradient-to-r,
+        .low-battery-mode .bg-gradient-to-br {
+          background: var(--color-saarland-blue-700) !important;
         }
       `
       
       const style = document.createElement('style')
+      style.id = 'low-battery-optimization'
       style.textContent = reducedMotionCSS
       document.head.appendChild(style)
       
+      // Disable non-essential features
+      localStorage.setItem('low-battery-mode', 'true')
+      
+      return true
+    } else {
+      // Remove optimizations when battery is charging or above 20%
+      document.documentElement.classList.remove('low-battery-mode')
+      const existingStyle = document.getElementById('low-battery-optimization')
+      if (existingStyle) {
+        existingStyle.remove()
+      }
+      localStorage.removeItem('low-battery-mode')
+    }
+    
+    return false
+  }
+}
+
+// Enhanced mobile interaction utilities
+const enhancedMobileUtils = {
+  ...mobileUtils,
+  
+  // Enhanced touch feedback with haptic support
+  provideTouchFeedback: (element: HTMLElement, type: 'light' | 'medium' | 'heavy' = 'light') => {
+    if (typeof navigator !== 'undefined' && 'vibrate' in navigator) {
+      const patterns = {
+        light: [10],
+        medium: [20],
+        heavy: [30]
+      }
+      navigator.vibrate(patterns[type])
+    }
+    
+    // Visual feedback
+    element.style.transform = 'scale(0.95)'
+    element.style.transition = 'transform 0.1s ease-out'
+    
+    setTimeout(() => {
+      element.style.transform = ''
+      element.style.transition = ''
+    }, 100)
+  },
+  
+  // Enhanced swipe gesture detection
+  addSwipeGesture: (element: HTMLElement, callbacks: {
+    onSwipeLeft?: () => void,
+    onSwipeRight?: () => void,
+    onSwipeUp?: () => void,
+    onSwipeDown?: () => void,
+    threshold?: number
+  }) => {
+    let startX = 0, startY = 0, endX = 0, endY = 0
+    const threshold = callbacks.threshold || 50
+    
+    const handleTouchStart = (e: TouchEvent) => {
+      startX = e.touches[0].clientX
+      startY = e.touches[0].clientY
+    }
+    
+    const handleTouchEnd = (e: TouchEvent) => {
+      endX = e.changedTouches[0].clientX
+      endY = e.changedTouches[0].clientY
+      
+      const deltaX = endX - startX
+      const deltaY = endY - startY
+      
+      if (Math.abs(deltaX) > Math.abs(deltaY)) {
+        if (Math.abs(deltaX) > threshold) {
+          if (deltaX > 0 && callbacks.onSwipeRight) {
+            callbacks.onSwipeRight()
+          } else if (deltaX < 0 && callbacks.onSwipeLeft) {
+            callbacks.onSwipeLeft()
+          }
+        }
+      } else {
+        if (Math.abs(deltaY) > threshold) {
+          if (deltaY > 0 && callbacks.onSwipeDown) {
+            callbacks.onSwipeDown()
+          } else if (deltaY < 0 && callbacks.onSwipeUp) {
+            callbacks.onSwipeUp()
+          }
+        }
+      }
+    }
+    
+    element.addEventListener('touchstart', handleTouchStart, { passive: true })
+    element.addEventListener('touchend', handleTouchEnd, { passive: true })
+    
+    return () => {
+      element.removeEventListener('touchstart', handleTouchStart)
+      element.removeEventListener('touchend', handleTouchEnd)
+    }
+  },
+  
+  // Smart loading for mobile
+  smartImageLoading: (img: HTMLImageElement, src: string, options?: {
+    quality?: number,
+    format?: 'webp' | 'avif' | 'auto',
+    prioritize?: boolean
+  }) => {
+    const { quality = 75, format = 'auto', prioritize = false } = options || {}
+    const isSlowConnection = mobileUtils.isSlowConnection()
+    const pixelRatio = mobileUtils.getPixelRatio()
+    
+    // Determine optimal quality based on connection
+    const optimalQuality = isSlowConnection ? Math.min(quality, 50) : quality
+    
+    // Generate responsive image URL
+    let optimizedSrc = src
+    if (src.includes('/_next/') || src.includes('vercel')) {
+      const width = Math.round(img.offsetWidth * pixelRatio)
+      const height = Math.round(img.offsetHeight * pixelRatio)
+      optimizedSrc = `${src}?w=${width}&h=${height}&q=${optimalQuality}`
+      
+      if (format !== 'auto') {
+        optimizedSrc += `&fmt=${format}`
+      }
+    }
+    
+    // Use intersection observer for lazy loading
+    if (!prioritize) {
+      mobileUtils.lazyLoadImage(img, optimizedSrc)
+    } else {
+      img.src = optimizedSrc
+    }
+    
+    // Add loading indicators
+    img.style.transition = 'opacity 0.3s ease-in-out'
+    img.style.opacity = '0.5'
+    
+    img.onload = () => {
+      img.style.opacity = '1'
+    }
+    
+    img.onerror = () => {
+      img.style.opacity = '1'
+      console.warn('Failed to load optimized image, falling back:', src)
+    }
+  },
+  
+  // Enhanced performance monitoring with Core Web Vitals
+  measureCoreWebVitals: () => {
+    if (typeof window === 'undefined' || !('performance' in window)) return null
+    
+    const observer = new PerformanceObserver((entryList) => {
+      for (const entry of entryList.getEntries()) {
+        console.log(`📊 ${entry.name}:`, entry.value)
+        
+        // Store metrics for analytics
+        if (typeof localStorage !== 'undefined') {
+          const metrics = JSON.parse(localStorage.getItem('mobile-performance-metrics') || '{}')
+          metrics[entry.name] = {
+            value: entry.value,
+            timestamp: Date.now(),
+            url: window.location.pathname
+          }
+          localStorage.setItem('mobile-performance-metrics', JSON.stringify(metrics))
+        }
+      }
+    })
+    
+    // Observe different metric types
+    try {
+      observer.observe({ entryTypes: ['measure', 'navigation', 'resource', 'paint'] })
+    } catch (e) {
+      console.warn('Performance observer not fully supported')
+    }
+    
+    return observer
+  },
+  
+  // PWA installation prompt
+  showPWAInstallPrompt: () => {
+    if (typeof window === 'undefined') return false
+    
+    // Check if already installed
+    if (window.matchMedia('(display-mode: standalone)').matches) {
+      return false
+    }
+    
+    // Check for install prompt event
+    const deferredPrompt = (window as any).deferredPrompt
+    if (deferredPrompt) {
+      deferredPrompt.prompt()
       return true
     }
     
     return false
+  },
+  
+  // Adaptive loading based on device capabilities
+  getAdaptiveLoadingStrategy: () => {
+    const isSlowConnection = mobileUtils.isSlowConnection()
+    const isLowEnd = (() => {
+      if (typeof navigator === 'undefined') return false
+      const memory = (navigator as any).deviceMemory
+      const cores = navigator.hardwareConcurrency
+      return memory && memory < 4 || cores && cores < 4
+    })()
+    
+    return {
+      shouldPreload: !isSlowConnection && !isLowEnd,
+      imageQuality: isSlowConnection ? 50 : isLowEnd ? 65 : 85,
+      shouldUseWebP: !isLowEnd,
+      maxConcurrentRequests: isSlowConnection ? 2 : isLowEnd ? 4 : 6,
+      shouldDefer: isSlowConnection || isLowEnd
+    }
   }
 }
 
@@ -303,7 +516,13 @@ export const {
   measurePerformance,
   getMemoryUsage,
   getBatteryInfo,
-  optimizeForLowBattery
-} = mobileUtils
+  optimizeForLowBattery,
+  provideTouchFeedback,
+  addSwipeGesture,
+  smartImageLoading,
+  measureCoreWebVitals,
+  showPWAInstallPrompt,
+  getAdaptiveLoadingStrategy
+} = enhancedMobileUtils
 
-export default mobileUtils
+export default enhancedMobileUtils

@@ -6,11 +6,12 @@ import {
   Zap, Search, Clock, CheckCircle, ArrowRight, 
   Building2, Globe, GraduationCap, Shield, Music,
   Phone, Mail, MapPin, ExternalLink, Star,
-  Lightbulb, Target, Briefcase, Heart
+  Lightbulb, Target, Briefcase, Heart, Loader2,
+  Bot, Database, Sparkles, TrendingUp
 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 
-interface QuickSolution {
+interface Solution {
   id: string
   question: string
   answer: string
@@ -21,11 +22,31 @@ interface QuickSolution {
   nextSteps?: string[]
   contacts?: any[]
   relatedLinks?: any[]
+  confidence: number
+  source: 'knowledge_base' | 'ai_generated' | 'hybrid'
 }
 
-const QUICK_SOLUTIONS: QuickSolution[] = [
+interface SearchResponse {
+  success: boolean
+  solutions: Solution[]
+  metadata: {
+    query: string
+    category: string
+    total_solutions: number
+    processing_time_ms: number
+    has_ai_generated: boolean
+    average_confidence: number
+    timestamp: string
+  }
+  error?: string
+}
+
+// Fallback solutions for offline mode
+const FALLBACK_SOLUTIONS: Solution[] = [
   {
     id: 'business-registration',
+    confidence: 0.9,
+    source: 'knowledge_base',
     question: 'Wie melde ich ein Gewerbe im Saarland an?',
     answer: `**Gewerbeanmeldung im Saarland - Schritt für Schritt:**
 
@@ -66,6 +87,8 @@ const QUICK_SOLUTIONS: QuickSolution[] = [
   },
   {
     id: 'tourism-attractions',
+    confidence: 0.9,
+    source: 'knowledge_base',
     question: 'Was kann ich heute im Saarland unternehmen?',
     answer: `**Ihre Saarland-Highlights für heute:**
 
@@ -101,6 +124,8 @@ Alle Ziele in max. 45 Min von Saarbrücken
   },
   {
     id: 'education-funding',
+    confidence: 0.9,
+    source: 'knowledge_base',
     question: 'Welche Fördermöglichkeiten gibt es für Weiterbildung?',
     answer: `**Weiterbildungsförderung im Saarland:**
 
@@ -151,34 +176,70 @@ function InstantHelpContent() {
   const searchParams = useSearchParams()
   const [searchQuery, setSearchQuery] = useState(searchParams?.get('query') || '')
   const [selectedCategory, setSelectedCategory] = useState('all')
-  const [filteredSolutions, setFilteredSolutions] = useState(QUICK_SOLUTIONS)
-  const [selectedSolution, setSelectedSolution] = useState<QuickSolution | null>(null)
+  const [solutions, setSolutions] = useState<Solution[]>([])
+  const [selectedSolution, setSelectedSolution] = useState<Solution | null>(null)
+  const [isLoading, setIsLoading] = useState(false)
+  const [searchMetadata, setSearchMetadata] = useState<any>(null)
+  const [hasSearched, setHasSearched] = useState(false)
 
   useEffect(() => {
-    filterSolutions()
+    if (searchQuery.trim().length >= 3) {
+      performSearch()
+    } else if (searchQuery.trim().length === 0) {
+      setSolutions([])
+      setHasSearched(false)
+      setSearchMetadata(null)
+    }
   }, [searchQuery, selectedCategory])
 
-  const filterSolutions = () => {
-    let filtered = QUICK_SOLUTIONS
-
-    // Filter by category
-    if (selectedCategory !== 'all') {
-      filtered = filtered.filter(solution => 
-        solution.category.toLowerCase() === selectedCategory
-      )
+  useEffect(() => {
+    // Initial query from URL
+    const urlQuery = searchParams?.get('query')
+    if (urlQuery && urlQuery.trim().length >= 3) {
+      setSearchQuery(urlQuery)
     }
+  }, [searchParams])
 
-    // Filter by search query
-    if (searchQuery.trim()) {
-      const query = searchQuery.toLowerCase()
-      filtered = filtered.filter(solution =>
-        solution.question.toLowerCase().includes(query) ||
-        solution.answer.toLowerCase().includes(query) ||
-        solution.tags.some(tag => tag.toLowerCase().includes(query))
-      )
+  const performSearch = async () => {
+    if (isLoading) return
+    
+    setIsLoading(true)
+    setHasSearched(true)
+    
+    try {
+      const response = await fetch('/api/instant-help', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          query: searchQuery.trim(),
+          category: selectedCategory !== 'all' ? selectedCategory : undefined,
+          urgent: false
+        })
+      })
+      
+      const data: SearchResponse = await response.json()
+      
+      if (data.success) {
+        setSolutions(data.solutions)
+        setSearchMetadata(data.metadata)
+      } else {
+        console.error('Search failed:', data.error)
+        // Fallback to offline solutions
+        setSolutions(FALLBACK_SOLUTIONS.filter(s => 
+          selectedCategory === 'all' || s.category.toLowerCase() === selectedCategory.toLowerCase()
+        ))
+      }
+    } catch (error) {
+      console.error('Search error:', error)
+      // Fallback to offline solutions
+      setSolutions(FALLBACK_SOLUTIONS.filter(s => 
+        selectedCategory === 'all' || s.category.toLowerCase() === selectedCategory.toLowerCase()
+      ))
+    } finally {
+      setIsLoading(false)
     }
-
-    setFilteredSolutions(filtered)
   }
 
   const getUrgencyColor = (urgency: string) => {
@@ -193,6 +254,30 @@ function InstantHelpContent() {
   const getCategoryColor = (category: string) => {
     const cat = CATEGORIES.find(c => c.name.toLowerCase() === category.toLowerCase())
     return cat?.color || 'gray'
+  }
+
+  const getSourceIcon = (source: string) => {
+    switch (source) {
+      case 'knowledge_base': return Database
+      case 'ai_generated': return Bot
+      case 'hybrid': return Sparkles
+      default: return Target
+    }
+  }
+
+  const getSourceColor = (source: string) => {
+    switch (source) {
+      case 'knowledge_base': return 'text-blue-600 bg-blue-100'
+      case 'ai_generated': return 'text-purple-600 bg-purple-100'
+      case 'hybrid': return 'text-indigo-600 bg-indigo-100'
+      default: return 'text-gray-600 bg-gray-100'
+    }
+  }
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && searchQuery.trim().length >= 3) {
+      performSearch()
+    }
   }
 
   return (
@@ -218,9 +303,15 @@ function InstantHelpContent() {
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyPress={handleKeyPress}
                   placeholder="Wonach suchen Sie? z.B. 'Gewerbe anmelden' oder 'Saarland Tourismus'"
-                  className="w-full pl-14 pr-6 py-4 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-yellow-500 focus:border-transparent text-lg"
+                  className="w-full pl-14 pr-20 py-4 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-yellow-500 focus:border-transparent text-lg"
                 />
+                {isLoading && (
+                  <div className="absolute right-4 top-1/2 transform -translate-y-1/2">
+                    <Loader2 className="w-6 h-6 text-yellow-500 animate-spin" />
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -253,12 +344,22 @@ function InstantHelpContent() {
               
               <div className="mt-6 p-4 bg-gradient-to-r from-yellow-50 to-orange-50 rounded-2xl">
                 <h4 className="font-semibold text-gray-900 mb-2 flex items-center gap-2">
-                  <Lightbulb className="w-4 h-4 text-yellow-600" />
-                  2027 Instant Help
+                  <Bot className="w-4 h-4 text-yellow-600" />
+                  KI-Enhanced Help
                 </h4>
                 <p className="text-sm text-gray-600">
-                  Sofortige Lösungen ohne lange Wartezeiten. Präzise Antworten in Sekunden.
+                  Sofortige Lösungen durch KI + Wissensdatenbank. Präzise Antworten in unter 2 Minuten.
                 </p>
+                {searchMetadata && (
+                  <div className="mt-2 text-xs text-gray-500">
+                    Verarbeitung: {searchMetadata.processing_time_ms}ms
+                    {searchMetadata.has_ai_generated && (
+                      <span className="ml-2 inline-flex items-center gap-1">
+                        <Sparkles className="w-3 h-3" /> KI-generiert
+                      </span>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -266,18 +367,46 @@ function InstantHelpContent() {
           {/* Solutions List */}
           <div className="lg:col-span-3">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-bold text-gray-900">
-                {filteredSolutions.length} Lösungen gefunden
-              </h2>
+              <div>
+                <h2 className="text-2xl font-bold text-gray-900">
+                  {isLoading ? 'Suche läuft...' : 
+                   hasSearched ? `${solutions.length} Lösungen gefunden` : 
+                   'Geben Sie mindestens 3 Zeichen ein'}
+                </h2>
+                {searchMetadata && (
+                  <p className="text-sm text-gray-600 mt-1">
+                    Durchschnittliche Genauigkeit: {Math.round(searchMetadata.average_confidence * 100)}%
+                    {searchMetadata.has_ai_generated && (
+                      <span className="ml-2 inline-flex items-center gap-1 text-purple-600">
+                        <Bot className="w-3 h-3" /> KI-Enhanced
+                      </span>
+                    )}
+                  </p>
+                )}
+              </div>
               
               <div className="flex items-center gap-2 text-sm text-gray-600">
                 <Clock className="w-4 h-4" />
-                <span>Alle Antworten in unter 2 Minuten</span>
+                <span>Antworten in unter 2 Minuten</span>
               </div>
             </div>
             
+            {isLoading && (
+              <div className="flex items-center justify-center py-16">
+                <div className="text-center">
+                  <Loader2 className="w-12 h-12 text-yellow-500 animate-spin mx-auto mb-4" />
+                  <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                    Ihre Lösung wird generiert...
+                  </h3>
+                  <p className="text-gray-600">
+                    KI analysiert Ihre Anfrage und sucht die besten Antworten
+                  </p>
+                </div>
+              </div>
+            )}
+            
             <div className="space-y-6">
-              {filteredSolutions.map((solution) => (
+              {solutions.map((solution) => (
                 <motion.div
                   key={solution.id}
                   initial={{ opacity: 0, y: 20 }}
@@ -300,9 +429,20 @@ function InstantHelpContent() {
                             {solution.urgency === 'high' ? 'Dringend' : solution.urgency === 'medium' ? 'Normal' : 'Niedrig'}
                           </span>
                           
+                          <span className={`px-2 py-1 rounded-full text-xs font-semibold flex items-center gap-1 ${getSourceColor(solution.source)}`}>
+                            {React.createElement(getSourceIcon(solution.source), { className: 'w-3 h-3' })}
+                            {solution.source === 'knowledge_base' ? 'KB' : 
+                             solution.source === 'ai_generated' ? 'KI' : 'Hybrid'}
+                          </span>
+                          
                           <div className="flex items-center gap-1 text-sm text-gray-600">
                             <Clock className="w-4 h-4" />
                             <span>{solution.estimatedTime}</span>
+                          </div>
+                          
+                          <div className="flex items-center gap-1 text-sm text-gray-600">
+                            <TrendingUp className="w-4 h-4" />
+                            <span>{Math.round(solution.confidence * 100)}%</span>
                           </div>
                         </div>
                       </div>
@@ -413,7 +553,7 @@ function InstantHelpContent() {
               ))}
             </div>
             
-            {filteredSolutions.length === 0 && (
+            {!isLoading && hasSearched && solutions.length === 0 && (
               <div className="text-center py-16">
                 <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
                   <Search className="w-10 h-10 text-gray-400" />
@@ -422,11 +562,54 @@ function InstantHelpContent() {
                   Keine Lösungen gefunden
                 </h3>
                 <p className="text-gray-600 mb-6">
-                  Versuchen Sie andere Suchbegriffe oder kontaktieren Sie unseren AI-Assistenten
+                  Versuchen Sie andere Suchbegriffe oder kontaktieren Sie unseren KI-Assistenten
                 </p>
-                <button className="px-6 py-3 bg-gradient-to-r from-yellow-500 to-orange-600 text-white rounded-2xl font-semibold hover:shadow-lg transition-all">
-                  AI-Assistenten fragen
-                </button>
+                <div className="flex gap-3 justify-center">
+                  <button 
+                    onClick={() => window.open('/chat', '_blank')}
+                    className="px-6 py-3 bg-gradient-to-r from-yellow-500 to-orange-600 text-white rounded-2xl font-semibold hover:shadow-lg transition-all flex items-center gap-2"
+                  >
+                    <Bot className="w-5 h-5" />
+                    KI-Chat starten
+                  </button>
+                  <button 
+                    onClick={() => setSearchQuery('')}
+                    className="px-6 py-3 bg-gray-100 text-gray-700 rounded-2xl font-semibold hover:bg-gray-200 transition-all"
+                  >
+                    Neue Suche
+                  </button>
+                </div>
+              </div>
+            )}
+            
+            {!hasSearched && searchQuery.trim().length === 0 && (
+              <div className="text-center py-16">
+                <div className="w-20 h-20 bg-gradient-to-r from-yellow-500 to-orange-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Zap className="w-10 h-10 text-white" />
+                </div>
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                  Willkommen bei der Sofort-Hilfe!
+                </h3>
+                <p className="text-gray-600 mb-6">
+                  Stellen Sie eine Frage zu Saarland-Services und erhalten Sie sofort eine KI-unterstützte Antwort
+                </p>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 max-w-4xl mx-auto">
+                  {[
+                    { text: 'Gewerbe anmelden', icon: Building2 },
+                    { text: 'Tourismus Tipps', icon: Globe },
+                    { text: 'Weiterbildung', icon: GraduationCap },
+                    { text: 'Behörden Services', icon: Shield }
+                  ].map((example, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setSearchQuery(example.text)}
+                      className="p-4 border border-gray-200 rounded-xl hover:border-yellow-300 hover:shadow-lg transition-all flex items-center gap-3 text-left"
+                    >
+                      <example.icon className="w-6 h-6 text-yellow-600" />
+                      <span className="text-sm font-medium text-gray-700">{example.text}</span>
+                    </button>
+                  ))}
+                </div>
               </div>
             )}
           </div>

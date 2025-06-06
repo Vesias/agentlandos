@@ -39,49 +39,205 @@ export default function HomePage() {
             </h3>
           </div>
           
-          {/* Urgency Message */}
-          <div className="bg-[#FDB913]/20 border border-[#FDB913]/30 rounded-2xl p-6 mb-8 max-w-3xl mx-auto backdrop-blur-sm">
-            <p className="text-lg text-white font-semibold mb-2">
-              🚀 SEIEN SIE DER VORREITER IN IHRER BRANCHE!
-            </p>
-            <p className="text-white/80">
-              Verpassen Sie nicht den Trend der heute einschlägt - 5-Jahre-Technologie JETZT verfügbar
-            </p>
+          {/* Wichtige Nachricht mit Anreizsystem */}
+          <div className="relative group mb-8">
+            {/* Animated Background Gradient */}
+            <div className="absolute inset-0 bg-gradient-to-r from-[#FDB913]/30 via-[#FDB913]/20 to-[#E5A50A]/30 rounded-3xl blur-xl opacity-75 group-hover:opacity-100 animate-pulse transition-all duration-500"></div>
+            
+            {/* Main Urgency Container */}
+            <div className="relative bg-gradient-to-br from-[#FDB913]/25 via-[#FDB913]/20 to-[#E5A50A]/25 border-2 border-[#FDB913]/40 rounded-3xl p-8 max-w-4xl mx-auto backdrop-blur-md hover:border-[#FDB913]/60 transition-all duration-500 transform hover:scale-[1.02] shadow-2xl hover:shadow-3xl">
+              
+              {/* Urgency Header with Enhanced Typography */}
+              <div className="text-center mb-6">
+                <div className="inline-flex items-center gap-3 bg-[#FDB913]/30 border border-[#FDB913]/50 rounded-full px-6 py-3 mb-4">
+                  <div className="w-3 h-3 bg-[#FDB913] rounded-full"></div>
+                  <span className="text-[#FDB913] font-bold text-sm uppercase tracking-wider">PIONIER-PROGRAMM</span>
+                  <div className="w-3 h-3 bg-[#FDB913] rounded-full"></div>
+                </div>
+                
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-3 font-quantum leading-tight">
+                  <span className="text-[#FDB913]">Gestalten Sie die Zukunft mit</span>
+                </h2>
+                
+                <p className="text-xl sm:text-2xl text-white/95 font-semibold mb-4 max-w-3xl mx-auto leading-relaxed">
+                  Professionelle KI-Integration für saarländische Unternehmen
+                </p>
+              </div>
+              
+              {/* Enhanced Value Proposition Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                <div className="bg-white/10 border border-[#FDB913]/30 rounded-xl p-4 text-center backdrop-blur-sm hover:bg-white/15 transition-all duration-300">
+                  <div className="text-2xl font-bold text-[#FDB913] mb-1">50%</div>
+                  <div className="text-sm text-white/90">Erstes Jahr Rabatt</div>
+                </div>
+                <div className="bg-white/10 border border-green-400/30 rounded-xl p-4 text-center backdrop-blur-sm hover:bg-white/15 transition-all duration-300">
+                  <div className="text-2xl font-bold text-green-400 mb-1">ROI</div>
+                  <div className="text-sm text-white/90">Sofort messbar</div>
+                </div>
+                <div className="bg-white/10 border border-blue-400/30 rounded-xl p-4 text-center backdrop-blur-sm hover:bg-white/15 transition-all duration-300">
+                  <div className="text-2xl font-bold text-blue-400 mb-1">24/7</div>
+                  <div className="text-sm text-white/90">KI-Support</div>
+                </div>
+              </div>
+              
+              {/* Urgency Counter & Social Proof */}
+              <div className="text-center">
+                <p className="text-white/90 text-lg mb-2">
+                  <strong className="text-[#FDB913]">Professionelle KI-Implementierung nach deutschen Standards</strong>
+                </p>
+                <p className="text-white/80 text-base">
+                  Bewährte Technologie mit regionaler Expertise und persönlicher Betreuung
+                </p>
+                
+                {/* Professional Status Indicator */}
+                <div className="inline-flex items-center gap-2 bg-blue-500/20 border border-blue-500/30 rounded-full px-4 py-2 mt-4">
+                  <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                  <span className="text-blue-300 font-semibold text-sm">Betaphase - Jetzt kostenlos testen</span>
+                </div>
+              </div>
+            </div>
           </div>
 
-          {/* Revolutionary 2027 CTA Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16">
-            <Link href="/ai-assistant" className="w-full sm:w-auto">
-              <button className="group bg-[#FDB913] hover:bg-[#E5A50A] text-[#003399] px-8 py-4 rounded-2xl font-bold text-lg transition-all duration-300 flex items-center justify-center w-full sm:w-auto min-w-[260px] shadow-2xl hover:shadow-3xl hover:scale-105 touch-manipulation">
-                <Brain className="w-6 h-6 mr-3 group-hover:scale-110 transition-transform" />
-                AI Assistant starten
-              </button>
+          {/* Professionelle Aktionsknöpfe mit Anreizsystem */}
+          <div className="flex flex-col lg:flex-row gap-6 justify-center items-center mb-16">
+            {/* PRIMARY CTA - AI-Agenten testen */}
+            <Link href="/ai-assistant" className="w-full sm:w-auto group">
+              <div className="relative">
+                {/* Animated Glow Effect */}
+                <div className="absolute inset-0 bg-gradient-to-r from-[#FDB913] to-[#E5A50A] rounded-3xl blur-xl opacity-60 group-hover:opacity-100 animate-pulse transition-all duration-500"></div>
+                
+                {/* Main Button */}
+                <button className="relative bg-gradient-to-r from-[#FDB913] to-[#E5A50A] hover:from-[#E5A50A] hover:to-[#D4940A] text-[#003399] px-10 py-5 rounded-3xl font-bold text-xl transition-all duration-500 flex items-center justify-center w-full sm:w-auto min-w-[320px] shadow-2xl hover:shadow-3xl transform hover:scale-110 touch-manipulation border-2 border-[#FDB913]/50 hover:border-[#FDB913] group-hover:animate-none" aria-label="Starten Sie Ihren AI-Assistenten für sofortige Unternehmensergebnisse">
+                  <Brain className="w-7 h-7 mr-4 group-hover:scale-125 transition-transform duration-300 animate-pulse" />
+                  <div className="text-left">
+                    <div className="text-xl font-bold">🤖 AI-Agenten JETZT testen</div>
+                    <div className="text-sm font-medium opacity-90">Sofort ROI für Ihr Unternehmen</div>
+                  </div>
+                  <div className="ml-4 bg-[#003399]/20 rounded-full px-3 py-1 text-xs font-bold">KOSTENLOS</div>
+                </button>
+                
+                {/* Success Indicator */}
+                <div className="absolute -top-2 -right-2 bg-green-500 text-white rounded-full w-8 h-8 flex items-center justify-center text-xs font-bold animate-bounce opacity-0 group-hover:opacity-100 transition-all duration-300">
+                  ✓
+                </div>
+              </div>
             </Link>
             
-            <Link href="/instant-help" className="w-full sm:w-auto">
-              <button className="group bg-white/10 hover:bg-white/20 text-white border-2 border-white/30 hover:border-white/50 px-8 py-4 rounded-2xl font-semibold text-lg transition-all duration-300 flex items-center justify-center w-full sm:w-auto min-w-[260px] backdrop-blur-sm touch-manipulation">
-                <Zap className="w-6 h-6 mr-3 group-hover:scale-110 transition-transform" />
-                Sofort-Hilfe
-              </button>
+            {/* SEKUNDÄRE AKTION - Sofort-Hilfe */}
+            <Link href="/instant-help" className="w-full sm:w-auto group">
+              <div className="relative">
+                {/* Subtle Glow */}
+                <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-white/10 rounded-3xl blur-xl opacity-50 group-hover:opacity-80 transition-all duration-500"></div>
+                
+                {/* Secondary Button */}
+                <button className="relative bg-white/10 hover:bg-white/25 text-white border-2 border-white/40 hover:border-white/70 px-10 py-5 rounded-3xl font-bold text-xl transition-all duration-500 flex items-center justify-center w-full sm:w-auto min-w-[320px] backdrop-blur-md hover:backdrop-blur-lg touch-manipulation transform hover:scale-105 shadow-xl hover:shadow-2xl" aria-label="Erhalten Sie sofortige Hilfe von unseren KI-Experten">
+                  <Zap className="w-7 h-7 mr-4 group-hover:scale-125 transition-transform duration-300 text-[#FDB913]" />
+                  <div className="text-left">
+                    <div className="text-xl font-bold">⚡ Sofort-Hilfe</div>
+                    <div className="text-sm font-medium opacity-90">Direkter Expert Support</div>
+                  </div>
+                  <div className="ml-4 bg-[#FDB913]/30 rounded-full px-3 py-1 text-xs font-bold text-[#FDB913]">LIVE</div>
+                </button>
+              </div>
             </Link>
           </div>
-
-          {/* FREE Saarland Special */}
-          <div className="bg-gradient-to-r from-[#003399] to-[#0277bd] rounded-3xl p-6 mb-8 max-w-2xl mx-auto text-center text-white border-2 border-[#FDB913]/50">
-            <div className="flex items-center justify-center gap-2 mb-4">
-              <span className="text-2xl">🆓</span>
-              <h3 className="text-xl font-bold text-[#FDB913]">KOSTENLOS für alle Saarländer!</h3>
-              <span className="text-2xl">🏛️</span>
+          
+          {/* Enhanced Trust & Social Proof Indicators */}
+          <div className="flex flex-wrap justify-center items-center gap-4 mb-12 px-4">
+            <div className="flex items-center gap-2 bg-white/10 border border-green-400/30 rounded-full px-6 py-3 backdrop-blur-sm hover:bg-white/15 transition-all duration-300">
+              <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
+              <span className="text-green-300 font-semibold text-sm">✅ 30-Tage Geld-zurück-Garantie</span>
             </div>
-            <p className="text-white/90 mb-4">
-              Als erste KI-Agentur im Saarland unterstützen wir unsere Heimat - 
-              <strong className="text-[#FDB913]"> komplett kostenlos mit echten Echtzeit-Daten</strong>
-            </p>
-            <Link href="/register?plan=saarland-free">
-              <button className="bg-[#FDB913] hover:bg-[#E5A50A] text-[#003399] px-6 py-3 rounded-xl font-bold transition-all duration-300 hover:scale-105">
-                Jetzt kostenlos als Saarländer registrieren
-              </button>
-            </Link>
+            <div className="flex items-center gap-2 bg-white/10 border border-[#FDB913]/30 rounded-full px-6 py-3 backdrop-blur-sm hover:bg-white/15 transition-all duration-300">
+              <Star className="w-4 h-4 text-[#FDB913] animate-spin-slow" />
+              <span className="text-[#FDB913] font-semibold text-sm">⭐ 100% Saarland Qualität</span>
+            </div>
+            <div className="flex items-center gap-2 bg-white/10 border border-blue-400/30 rounded-full px-6 py-3 backdrop-blur-sm hover:bg-white/15 transition-all duration-300">
+              <Shield className="w-4 h-4 text-blue-400" />
+              <span className="text-blue-300 font-semibold text-sm">🔒 DSGVO-konform & sicher</span>
+            </div>
+          </div>
+
+          {/* KOSTENLOSES Saarland-Angebot mit regionalem Stolz */}
+          <div className="relative group mb-8">
+            {/* Animated Saarland Pride Background */}
+            <div className="absolute inset-0 bg-gradient-to-r from-[#003399]/30 via-[#0277bd]/20 to-[#003399]/30 rounded-3xl blur-xl opacity-75 group-hover:opacity-100 transition-all duration-500 animate-pulse"></div>
+            
+            {/* Main Regional Container */}
+            <div className="relative bg-gradient-to-br from-[#003399] via-[#0052CC] to-[#0277bd] rounded-3xl p-8 max-w-3xl mx-auto text-center text-white border-3 border-[#FDB913]/60 shadow-2xl hover:shadow-3xl transition-all duration-500 transform hover:scale-[1.02] backdrop-blur-sm">
+              
+              {/* Regional Pride Header */}
+              <div className="flex items-center justify-center gap-3 mb-6 relative">
+                <div className="text-3xl animate-bounce">🆓</div>
+                <div className="text-center">
+                  <h3 className="text-2xl md:text-3xl font-bold text-[#FDB913] font-quantum mb-1">
+                    KOSTENLOS für alle Saarländer!
+                  </h3>
+                  <div className="inline-flex items-center gap-2 bg-[#FDB913]/20 border border-[#FDB913]/40 rounded-full px-4 py-1">
+                    <div className="w-2 h-2 bg-[#FDB913] rounded-full animate-pulse"></div>
+                    <span className="text-[#FDB913] font-semibold text-sm">HEIMAT-VORTEIL</span>
+                  </div>
+                </div>
+                <div className="text-3xl animate-bounce delay-75">🏛️</div>
+              </div>
+              
+              {/* Enhanced Value Proposition */}
+              <div className="bg-white/10 border border-[#FDB913]/30 rounded-2xl p-6 mb-6 backdrop-blur-sm">
+                <p className="text-lg md:text-xl text-white/95 mb-3 leading-relaxed">
+                  Als <strong className="text-[#FDB913]">erste KI-Agentur im Saarland</strong> unterstützen wir unsere Heimat
+                </p>
+                <div className="flex flex-wrap justify-center gap-4 mb-4">
+                  <div className="inline-flex items-center gap-2 bg-green-500/20 border border-green-500/30 rounded-full px-4 py-2">
+                    <span className="text-green-300 font-bold text-sm">✅ 100% KOSTENLOS</span>
+                  </div>
+                  <div className="inline-flex items-center gap-2 bg-[#FDB913]/20 border border-[#FDB913]/30 rounded-full px-4 py-2">
+                    <span className="text-[#FDB913] font-bold text-sm">📈 ECHTE DATEN</span>
+                  </div>
+                  <div className="inline-flex items-center gap-2 bg-blue-500/20 border border-blue-500/30 rounded-full px-4 py-2">
+                    <span className="text-blue-300 font-bold text-sm">⚡ ECHTZEIT</span>
+                  </div>
+                </div>
+                <p className="text-white/90 font-semibold">
+                  <strong className="text-[#FDB913]">Vollständige KI-Agentur-Services</strong> - Speziell für das Saarland optimiert
+                </p>
+              </div>
+              
+              {/* Enhanced CTA with Regional Appeal */}
+              <Link href="/register?plan=saarland-free" className="group inline-block">
+                <div className="relative">
+                  {/* Button Glow Effect */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-[#FDB913] to-[#E5A50A] rounded-2xl blur-lg opacity-60 group-hover:opacity-100 transition-all duration-300"></div>
+                  
+                  {/* Main Regional CTA Button */}
+                  <button className="relative bg-gradient-to-r from-[#FDB913] to-[#E5A50A] hover:from-[#E5A50A] hover:to-[#D4940A] text-[#003399] px-8 py-4 rounded-2xl font-bold text-lg md:text-xl transition-all duration-300 transform hover:scale-110 shadow-xl hover:shadow-2xl border-2 border-[#FDB913]/50 hover:border-[#FDB913] min-w-[300px]" aria-label="Registrieren Sie sich kostenlos als Saarländer für vollständige KI-Services">
+                    <div className="flex items-center justify-center gap-3">
+                      <span className="text-2xl">🏠</span>
+                      <div className="text-left">
+                        <div className="font-bold">Kostenlos registrieren</div>
+                        <div className="text-sm font-medium opacity-90">Als stolzer Saarländer</div>
+                      </div>
+                      <span className="text-2xl animate-pulse">✨</span>
+                    </div>
+                  </button>
+                </div>
+              </Link>
+              
+              {/* Regional Trust Indicators */}
+              <div className="flex flex-wrap justify-center items-center gap-3 mt-6 text-sm">
+                <div className="flex items-center gap-2 text-white/80">
+                  <Shield className="w-4 h-4 text-[#FDB913]" />
+                  <span>Saarland-Datenschutz</span>
+                </div>
+                <div className="flex items-center gap-2 text-white/80">
+                  <Star className="w-4 h-4 text-[#FDB913]" />
+                  <span>Regional optimiert</span>
+                </div>
+                <div className="flex items-center gap-2 text-white/80">
+                  <Clock className="w-4 h-4 text-[#FDB913]" />
+                  <span>Sofort aktiv</span>
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* Authentic Platform Status */}
@@ -178,7 +334,7 @@ export default function HomePage() {
                   <TrendingUp className="w-8 h-8 text-white" />
                 </div>
                 <h3 className="text-xl font-bold mb-3 text-[#003399]">
-                  EXPLOSIVE UMSATZSTEIGERUNG 📈
+                  SIGNIFIKANTE UMSATZSTEIGERUNG 📈
                 </h3>
                 <ul className="text-gray-600 leading-relaxed text-sm space-y-2">
                   <li>• 25-60% Revenue Growth</li>
@@ -360,16 +516,16 @@ export default function HomePage() {
       {/* Advanced Saarland Services - NEW! */}
       <EnhancedSaarlandServices />
       
-      {/* Revolutionary AI Interface Section */}
+      {/* Intelligente KI-Benutzeroberfläche */}
       <section className="py-20 px-4 bg-gradient-to-b from-white to-gray-50">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
             <div className="inline-flex items-center gap-2 bg-[#003399]/10 border border-[#003399]/20 rounded-full px-6 py-2 mb-6">
               <Brain className="w-5 h-5 text-[#003399]" />
-              <span className="text-[#003399] font-semibold">2027 UX REVOLUTION</span>
+              <span className="text-[#003399] font-semibold">INTELLIGENTE KI-TECHNOLOGIE</span>
             </div>
             <h2 className="text-4xl md:text-5xl font-bold text-[#003399] mb-4 font-quantum">
-              Intelligente AI ohne Grenzen
+              Intelligente KI ohne Grenzen
             </h2>
             <p className="text-xl text-gray-600 max-w-4xl mx-auto font-nova">
               Keine veralteten "Chat Free" vs "Chat Pro" Kategorien. Ein adaptiver AI-Assistent, der automatisch erkennt, was Sie brauchen.
@@ -382,9 +538,9 @@ export default function HomePage() {
               <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
                 <Brain className="w-8 h-8 text-white" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-4">Intent Detection</h3>
+              <h3 className="text-xl font-bold text-gray-900 mb-4">Absichtserkennung</h3>
               <p className="text-gray-600">
-                AI erkennt automatisch, was Sie brauchen - ohne manuelle Kategorieauswahl
+                KI erkennt automatisch, was Sie brauchen - ohne manuelle Kategorieauswahl
               </p>
             </div>
             
@@ -402,7 +558,7 @@ export default function HomePage() {
               <div className="w-16 h-16 bg-gradient-to-r from-orange-500 to-red-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
                 <Star className="w-8 h-8 text-white" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-4">Adaptive Responses</h3>
+              <h3 className="text-xl font-bold text-gray-900 mb-4">Anpassungsfähige Antworten</h3>
               <p className="text-gray-600">
                 Intelligente Antworten die sich an Ihren Kontext und Ihre Bedürfnisse anpassen
               </p>

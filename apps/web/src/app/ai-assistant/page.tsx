@@ -66,8 +66,8 @@ const QUICK_ACTIONS: QuickAction[] = [
 ]
 
 const AI_CAPABILITIES = [
-  'Adaptive Antworten basierend auf Kontext',
-  'Multi-modale Eingabe (Text, Sprache, Bilder)',
+  'Anpassungsfähige Antworten basierend auf Kontext',
+  'Multimodale Eingabe (Text, Sprache, Bilder)',
   'Echtzeit-Datenintegration',
   'Dokumentenanalyse und -verarbeitung',
   'Cross-Border Informationen DE/FR/LU',
@@ -302,7 +302,7 @@ Haben Sie eine spezifischere Frage, oder soll ich Ihnen bei einem konkreten Prob
                 <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center">
                   <Brain className="w-7 h-7 text-white" />
                 </div>
-                AI Assistant 2027
+                Intelligenter KI-Assistent
               </h1>
               <p className="text-gray-600 mt-1">
                 Intelligente Unterstützung ohne Grenzen - Ein AI für alle Ihre Bedürfnisse
@@ -360,10 +360,10 @@ Haben Sie eine spezifischere Frage, oder soll ich Ihnen bei einem konkreten Prob
                   <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-4">
                     <h4 className="font-semibold text-gray-900 mb-2 flex items-center gap-2">
                       <Star className="w-4 h-4 text-yellow-500" />
-                      2027 UX Standard
+                      Moderne KI-Standards
                     </h4>
                     <p className="text-sm text-gray-600">
-                      Keine veralteten Chat-Kategorien. Ein intelligenter AI, der sich an Sie anpasst.
+                      Keine veralteten Chat-Kategorien. Eine intelligente KI, die sich an Sie anpasst.
                     </p>
                   </div>
                 </div>

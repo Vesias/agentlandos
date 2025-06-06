@@ -511,6 +511,24 @@
   }
 }
 
+/* Enhanced accessibility and device-specific optimizations */
+
+/* Low battery mode optimizations */
+.low-battery-mode {
+  filter: none !important;
+  backdrop-filter: none !important;
+}
+
+.low-battery-mode *,
+.low-battery-mode *::before,
+.low-battery-mode *::after {
+  animation: none !important;
+  transition: none !important;
+  transform: none !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+}
+
 /* Reduced motion support for accessibility */
 @media (prefers-reduced-motion: reduce) {
   *,
@@ -520,5 +538,91 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+  
+  .parallax {
+    transform: none !important;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  :root {
+    --color-saarland-blue-700: 220 100% 15%; /* Darker for higher contrast */
+    --color-neutral-gray-800: 220 8% 5%; /* Darker text */
+    --color-technical-silver-300: 210 20% 60%; /* Stronger borders */
+  }
+  
+  button, input, select, textarea {
+    border-width: 3px !important;
+    outline-width: 3px !important;
+  }
+  
+  .shadow-sm, .shadow-md, .shadow-lg {
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.5) !important;
+  }
+}
+
+/* Advanced mobile optimizations */
+
+/* Network-aware loading */
+@media (prefers-reduced-data: reduce) {
+  .lazy-image {
+    background-image: none !important;
+  }
+  
+  .heavy-animation {
+    animation: none !important;
+  }
+}
+
+/* Battery-aware optimizations */
+.battery-saver-mode {
+  filter: none !important;
+  backdrop-filter: none !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+}
+
+.battery-saver-mode * {
+  animation: none !important;
+  transition: none !important;
+}
+
+/* Mobile utility classes */
+.mobile-only {
+  display: block;
+}
+
+.desktop-only {
+  display: none;
+}
+
+@media (min-width: 769px) {
+  .mobile-only {
+    display: none;
+  }
+  
+  .desktop-only {
+    display: block;
+  }
+}
+
+/* Enhanced mobile grid system */
+.mobile-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 480px) {
+  .mobile-grid-2 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 768px) {
+  .mobile-grid-3 {
+    grid-template-columns: repeat(3, 1fr);
   }
 }

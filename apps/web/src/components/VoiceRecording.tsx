@@ -1,9 +1,10 @@
 'use client'
 
 import React, { useState, useEffect, useRef } from 'react'
-import { Mic, MicOff, Volume2, Languages, Square, Play } from 'lucide-react'
+import { Mic, MicOff, Volume2, Languages, Square, Play, HelpCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useVoiceRecognition } from '@/hooks/useVoiceRecognition'
+import VoiceTroubleshooting from './VoiceTroubleshooting'
 
 interface VoiceRecordingProps {
   onTranscript?: (text: string) => void
@@ -34,6 +35,7 @@ export default function VoiceRecording({
   const [audioLevel, setAudioLevel] = useState(0)
   const [recordedBlob, setRecordedBlob] = useState<Blob | null>(null)
   const [showTranscript, setShowTranscript] = useState(false)
+  const [showTroubleshooting, setShowTroubleshooting] = useState(false)
 
   // Audio recording refs
   const mediaRecorderRef = useRef<MediaRecorder | null>(null)
@@ -53,7 +55,10 @@ export default function VoiceRecording({
     startListening,
     stopListening,
     resetTranscript,
-    changeLanguage
+    changeLanguage,
+    checkCompatibility,
+    requestMicrophonePermission,
+    browserInfo
   } = useVoiceRecognition({
     language: selectedLanguage,
     continuous: true,
@@ -93,6 +98,13 @@ export default function VoiceRecording({
   // Start audio recording and speech recognition
   const startRecording = async () => {
     if (disabled) return
+
+    // Request microphone permission first
+    const hasPermission = await requestMicrophonePermission()
+    if (!hasPermission) {
+      console.error('Microphone permission denied')
+      return
+    }
 
     try {
       // Get media stream
@@ -199,10 +211,68 @@ export default function VoiceRecording({
   }, [])
 
   if (!isSupported) {
+    const compatibility = checkCompatibility()
+    
     return (
-      <div className={`p-4 text-center text-gray-500 ${className}`}>
-        <MicOff className="w-8 h-8 mx-auto mb-2" />
-        <p className="text-sm">Spracherkennung wird in diesem Browser nicht unterstützt</p>
+      <div className={`p-4 text-center ${className}`}>
+        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+          <MicOff className="w-8 h-8 mx-auto mb-3 text-yellow-600" />
+          
+          {/* Browser Info */}
+          <div className="mb-3">
+            <div className="text-sm font-medium text-gray-700 mb-1">
+              Browser: {browserInfo.name.charAt(0).toUpperCase() + browserInfo.name.slice(1)} {browserInfo.version}
+              {browserInfo.isMobile && ' (Mobile)'}
+            </div>
+            <p className="text-sm text-yellow-700">{compatibility.message}</p>
+          </div>
+          
+          {/* Recommendations */}
+          <div className="text-left">
+            <h4 className="text-sm font-medium text-gray-700 mb-2">Empfehlungen:</h4>
+            <ul className="text-sm text-gray-600 space-y-1">
+              {compatibility.recommendations.map((rec, index) => (
+                <li key={index} className="flex items-start">
+                  <span className="text-blue-500 mr-2 flex-shrink-0">•</span>
+                  <span>{rec}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+          
+          {/* Download Links */}
+          <div className="mt-3 pt-3 border-t border-yellow-200">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
+              <div className="flex flex-wrap gap-2 justify-center">
+                <a 
+                  href="https://www.google.com/chrome/" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-xs bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 transition-colors"
+                >
+                  🔴 Chrome herunterladen
+                </a>
+                <a 
+                  href="https://www.microsoft.com/edge" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-xs bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 transition-colors"
+                >
+                  🔷 Edge herunterladen
+                </a>
+              </div>
+              <Button
+                onClick={() => setShowTroubleshooting(true)}
+                variant="outline"
+                size="sm"
+                className="text-xs"
+              >
+                <HelpCircle className="w-3 h-3 mr-1" />
+                Hilfe
+              </Button>
+            </div>
+          </div>
+        </div>
       </div>
     )
   }
@@ -237,6 +307,7 @@ export default function VoiceRecording({
           variant={isRecording ? "destructive" : "default"}
           size="sm"
           className="relative"
+          title={`Spracherkennung ${isRecording ? 'stoppen' : 'starten'} (${browserInfo.name} ${browserInfo.version})`}
         >
           {isRecording ? (
             <Square className="w-4 h-4" />
@@ -245,6 +316,24 @@ export default function VoiceRecording({
           )}
           {isRecording ? 'Stopp' : 'Aufnahme'}
         </Button>
+        
+        {/* Browser compatibility indicator */}
+        <div className="hidden sm:flex items-center space-x-2">
+          <div className="text-xs text-gray-500">
+            {browserInfo.supportsWebkitSpeech ? '✅' : '⚠️'} {browserInfo.name}
+          </div>
+          {!browserInfo.supportsWebkitSpeech && (
+            <Button
+              onClick={() => setShowTroubleshooting(true)}
+              variant="outline"
+              size="sm"
+              className="text-xs"
+            >
+              <HelpCircle className="w-3 h-3 mr-1" />
+              Hilfe
+            </Button>
+          )}
+        </div>
 
         {/* Audio Level Visualization */}
         {(isRecording || isListening) && (
@@ -306,8 +395,39 @@ export default function VoiceRecording({
 
       {/* Error Display */}
       {error && (
-        <div className="p-2 bg-red-50 border border-red-200 rounded text-sm text-red-700">
-          {error}
+        <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
+          <div className="flex items-start">
+            <MicOff className="w-4 h-4 text-red-500 mr-2 flex-shrink-0 mt-0.5" />
+            <div className="flex-1">
+              <p className="text-sm text-red-700 font-medium mb-1">Spracherkennungsfehler</p>
+              <p className="text-sm text-red-600">{error}</p>
+              
+              {/* Additional help based on browser */}
+              {browserInfo.name === 'firefox' && (
+                <div className="mt-2 p-2 bg-blue-50 border border-blue-200 rounded">
+                  <p className="text-xs text-blue-700">
+                    💡 <strong>Firefox-Nutzer:</strong> Verwenden Sie Chrome oder Edge für Sprachfunktionen.
+                  </p>
+                </div>
+              )}
+              
+              {browserInfo.name === 'safari' && browserInfo.isMobile && (
+                <div className="mt-2 p-2 bg-blue-50 border border-blue-200 rounded">
+                  <p className="text-xs text-blue-700">
+                    💡 <strong>Safari Mobile:</strong> Stellen Sie sicher, dass Sie HTTPS verwenden und Mikrofonzugriff erlaubt ist.
+                  </p>
+                </div>
+              )}
+              
+              {error.includes('nicht erlaubt') && (
+                <div className="mt-2 p-2 bg-blue-50 border border-blue-200 rounded">
+                  <p className="text-xs text-blue-700">
+                    💡 <strong>Mikrofonzugriff:</strong> Klicken Sie auf das Mikrofon-Symbol in der Adressleiste und erlauben Sie den Zugriff.
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       )}
 
@@ -323,6 +443,14 @@ export default function VoiceRecording({
             />
           </div>
         </div>
+      )}
+      
+      {/* Troubleshooting Modal */}
+      {showTroubleshooting && (
+        <VoiceTroubleshooting
+          isOpen={showTroubleshooting}
+          onClose={() => setShowTroubleshooting(false)}
+        />
       )}
     </div>
   )
