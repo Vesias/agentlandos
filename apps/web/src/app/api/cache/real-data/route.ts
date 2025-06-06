@@ -222,19 +222,19 @@ async function fetchVerifiedSaarlandEvents() {
 
 async function fetchRealWeatherData() {
   try {
-    const API_KEY = process.env.OPENWEATHER_API_KEY
-    if (!API_KEY) return null
-
+    // Use Open-Meteo API for reliable weather data (no API key required)
     const response = await fetch(
-      `https://api.openweathermap.org/data/2.5/weather?q=Saarbrücken,DE&appid=${API_KEY}&units=metric&lang=de`
+      'https://api.open-meteo.com/v1/forecast?latitude=49.2401&longitude=6.9969&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m&timezone=Europe/Berlin&forecast_days=1'
     )
 
     if (response.ok) {
       const data = await response.json()
+      const current = data.current
+      
       return {
-        temperature: Math.round(data.main.temp),
-        description: data.weather[0].description,
-        recommendation: generateWeatherRecommendation(data),
+        temperature: Math.round(current.temperature_2m),
+        description: getWeatherDescription(current.weather_code),
+        recommendation: generateWeatherRecommendation(current),
         timestamp: new Date().toISOString()
       }
     }
@@ -243,6 +243,34 @@ async function fetchRealWeatherData() {
   }
 
   return null
+}
+
+function getWeatherDescription(code: number): string {
+  const descriptions: { [key: number]: string } = {
+    0: 'Klar und sonnig',
+    1: 'Überwiegend klar',
+    2: 'Teilweise bewölkt',
+    3: 'Bewölkt',
+    45: 'Nebelig',
+    48: 'Nebelig mit Reif',
+    51: 'Leichter Nieselregen',
+    53: 'Nieselregen',
+    55: 'Starker Nieselregen',
+    61: 'Leichter Regen',
+    63: 'Regen',
+    65: 'Starker Regen',
+    71: 'Leichter Schneefall',
+    73: 'Schneefall',
+    75: 'Starker Schneefall',
+    80: 'Regenschauer',
+    81: 'Regenschauer',
+    82: 'Starke Regenschauer',
+    95: 'Gewitter',
+    96: 'Gewitter mit Hagel',
+    99: 'Schweres Gewitter'
+  }
+  
+  return descriptions[code] || 'Wetterlage unbekannt'
 }
 
 async function fetchRealFundingData() {
@@ -277,16 +305,18 @@ function parseEventData(data: any, source: string) {
   })).filter(event => event.title && event.date)
 }
 
-function generateWeatherRecommendation(weatherData: any): string {
-  const temp = weatherData.main.temp
-  const condition = weatherData.weather[0].main.toLowerCase()
+function generateWeatherRecommendation(current: any): string {
+  const temp = current.temperature_2m
+  const weatherCode = current.weather_code
 
-  if (temp > 20 && condition.includes('clear')) {
+  if (temp > 20 && [0, 1].includes(weatherCode)) {
     return 'Perfekt für Bostalsee, Saarschleife Wanderungen, Open Air Events'
-  } else if (temp > 15) {
+  } else if (temp > 15 && weatherCode < 50) {
     return 'Ideal für Völklinger Hütte, Saarschleife, Outdoor-Aktivitäten'
-  } else if (condition.includes('rain')) {
+  } else if (weatherCode >= 61 && weatherCode <= 65) {
     return 'Empfehlung: Museen, Theater, Indoor-Kultur'
+  } else if (temp < 5) {
+    return 'Warme Innenräume empfohlen: Völklinger Hütte, Museen, Cafés'
   }
 
   return 'Wettergerechte Aktivitäten verfügbar'
