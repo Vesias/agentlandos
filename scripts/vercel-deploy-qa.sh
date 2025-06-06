@@ -14,7 +14,7 @@ BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
 # Configuration
-PROJECT_ROOT="/Users/deepsleeping/agentlandos"
+PROJECT_ROOT="$(git rev-parse --show-toplevel)"
 WEB_APP_PATH="$PROJECT_ROOT/apps/web"
 API_APP_PATH="$PROJECT_ROOT/apps/api"
 QA_REPORT_PATH="$PROJECT_ROOT/ai_docs/qa-reports"

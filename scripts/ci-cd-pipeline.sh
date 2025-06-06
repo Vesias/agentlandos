@@ -4,7 +4,7 @@
 
 set -euo pipefail
 
-AGENTLAND_ROOT="/Users/deepsleeping/agentlandos"
+AGENTLAND_ROOT="$(git rev-parse --show-toplevel)"
 LOG_FILE="$AGENTLAND_ROOT/ai_docs/ci-cd-pipeline.log"
 
 # Colors

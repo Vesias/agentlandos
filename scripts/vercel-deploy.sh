@@ -36,8 +36,9 @@ fi
 
 echo ""
 
-# Set project directory
-cd /Users/deepsleeping/agentlandos/apps/web
+# Set project directory dynamically
+PROJECT_ROOT=$(git rev-parse --show-toplevel)
+cd "$PROJECT_ROOT/apps/web"
 
 echo "📁 Working Directory: $(pwd)"
 echo "🌐 Target Domain: agentland.saarland"
