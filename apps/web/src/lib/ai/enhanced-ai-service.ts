@@ -24,6 +24,30 @@ try {
   console.log('Vector RAG not available, using local search')
 }
 
+// Web Search Integration
+async function performWebSearch(query: string, category?: string): Promise<any[]> {
+  try {
+    const response = await fetch('/api/search/enhanced', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        query,
+        type: 'web',
+        category: category || 'general',
+        location: 'saarland',
+        limit: 5,
+        enhanced: true
+      })
+    })
+    
+    const data = await response.json()
+    return data.success ? data.results : []
+  } catch (error) {
+    console.warn('Web search failed:', error)
+    return []
+  }
+}
+
 // REMOVED: No mock data - Real AI only policy
 // Enhanced fallback responses based on real data sources only
 const REAL_DATA_FALLBACKS = {
@@ -296,6 +320,60 @@ export class EnhancedAIService {
       }
     } catch (error) {
       console.error('Multi-Agent Query Error:', error)
+      return this.getFallbackResponse(query, 'chat', category, startTime)
+    }
+  }
+
+  // Web Search Enhanced Query
+  async webSearchEnhancedQuery(query: string, category: string = 'general'): Promise<EnhancedAIResponse> {
+    const startTime = Date.now()
+    
+    try {
+      // 1. Perform web search
+      const webResults = await performWebSearch(query, category)
+      
+      // 2. Process with AI if we have results
+      if (webResults.length > 0) {
+        const contextData = webResults.map(r => ({
+          title: r.title,
+          snippet: r.snippet,
+          url: r.url,
+          source: r.source
+        }))
+        
+        const enhancedPrompt = `Basierend auf aktuellen Web-Suchergebnissen zu "${query}":
+
+${contextData.map(r => `• ${r.title}: ${r.snippet}`).join('\n')}
+
+Erstelle eine prägnante, hilfreiche Antwort, die:
+1. Die wichtigsten Informationen zusammenfasst
+2. Saarland-spezifische Details hervorhebt
+3. Konkrete nächste Schritte empfiehlt
+4. Relevante Quellen referenziert
+
+Kategorie: ${category}`
+
+        const response = await this.processQuery(enhancedPrompt, 'chat', category)
+        
+        return {
+          response: response.response,
+          confidence: Math.min(response.confidence * 1.2, 1.0), // Boost confidence for web-enhanced
+          mode: 'chat',
+          category: category as any,
+          sources: webResults.map(r => r.url).slice(0, 3),
+          reasoning: `Web-enhanced AI response with ${webResults.length} real-time sources`,
+          metadata: {
+            processingTime: Date.now() - startTime,
+            modelUsed: 'web-enhanced-ai',
+            tokensUsed: response.response.length
+          }
+        }
+      } else {
+        // Fallback to regular AI processing
+        return this.processQuery(query, 'chat', category)
+      }
+    } catch (error) {
+      console.error('Web Search Enhanced Query Error:', error)
       return this.getFallbackResponse(query, 'chat', category, startTime)
     }
   }

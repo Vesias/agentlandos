@@ -7,11 +7,12 @@ export const maxDuration = 30
 
 interface EnhancedAIRequest {
   prompt: string
-  mode: 'chat' | 'artifact' | 'rag' | 'stream'
+  mode: 'chat' | 'artifact' | 'rag' | 'stream' | 'websearch'
   category: string
   artifact_type?: 'text' | 'code' | 'data' | 'visual'
   context?: any
   stream?: boolean
+  web_search?: boolean
 }
 
 export async function POST(request: NextRequest) {
@@ -22,7 +23,8 @@ export async function POST(request: NextRequest) {
       category,
       artifact_type,
       context,
-      stream = false
+      stream = false,
+      web_search = false
     }: EnhancedAIRequest = await request.json()
 
     if (!prompt) {
@@ -53,11 +55,16 @@ export async function POST(request: NextRequest) {
             },
           })
         } else {
-          const response = await enhancedAI.processQuery(prompt, 'chat', category, context)
+          // Check if web search enhancement is requested
+          const response = web_search 
+            ? await enhancedAI.webSearchEnhancedQuery(prompt, category)
+            : await enhancedAI.processQuery(prompt, 'chat', category, context)
+          
           return NextResponse.json({
             ...response,
             api_version: 'enhanced-v1',
-            processing_time: Date.now() - startTime
+            processing_time: Date.now() - startTime,
+            web_enhanced: web_search
           })
         }
 
@@ -92,6 +99,14 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({
           ...ragResponse,
           api_version: 'enhanced-v1-rag',
+          processing_time: Date.now() - startTime
+        })
+
+      case 'websearch':
+        const webSearchResponse = await enhancedAI.webSearchEnhancedQuery(prompt, category)
+        return NextResponse.json({
+          ...webSearchResponse,
+          api_version: 'enhanced-v1-websearch',
           processing_time: Date.now() - startTime
         })
 
@@ -148,10 +163,13 @@ export async function GET(request: NextRequest) {
       'Multi-modal Processing',
       'RAG Vector Search',
       'Real-time Streaming',
+      'Web Search Integration',
       'Saarland-optimized Content'
     ],
     endpoints: {
       chat: 'POST /api/ai/enhanced { mode: "chat", prompt: "...", category: "..." }',
+      chat_websearch: 'POST /api/ai/enhanced { mode: "chat", prompt: "...", web_search: true }',
+      websearch: 'POST /api/ai/enhanced { mode: "websearch", prompt: "...", category: "..." }',
       artifact: 'POST /api/ai/enhanced { mode: "artifact", prompt: "...", artifact_type: "code|text|data|visual" }',
       rag: 'POST /api/ai/enhanced { mode: "rag", prompt: "...", category: "..." }',
       stream: 'POST /api/ai/enhanced { mode: "chat", stream: true, ... }'

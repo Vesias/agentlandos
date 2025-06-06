@@ -15,6 +15,15 @@ import LiveUserCounter from '@/components/ui/live-user-counter'
 // Moderne KI: Intelligente Schnellaktionen
 const quickActions = [
   { 
+    id: 'smart-search',
+    name: 'Web Search', 
+    icon: Search, 
+    description: 'KI-gestützte Web-Suche mit Saarland-Fokus',
+    gradient: 'from-emerald-500 to-teal-600',
+    href: '/search',
+    features: ['Real-time Web-Ergebnisse', 'KI-Zusammenfassung', 'Saarland-optimiert']
+  },
+  { 
     id: 'smart-chat',
     name: 'AI Assistent', 
     icon: Brain, 
@@ -81,6 +90,16 @@ export default function MainNavigation() {
   const detectUserIntent = (query: string) => {
     const lowerQuery = query.toLowerCase()
     
+    // Web search intents
+    if (lowerQuery.includes('suche') || lowerQuery.includes('search') || lowerQuery.includes('find') || lowerQuery.includes('web')) {
+      return [{
+        type: 'search',
+        action: 'Web-Suche',
+        href: '/search?q=' + encodeURIComponent(query),
+        description: 'KI-gestützte Web-Suche mit Saarland-Fokus'
+      }]
+    }
+    
     // Business-related intents
     if (lowerQuery.includes('business') || lowerQuery.includes('unternehmen') || lowerQuery.includes('förder')) {
       return [{
@@ -108,6 +127,16 @@ export default function MainNavigation() {
         action: 'Sofort-Hilfe',
         href: '/instant-help?query=' + encodeURIComponent(query),
         description: 'Schnelle Lösung für Ihr Anliegen'
+      }]
+    }
+    
+    // Default to web search for longer queries
+    if (query.trim().length > 3) {
+      return [{
+        type: 'search',
+        action: 'Web-Suche starten',
+        href: '/search?q=' + encodeURIComponent(query),
+        description: 'Im Web nach "' + query + '" suchen'
       }]
     }
     
