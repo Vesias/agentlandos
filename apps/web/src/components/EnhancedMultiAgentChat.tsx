@@ -4,8 +4,10 @@ import React, { useState, useEffect, useRef } from 'react'
 import { 
   Send, Mic, Image, Paperclip, Bot, User, MapPin, Clock, 
   Zap, Brain, Building2, GraduationCap, Palette, Users,
-  Volume2, Download, Copy, ThumbsUp, RefreshCw, Settings
+  Volume2, Download, Copy, ThumbsUp, RefreshCw, Settings,
+  MicOff
 } from 'lucide-react'
+import VoiceRecording from './VoiceRecording'
 
 interface ChatMessage {
   id: string
@@ -226,16 +228,63 @@ export default function EnhancedMultiAgentChat() {
   }
 
   const startVoiceRecording = async () => {
+    if (isRecording) {
+      setIsRecording(false)
+      return
+    }
+
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+      // Check if speech recognition is supported
+      if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+        alert('Spracherkennung wird in diesem Browser nicht unterstützt. Bitte nutzen Sie Chrome, Safari oder Edge.')
+        return
+      }
+
       setIsRecording(true)
-      // Would implement actual voice recording here
-      setTimeout(() => {
+      
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
+      const recognition = new SpeechRecognition()
+      
+      recognition.continuous = false
+      recognition.interimResults = false
+      recognition.lang = 'de-DE'
+      recognition.maxAlternatives = 1
+      
+      recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript
+        setInputMessage(prev => prev + (prev ? ' ' : '') + transcript)
         setIsRecording(false)
-        stream.getTracks().forEach(track => track.stop())
-      }, 5000)
+      }
+      
+      recognition.onerror = (event) => {
+        console.error('Speech recognition error:', event.error)
+        setIsRecording(false)
+        
+        let errorMessage = 'Spracherkennung fehlgeschlagen'
+        switch (event.error) {
+          case 'not-allowed':
+            errorMessage = 'Mikrofon-Zugriff verweigert. Bitte erlauben Sie den Mikrofonzugriff.'
+            break
+          case 'no-speech':
+            errorMessage = 'Keine Sprache erkannt. Bitte versuchen Sie es erneut.'
+            break
+          case 'network':
+            errorMessage = 'Netzwerkfehler bei der Spracherkennung.'
+            break
+        }
+        alert(errorMessage)
+      }
+      
+      recognition.onend = () => {
+        setIsRecording(false)
+      }
+      
+      recognition.start()
+      
     } catch (error) {
-      console.error('Voice recording failed:', error)
+      console.error('Voice recording error:', error)
+      setIsRecording(false)
+      alert('Fehler beim Starten der Spracherkennung')
     }
   }
 
@@ -461,17 +510,13 @@ export default function EnhancedMultiAgentChat() {
           </button>
           
           {/* Voice Recording */}
-          <button
-            onClick={startVoiceRecording}
-            className={`p-3 rounded-xl transition-all duration-200 ${
-              isRecording 
-                ? 'text-red-500 bg-red-100' 
-                : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'
-            }`}
-            title="Sprachaufnahme"
-          >
-            <Mic className="w-5 h-5" />
-          </button>
+          <VoiceRecording
+            onTranscript={(text) => setInputMessage(prev => prev + (prev ? ' ' : '') + text)}
+            autoSend={false}
+            showLanguageSelector={false}
+            disabled={isLoading}
+            className="flex-shrink-0"
+          />
           
           {/* Message Input */}
           <div className="flex-1">
