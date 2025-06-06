@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseServer, AuthService } from '@/lib/supabase';
 
-export const runtime = 'edge';
+export const runtime = 'nodejs';
 
 // Claude API configuration
 const CLAUDE_API_URL = 'https://api.anthropic.com/v1/messages';

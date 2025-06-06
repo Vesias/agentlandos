@@ -436,7 +436,7 @@ function planNextSteps(agent: any, task: string, toolResults: any): string[] {
   return steps
 }
 
-export const runtime = 'edge'
+export const runtime = 'nodejs'
 
 export async function POST(request: NextRequest) {
   const startTime = Date.now()

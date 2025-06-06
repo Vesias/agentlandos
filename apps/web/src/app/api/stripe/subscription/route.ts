@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
 
-export const runtime = 'edge'
+export const runtime = 'nodejs'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || 'sk_test_51PzhbGLYCLJOCQYhDummyTestKey123', {
   apiVersion: '2025-05-28.basil'

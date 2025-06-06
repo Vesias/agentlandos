@@ -691,7 +691,7 @@ const SAARLAND_BEHOERDEN_MAXIMAL = {
   }
 }
 
-export const runtime = 'edge'
+export const runtime = 'nodejs'
 
 interface Authority {
   id: string

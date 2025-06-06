@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-export const runtime = 'edge'
+export const runtime = 'nodejs'
 
 // REAL SAARLAND VECTOR DATABASE API
 // Stores and retrieves ONLY verified real data ≤ 05.06.2025

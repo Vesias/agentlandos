@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-export const runtime = 'edge'
+export const runtime = 'nodejs'
 
 // AUTONOMOUS AI AGENTS FOR SAARLAND SERVICES
 // Self-learning agents with real Saarland RAG integration

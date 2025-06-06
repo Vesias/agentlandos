@@ -3,7 +3,7 @@ import { GoogleGenerativeAI } from '@google/generative-ai'
 import { deepseek } from '@ai-sdk/deepseek'
 import { generateText } from 'ai'
 
-export const runtime = 'edge'
+export const runtime = 'nodejs'
 export const maxDuration = 60
 
 // Initialize AI clients

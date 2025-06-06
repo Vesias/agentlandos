@@ -6,7 +6,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { openaiEmbeddings } from '@/services/openai-embeddings';
 
-export const runtime = 'edge';
+export const runtime = 'nodejs';
 
 interface EmbeddingRequest {
   text: string | string[];

@@ -274,7 +274,7 @@ async function predictRevenuePotential(currentMRR: number, targetMRR: number): P
   }
 }
 
-export const runtime = 'edge'
+export const runtime = 'nodejs'
 
 export async function POST(request: NextRequest) {
   const startTime = Date.now()

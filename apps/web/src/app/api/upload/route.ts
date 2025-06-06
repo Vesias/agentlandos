@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { uploadImage, uploadAudio, uploadAvatar, STORAGE_BUCKETS } from '@/lib/supabase-storage'
 
-export const runtime = 'edge'
+export const runtime = 'nodejs'
 
 interface UploadResponse {
   success: boolean

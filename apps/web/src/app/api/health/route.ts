@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { supabaseServer } from '@/lib/supabase';
 import { multiModelAI } from '@/services/multi-model-ai';
 
-export const runtime = 'edge';
+export const runtime = 'nodejs';
 
 interface HealthStatus {
   status: 'healthy' | 'degraded' | 'unhealthy';

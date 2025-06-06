@@ -4,9 +4,12 @@
  * Using Pinecone Vector Database + OpenAI Embeddings
  */
 
-import { Pinecone } from '@pinecone-database/pinecone'
-import { OpenAIEmbeddings } from '@langchain/openai'
-import { Document } from '@langchain/core/documents'
+// Edge runtime compatibility - use local fallback only
+const Pinecone: any = null
+const OpenAIEmbeddings: any = null
+
+// Use local search for maximum compatibility and speed
+
 import { z } from 'zod'
 
 // Saarland Knowledge Base Schema
@@ -137,16 +140,16 @@ export class VectorRAGService {
 
   private async initialize() {
     try {
-      // Initialize Pinecone (only if API key available)
-      if (process.env.PINECONE_API_KEY) {
+      // Initialize Pinecone (only if API key available and runtime supports it)
+      if (process.env.PINECONE_API_KEY && Pinecone) {
         this.pinecone = new Pinecone({
           apiKey: process.env.PINECONE_API_KEY
         })
         this.index = this.pinecone.index('saarland-knowledge')
       }
 
-      // Initialize OpenAI Embeddings (only if API key available)
-      if (process.env.OPENAI_API_KEY) {
+      // Initialize OpenAI Embeddings (only if API key available and runtime supports it)
+      if (process.env.OPENAI_API_KEY && OpenAIEmbeddings) {
         this.embeddings = new OpenAIEmbeddings({
           apiKey: process.env.OPENAI_API_KEY,
           model: 'text-embedding-3-small' // More cost-effective

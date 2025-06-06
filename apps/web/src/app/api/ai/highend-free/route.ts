@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { SaarlandWeatherService } from '@/services/weather-service'
 
-export const runtime = 'edge'
+export const runtime = 'nodejs'
 
 // High-end multi-model AI service - completely free with no limits
 interface AIModel {

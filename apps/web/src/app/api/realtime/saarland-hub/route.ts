@@ -105,7 +105,7 @@ async function getFallbackData() {
   }
 }
 
-export const runtime = 'edge'
+export const runtime = 'nodejs'
 
 export async function GET(request: NextRequest) {
   const startTime = Date.now()

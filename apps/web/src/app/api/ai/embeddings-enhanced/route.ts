@@ -3,7 +3,7 @@ import { multiModelAI } from '@/services/multi-model-ai';
 import { supabaseServer } from "@/lib/supabase";
 import { z } from 'zod';
 
-export const runtime = 'edge';
+export const runtime = 'nodejs';
 
 
 const embeddingsRequestSchema = z.object({

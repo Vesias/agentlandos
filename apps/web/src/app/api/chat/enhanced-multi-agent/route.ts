@@ -218,7 +218,7 @@ async function handleFileUpload(attachments: any[]): Promise<any[]> {
   })
 }
 
-export const runtime = 'edge'
+export const runtime = 'nodejs'
 
 export async function POST(request: NextRequest) {
   const startTime = Date.now()

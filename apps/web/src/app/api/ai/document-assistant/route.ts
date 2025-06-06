@@ -273,7 +273,7 @@ function getSaarlandGuidance(documentType: string, municipality: string): any {
   }
 }
 
-export const runtime = 'edge'
+export const runtime = 'nodejs'
 
 export async function POST(request: NextRequest) {
   const startTime = Date.now()

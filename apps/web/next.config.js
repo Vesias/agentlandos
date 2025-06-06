@@ -2,6 +2,28 @@
 const nextConfig = {
   reactStrictMode: true,
   experimental: {},
+  webpack: (config, { isServer }) => {
+    // Exclude problematic packages from Edge runtime
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+        net: false,
+        tls: false,
+        'node:stream': false,
+        'node:buffer': false,
+      }
+    }
+    
+    // Exclude Pinecone from Edge runtime bundles
+    config.externals = config.externals || []
+    config.externals.push({
+      '@pinecone-database/pinecone': 'commonjs @pinecone-database/pinecone',
+      '@langchain/openai': 'commonjs @langchain/openai',
+    })
+    
+    return config
+  },
   images: {
     domains: ['localhost', 'agentland.saarland', 'vercel.app'],
     unoptimized: true,

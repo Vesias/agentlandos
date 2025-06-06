@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { realDataCrawler, REAL_SAARLAND_SOURCES } from '@/services/real-data-crawler'
 
-export const runtime = 'edge'
+export const runtime = 'nodejs'
 
 // REAL DATA CRAWLING API
 // Only processes VERIFIED Saarland sources ≤ 05.06.2025

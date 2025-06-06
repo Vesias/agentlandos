@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { enhancedAI } from '@/services/ai/enhanced-ai-service'
 
 export const dynamic = 'force-dynamic'
-export const runtime = 'edge'
+export const runtime = 'nodejs'
 export const maxDuration = 30
 
 interface EnhancedAIRequest {

@@ -261,7 +261,7 @@ async function calculateETA(services: EnhancedService[], urgency: string): Promi
   return '1-2 Wochen'
 }
 
-export const runtime = 'edge'
+export const runtime = 'nodejs'
 
 export async function POST(request: NextRequest) {
   const startTime = Date.now()

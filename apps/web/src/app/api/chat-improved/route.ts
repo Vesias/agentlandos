@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { SaarlandWeatherService } from '@/services/weather-service'
 import { embeddingsService } from '@/services/embeddings-enhanced'
 
-export const runtime = 'edge'
+export const runtime = 'nodejs'
 
 // Fast response cache
 const responseCache = new Map<string, any>()
