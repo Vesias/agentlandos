@@ -14,7 +14,7 @@
     "prepare": "husky install"
   },
   "devDependencies": {
-    "@types/node": "^20.17.57",
+    "@types/node": "^20.19.0",
     "husky": "^8.0.3",
     "prettier": "^3.5.3",
     "turbo": "^1.13.4",

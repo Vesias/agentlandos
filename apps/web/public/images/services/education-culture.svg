@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" fill="none">
+  <!-- Education & Culture Illustration -->
+  <defs>
+    <linearGradient id="education-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#8B4513;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FDB913;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="400" height="300" fill="#fef7ed"/>
+  
+  <!-- University Building -->
+  <rect x="140" y="80" width="120" height="100" fill="url(#education-gradient)" rx="8"/>
+  <rect x="150" y="90" width="100" height="80" fill="#ffffff" rx="4"/>
+  
+  <!-- Classical Columns -->
+  <rect x="160" y="90" width="8" height="80" fill="#D2691E"/>
+  <rect x="175" y="90" width="8" height="80" fill="#D2691E"/>
+  <rect x="190" y="90" width="8" height="80" fill="#D2691E"/>
+  <rect x="205" y="90" width="8" height="80" fill="#D2691E"/>
+  <rect x="220" y="90" width="8" height="80" fill="#D2691E"/>
+  <rect x="235" y="90" width="8" height="80" fill="#D2691E"/>
+  
+  <!-- Pediment -->
+  <polygon points="140,80 200,50 260,80" fill="#8B4513"/>
+  
+  <!-- Entrance -->
+  <rect x="185" y="150" width="30" height="20" fill="#654321" rx="4"/>
+  
+  <!-- University Saarland -->
+  <text x="200" y="70" text-anchor="middle" fill="#8B4513" font-size="10" font-weight="bold" font-family="Arial">UNIVERSITÄT DES SAARLANDES</text>
+  
+  <!-- Books/Knowledge -->
+  <g transform="translate(60, 120)">
+    <rect x="0" y="10" width="15" height="20" fill="#8B4513" rx="2"/>
+    <rect x="5" y="5" width="15" height="20" fill="#D2691E" rx="2"/>
+    <rect x="10" y="0" width="15" height="20" fill="#FDB913" rx="2"/>
+    <rect x="15" y="15" width="15" height="20" fill="#43B049" rx="2"/>
+  </g>
+  
+  <!-- Computer Science/AI -->
+  <g transform="translate(300, 110)">
+    <rect x="0" y="0" width="30" height="20" fill="#003399" rx="4"/>
+    <rect x="3" y="3" width="24" height="14" fill="#009FE3" rx="2"/>
+    <rect x="12" y="20" width="6" height="8" fill="#003399"/>
+    <rect x="8" y="28" width="14" height="3" fill="#003399" rx="1"/>
+    <text x="15" y="12" text-anchor="middle" fill="white" font-size="8" font-family="Arial">AI</text>
+  </g>
+  
+  <!-- Cultural Elements -->
+  <g transform="translate(80, 200)">
+    <!-- Theater Mask -->
+    <circle cx="15" cy="15" r="12" fill="#FDB913"/>
+    <path d="M8 12 Q15 8 22 12" stroke="white" stroke-width="2" fill="none"/>
+    <path d="M8 18 Q15 22 22 18" stroke="white" stroke-width="2" fill="none"/>
+    <circle cx="11" cy="11" r="2" fill="white"/>
+    <circle cx="19" cy="11" r="2" fill="white"/>
+  </g>
+  
+  <g transform="translate(320, 200)">
+    <!-- Music Note -->
+    <circle cx="10" cy="20" r="8" fill="#8B4513"/>
+    <rect x="18" y="10" width="2" height="15" fill="#8B4513"/>
+    <path d="M20 10 Q25 8 25 12" stroke="#8B4513" stroke-width="2" fill="none"/>
+  </g>
+  
+  <!-- Education Service Icons -->
+  <g transform="translate(40, 240)">
+    <circle cx="15" cy="15" r="15" fill="#8B4513"/>
+    <text x="15" y="20" text-anchor="middle" fill="white" font-size="12" font-family="Arial">📚</text>
+  </g>
+  
+  <g transform="translate(110, 240)">
+    <circle cx="15" cy="15" r="15" fill="#D2691E"/>
+    <text x="15" y="20" text-anchor="middle" fill="white" font-size="12" font-family="Arial">🎓</text>
+  </g>
+  
+  <g transform="translate(180, 240)">
+    <circle cx="15" cy="15" r="15" fill="#FDB913"/>
+    <text x="15" y="20" text-anchor="middle" fill="white" font-size="12" font-family="Arial">🎭</text>
+  </g>
+  
+  <g transform="translate(250, 240)">
+    <circle cx="15" cy="15" r="15" fill="#43B049"/>
+    <text x="15" y="20" text-anchor="middle" fill="white" font-size="12" font-family="Arial">🔬</text>
+  </g>
+  
+  <g transform="translate(320, 240)">
+    <circle cx="15" cy="15" r="15" fill="#003399"/>
+    <text x="15" y="20" text-anchor="middle" fill="white" font-size="12" font-family="Arial">💻</text>
+  </g>
+  
+  <!-- Title -->
+  <text x="200" y="30" text-anchor="middle" fill="#8B4513" font-size="20" font-weight="bold" font-family="Arial">Bildung & Kultur</text>
+  <text x="200" y="285" text-anchor="middle" fill="#8B4513" font-size="12" font-family="Arial">Universität • Schulen • Theater • Museen • Wissenschaft</text>
+</svg>

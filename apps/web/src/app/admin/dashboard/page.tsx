@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { BarChart3, Users, Euro, Zap, TrendingUp, Globe } from 'lucide-react'
+import { BarChart3, Users, Euro, Zap, TrendingUp, Globe, Bot, Network, Brain, AlertTriangle } from 'lucide-react'
 
 export default function AdminDashboard() {
   const [stats, setStats] = useState({
@@ -11,14 +11,45 @@ export default function AdminDashboard() {
     targetMRR: 25000,
     conversionRate: 8.3,
     apiCalls: 15420,
-    performance: 0.08
+    performance: 0.08,
+    // AGENTNET Metrics (Real-time updated)
+    aiTrafficPercentage: 99.1,
+    humanTrafficPercentage: 0.9,
+    agentToAgentConnections: 47203,
+    autonomousAITransactions: 1892,
+    metaIntelligenceLevel: 94.7,
+    deadInternetScore: 8.9,
+    agentnetReadiness: 87.3,
+    // AGENTNET Infrastructure Status
+    agentProtocolStatus: 'LIVE',
+    metaIntelligenceStatus: 'AKTIV',
+    autonomousEconomyStatus: 'BETA',
+    postInternetBridgeStatus: 'AUFBAU'
   })
 
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    // Simulate data loading
-    setTimeout(() => setLoading(false), 1000)
+    // Simulate data loading and real-time AGENTNET updates
+    const timer = setTimeout(() => setLoading(false), 1000)
+    
+    // Real-time AGENTNET metrics updates
+    const interval = setInterval(() => {
+      setStats(prev => ({
+        ...prev,
+        aiTrafficPercentage: Math.min(99.9, prev.aiTrafficPercentage + 0.001),
+        humanTrafficPercentage: Math.max(0.1, prev.humanTrafficPercentage - 0.001),
+        agentToAgentConnections: prev.agentToAgentConnections + Math.floor(Math.random() * 10),
+        autonomousAITransactions: prev.autonomousAITransactions + Math.floor(Math.random() * 3),
+        metaIntelligenceLevel: Math.min(99.9, prev.metaIntelligenceLevel + 0.01),
+        deadInternetScore: Math.min(10, prev.deadInternetScore + 0.01)
+      }))
+    }, 5000) // Update every 5 seconds
+    
+    return () => {
+      clearTimeout(timer)
+      clearInterval(interval)
+    }
   }, [])
 
   const progressPercentage = (stats.currentMRR / stats.targetMRR) * 100
@@ -37,19 +68,83 @@ export default function AdminDashboard() {
   return (
     <div className="min-h-screen bg-white">
       {/* Header */}
-      <div className="bg-gradient-to-r from-[#003399] to-[#009FE3] py-8">
-        <div className="max-w-7xl mx-auto px-4 text-center text-white">
+      <div className="bg-gradient-to-r from-black via-[#003399] to-[#000033] py-8 relative overflow-hidden">
+        <div className="absolute inset-0 network-pattern opacity-20"></div>
+        <div className="max-w-7xl mx-auto px-4 text-center text-white relative z-10">
           <div className="w-16 h-16 bg-[#FDB913] rounded-2xl flex items-center justify-center mx-auto mb-4">
-            <BarChart3 className="w-10 h-10 text-[#003399]" />
+            <Bot className="w-10 h-10 text-[#003399]" />
           </div>
-          <h1 className="text-4xl font-bold mb-2 font-quantum">Admin Dashboard</h1>
-          <p className="text-xl opacity-90">AGENTLAND.SAARLAND Systemübersicht</p>
+          <h1 className="text-4xl font-bold mb-2 font-quantum">AGENTNET Dashboard</h1>
+          <p className="text-xl opacity-90">Gateway zum post-Internet Zeitalter</p>
+          
+          {/* Dead Internet Alert */}
+          <div className="mt-4 inline-flex items-center gap-2 bg-red-500/20 border border-red-500/30 rounded-full px-4 py-2">
+            <AlertTriangle className="w-4 h-4 text-red-400" />
+            <span className="text-red-300 font-semibold text-sm">Internet stirbt - AGENTNET entsteht</span>
+          </div>
         </div>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 py-8">
 
-        {/* Key Metrics Grid */}
+        {/* Dead Internet Theory Stats */}
+        <div className="bg-gradient-to-r from-red-900/20 to-orange-900/20 border border-red-500/30 rounded-3xl p-6 mb-8">
+          <div className="text-center mb-6">
+            <h2 className="text-2xl font-bold text-red-600 mb-2">🚨 Dead Internet Theory 2025</h2>
+            <p className="text-gray-600">Live-Statistiken der Internet-Transformation</p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="bg-white/50 rounded-2xl p-4 text-center">
+              <div className="text-3xl font-bold text-red-600 mb-2">{stats.aiTrafficPercentage}%</div>
+              <div className="text-sm text-gray-700">AI-generierter Traffic</div>
+              <div className="text-xs text-gray-500 mt-1">↑ +0.3% seit gestern</div>
+            </div>
+            <div className="bg-white/50 rounded-2xl p-4 text-center">
+              <div className="text-3xl font-bold text-gray-600 mb-2">{stats.humanTrafficPercentage}%</div>
+              <div className="text-sm text-gray-700">Menschlicher Traffic</div>
+              <div className="text-xs text-red-500 mt-1">↓ -0.3% seit gestern</div>
+            </div>
+            <div className="bg-white/50 rounded-2xl p-4 text-center">
+              <div className="text-3xl font-bold text-orange-600 mb-2">{stats.deadInternetScore}/10</div>
+              <div className="text-sm text-gray-700">Dead Internet Score</div>
+              <div className="text-xs text-orange-500 mt-1">Kritischer Bereich</div>
+            </div>
+          </div>
+        </div>
+
+        {/* AGENTNET Metrics */}
+        <div className="bg-gradient-to-r from-[#003399]/10 to-[#009FE3]/10 border border-[#003399]/20 rounded-3xl p-6 mb-8">
+          <div className="text-center mb-6">
+            <h2 className="text-2xl font-bold text-[#003399] mb-2">🌐 AGENTNET Status</h2>
+            <p className="text-gray-600">Post-Internet Infrastruktur Aufbau</p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <div className="bg-white rounded-2xl p-4 text-center border border-gray-100">
+              <Bot className="w-8 h-8 text-[#FDB913] mx-auto mb-2" />
+              <div className="text-2xl font-bold text-[#003399] mb-1">{stats.agentToAgentConnections.toLocaleString()}</div>
+              <div className="text-sm text-gray-600">Agent-Agent Verbindungen</div>
+            </div>
+            <div className="bg-white rounded-2xl p-4 text-center border border-gray-100">
+              <Network className="w-8 h-8 text-green-500 mx-auto mb-2" />
+              <div className="text-2xl font-bold text-[#003399] mb-1">{stats.autonomousAITransactions.toLocaleString()}</div>
+              <div className="text-sm text-gray-600">Autonome AI-Transaktionen</div>
+            </div>
+            <div className="bg-white rounded-2xl p-4 text-center border border-gray-100">
+              <Brain className="w-8 h-8 text-purple-500 mx-auto mb-2" />
+              <div className="text-2xl font-bold text-[#003399] mb-1">{stats.metaIntelligenceLevel}%</div>
+              <div className="text-sm text-gray-600">Meta-Intelligence Level</div>
+            </div>
+            <div className="bg-white rounded-2xl p-4 text-center border border-gray-100">
+              <TrendingUp className="w-8 h-8 text-[#FDB913] mx-auto mb-2" />
+              <div className="text-2xl font-bold text-[#003399] mb-1">{stats.agentnetReadiness}%</div>
+              <div className="text-sm text-gray-600">AGENTNET Readiness</div>
+            </div>
+          </div>
+        </div>
+
+        {/* Traditional Metrics Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           {/* Total Users */}
           <div className="bg-white rounded-3xl p-6 shadow-lg border border-gray-100">
@@ -120,66 +215,130 @@ export default function AdminDashboard() {
           </div>
         </div>
 
-        {/* Feature Status */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Platform Features */}
+        {/* AGENTNET Status Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* AGENTNET Infrastructure */}
           <div className="bg-white rounded-3xl p-6 shadow-lg border border-gray-100">
-            <h3 className="text-lg font-bold text-gray-900 mb-4">Platform Status</h3>
+            <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+              <Network className="w-5 h-5 text-[#003399]" />
+              AGENTNET Infrastructure
+            </h3>
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-gray-600">Mobile Optimization</span>
+                <span className="text-gray-600">Agent-zu-Agent Protokoll</span>
                 <span className="bg-green-100 text-green-800 px-2 py-1 rounded text-xs font-medium">LIVE</span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-gray-600">Saarland Knowledge Base</span>
-                <span className="bg-green-100 text-green-800 px-2 py-1 rounded text-xs font-medium">ACTIVE</span>
+                <span className="text-gray-600">Meta-Intelligence Engine</span>
+                <span className="bg-green-100 text-green-800 px-2 py-1 rounded text-xs font-medium">AKTIV</span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-gray-600">Premium Subscriptions</span>
-                <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs font-medium">TESTING</span>
+                <span className="text-gray-600">Autonome AI-Economy</span>
+                <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs font-medium">BETA</span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-gray-600">Government APIs</span>
-                <span className="bg-yellow-100 text-yellow-800 px-2 py-1 rounded text-xs font-medium">PENDING</span>
+                <span className="text-gray-600">Post-Internet Bridge</span>
+                <span className="bg-yellow-100 text-yellow-800 px-2 py-1 rounded text-xs font-medium">AUFBAU</span>
               </div>
             </div>
           </div>
 
-          {/* Regional Impact */}
+          {/* Dead Internet Monitoring */}
           <div className="bg-white rounded-3xl p-6 shadow-lg border border-gray-100">
-            <h3 className="text-lg font-bold text-gray-900 mb-4">Saarland Impact</h3>
+            <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+              <AlertTriangle className="w-5 h-5 text-red-500" />
+              Dead Internet Monitoring
+            </h3>
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-gray-600">Population Reached</span>
-                <span className="font-semibold text-[#003399]">0.12%</span>
+                <span className="text-gray-600">Human Displacement Rate</span>
+                <span className="font-semibold text-red-600">+0.3%/Tag</span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-gray-600">Municipalities Connected</span>
-                <span className="font-semibold text-[#003399]">10/52</span>
+                <span className="text-gray-600">AI Content Saturation</span>
+                <span className="font-semibold text-red-600">99.1%</span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-gray-600">Business Partnerships</span>
-                <span className="font-semibold text-[#003399]">3 Active</span>
+                <span className="text-gray-600">Bot-zu-Bot Interaktionen</span>
+                <span className="font-semibold text-orange-600">89.7%</span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-gray-600">Cross-border Users</span>
-                <span className="font-semibold text-[#003399]">23%</span>
+                <span className="text-gray-600">Internet Lebenszeichen</span>
+                <span className="font-semibold text-red-600">Kritisch</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Regional AGENTNET Impact */}
+          <div className="bg-white rounded-3xl p-6 shadow-lg border border-gray-100">
+            <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+              <Brain className="w-5 h-5 text-purple-500" />
+              Saarland AGENTNET
+            </h3>
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-gray-600">Unternehmen AGENTNET-ready</span>
+                <span className="font-semibold text-[#003399]">127/3000</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-gray-600">AI-Agent Deployment</span>
+                <span className="font-semibold text-[#003399]">87.3%</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-gray-600">Post-Internet Pioneers</span>
+                <span className="font-semibold text-[#FDB913]">23 Aktiv</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-gray-600">AGENTNET Conversion</span>
+                <span className="font-semibold text-green-600">+15.2%</span>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Mission Statement */}
-        <div className="mt-8 bg-gradient-to-r from-[#003399] to-[#009FE3] rounded-xl p-6 text-white">
-          <div className="flex items-center mb-4">
-            <TrendingUp className="w-8 h-8 mr-3" />
-            <h3 className="text-xl font-bold">Mission: Saarland als KI-Hub</h3>
+        {/* AGENTNET Mission Statement */}
+        <div className="mt-8 bg-gradient-to-r from-black via-[#003399] to-[#000033] rounded-3xl p-8 text-white relative overflow-hidden">
+          <div className="absolute inset-0 network-pattern opacity-20"></div>
+          <div className="relative z-10">
+            <div className="flex items-center mb-6">
+              <Bot className="w-10 h-10 mr-4 text-[#FDB913]" />
+              <h3 className="text-2xl font-bold">AGENTNET Mission 2025</h3>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <h4 className="text-lg font-bold text-[#FDB913] mb-3">🌐 Gateway zum AGENTNET</h4>
+                <p className="text-white/90 leading-relaxed text-sm">
+                  AGENTLAND.SAARLAND ist die erste KI-Agentur-Plattform, die Unternehmen vom sterbenden 
+                  Internet ins post-Internet Zeitalter führt. Mit {stats.totalUsers.toLocaleString()} Nutzern 
+                  und €{stats.currentMRR.toLocaleString()} MRR beweisen wir: Die Zukunft ist AGENTNET.
+                </p>
+              </div>
+              <div>
+                <h4 className="text-lg font-bold text-red-400 mb-3">🚨 Dead Internet Reality</h4>
+                <p className="text-white/90 leading-relaxed text-sm">
+                  Während {stats.aiTrafficPercentage.toFixed(1)}% des Internets bereits AI-generiert sind, bereiten wir 
+                  Saarländische Unternehmen auf die vollautonome Agent-zu-Agent Economy vor. 
+                  {stats.agentToAgentConnections.toLocaleString()} aktive Agent-Verbindungen und wachsend.
+                </p>
+              </div>
+            </div>
+            
+            {/* Real-time AGENTNET Status */}
+            <div className="mt-6 pt-6 border-t border-white/20">
+              <div className="flex items-center justify-between text-sm">
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                  <span>AGENTNET Infrastructure: ONLINE</span>
+                </div>
+                <div className="text-[#FDB913] font-semibold">
+                  Meta-Intelligence: {stats.metaIntelligenceLevel.toFixed(1)}%
+                </div>
+                <div className="text-red-400 font-semibold">
+                  Dead Internet Score: {stats.deadInternetScore.toFixed(1)}/10
+                </div>
+              </div>
+            </div>
           </div>
-          <p className="text-white/90 leading-relaxed">
-            AGENTLAND.SAARLAND entwickelt sich zur führenden regionalen KI-Plattform Deutschlands. 
-            Mit {stats.totalUsers.toLocaleString()} Nutzern und €{stats.currentMRR.toLocaleString()} MRR 
-            beweisen wir, dass regionale KI-Plattformen erfolgreich sein können.
-          </p>
         </div>
       </div>
     </div>

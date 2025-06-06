@@ -32,28 +32,22 @@ export async function POST(request: NextRequest) {
     switch (mode) {
       case 'chat':
         if (stream) {
-          // Return streaming response
-          const encoder = new TextEncoder()
-          const readable = new ReadableStream({
-            async start(controller) {
-              try {
-                for await (const chunk of enhancedAI.streamResponse(prompt, category)) {
-                  controller.enqueue(encoder.encode(`data: ${JSON.stringify({ content: chunk })}\n\n`))
-                }
-                controller.enqueue(encoder.encode('data: [DONE]\n\n'))
-                controller.close()
-              } catch (error) {
-                console.error('Streaming error:', error)
-                controller.error(error)
-              }
-            }
+          // Use enhanced streaming service
+          const { streamingAI } = await import('@/lib/ai/streaming-ai-service')
+          const streamResponse = await streamingAI.createSSEStream(prompt, { 
+            category,
+            chunkSize: 50,
+            delayMs: 30,
+            includeMetadata: true
           })
 
-          return new Response(readable, {
+          return new Response(streamResponse, {
             headers: {
               'Content-Type': 'text/event-stream',
               'Cache-Control': 'no-cache',
               'Connection': 'keep-alive',
+              'Access-Control-Allow-Origin': '*',
+              'Access-Control-Allow-Headers': 'Cache-Control'
             },
           })
         } else {

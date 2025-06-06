@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" fill="none">
+  <!-- Football & Sports Illustration -->
+  <defs>
+    <linearGradient id="field-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#228B22;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#32CD32;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Stadium Background -->
+  <rect width="400" height="300" fill="#87CEEB"/>
+  
+  <!-- Football Field -->
+  <rect x="50" y="80" width="300" height="180" fill="url(#field-gradient)" rx="20"/>
+  
+  <!-- Field Lines -->
+  <rect x="60" y="90" width="280" height="160" fill="none" stroke="white" stroke-width="3" rx="15"/>
+  <line x1="200" y1="90" x2="200" y2="250" stroke="white" stroke-width="3"/>
+  <circle cx="200" cy="170" r="30" fill="none" stroke="white" stroke-width="3"/>
+  <circle cx="200" cy="170" r="2" fill="white"/>
+  
+  <!-- Goals -->
+  <rect x="55" y="140" width="10" height="60" fill="none" stroke="white" stroke-width="3"/>
+  <rect x="335" y="140" width="10" height="60" fill="none" stroke="white" stroke-width="3"/>
+  
+  <!-- Goal Areas -->
+  <rect x="60" y="155" width="25" height="30" fill="none" stroke="white" stroke-width="2"/>
+  <rect x="315" y="155" width="25" height="30" fill="none" stroke="white" stroke-width="2"/>
+  
+  <!-- Penalty Areas -->
+  <rect x="60" y="135" width="50" height="70" fill="none" stroke="white" stroke-width="2"/>
+  <rect x="290" y="135" width="50" height="70" fill="none" stroke="white" stroke-width="2"/>
+  
+  <!-- Football -->
+  <g transform="translate(190, 160)">
+    <circle cx="10" cy="10" r="8" fill="white"/>
+    <path d="M5 5 L15 5 L15 15 L5 15 Z" fill="none" stroke="black" stroke-width="1"/>
+    <path d="M2 10 L18 10" stroke="black" stroke-width="1"/>
+    <path d="M10 2 L10 18" stroke="black" stroke-width="1"/>
+  </g>
+  
+  <!-- Stadium Stands -->
+  <rect x="20" y="60" width="30" height="20" fill="#666" rx="5"/>
+  <rect x="350" y="60" width="30" height="20" fill="#666" rx="5"/>
+  <rect x="100" y="40" width="200" height="15" fill="#666" rx="5"/>
+  <rect x="100" y="280" width="200" height="15" fill="#666" rx="5"/>
+  
+  <!-- Team Logos/Emblems -->
+  <g transform="translate(100, 100)">
+    <!-- SV Elversberg -->
+    <circle cx="15" cy="15" r="12" fill="#003399"/>
+    <text x="15" y="19" text-anchor="middle" fill="white" font-size="8" font-weight="bold" font-family="Arial">SVE</text>
+  </g>
+  
+  <g transform="translate(285, 100)">
+    <!-- 1. FC Saarbrücken -->
+    <circle cx="15" cy="15" r="12" fill="#E31E2D"/>
+    <text x="15" y="19" text-anchor="middle" fill="white" font-size="8" font-weight="bold" font-family="Arial">FCS</text>
+  </g>
+  
+  <!-- Live Score Display -->
+  <rect x="150" y="50" width="100" height="25" fill="#000" rx="5"/>
+  <text x="175" y="67" text-anchor="middle" fill="#FDB913" font-size="12" font-weight="bold" font-family="Arial">LIVE</text>
+  <text x="200" y="67" text-anchor="middle" fill="white" font-size="14" font-weight="bold" font-family="Arial">1:0</text>
+  <text x="225" y="67" text-anchor="middle" fill="#43B049" font-size="10" font-family="Arial">67'</text>
+  
+  <!-- Saarland Teams Icons -->
+  <g transform="translate(30, 240)">
+    <circle cx="15" cy="15" r="15" fill="#003399"/>
+    <text x="15" y="20" text-anchor="middle" fill="white" font-size="8" font-family="Arial">SVE</text>
+  </g>
+  
+  <g transform="translate(100, 240)">
+    <circle cx="15" cy="15" r="15" fill="#E31E2D"/>
+    <text x="15" y="20" text-anchor="middle" fill="white" font-size="8" font-family="Arial">FCS</text>
+  </g>
+  
+  <g transform="translate(170, 240)">
+    <circle cx="15" cy="15" r="15" fill="#8B4513"/>
+    <text x="15" y="20" text-anchor="middle" fill="white" font-size="8" font-family="Arial">BNK</text>
+  </g>
+  
+  <g transform="translate(240, 240)">
+    <circle cx="15" cy="15" r="15" fill="#43B049"/>
+    <text x="15" y="20" text-anchor="middle" fill="white" font-size="8" font-family="Arial">FCH</text>
+  </g>
+  
+  <g transform="translate(310, 240)">
+    <circle cx="15" cy="15" r="15" fill="#FDB913"/>
+    <text x="15" y="20" text-anchor="middle" fill="white" font-size="8" font-family="Arial">RVÖ</text>
+  </g>
+  
+  <!-- Title -->
+  <text x="200" y="25" text-anchor="middle" fill="#003399" font-size="20" font-weight="bold" font-family="Arial">Saarland Fußball</text>
+  <text x="200" y="290" text-anchor="middle" fill="#003399" font-size="12" font-family="Arial">Live-Ticker • Tabellen • Vereinsinfos • Termine</text>
+</svg>

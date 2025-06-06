@@ -70,8 +70,8 @@ module.exports = {
         },
       },
       fontFamily: {
-        quantum: ['Inter', 'sans-serif'],
-        nova: ['Inter', 'sans-serif'],
+        quantum: ['var(--font-quantum)', 'Inter', 'sans-serif'],
+        nova: ['var(--font-nova)', 'Inter', 'sans-serif'],
       },
       animation: {
         'fade-in': 'fadeIn 0.5s ease-in-out',

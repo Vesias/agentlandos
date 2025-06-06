@@ -48,9 +48,15 @@ export default function BehoerdenfinderAdvanced() {
   const [loading, setLoading] = useState(false)
   const [showFilters, setShowFilters] = useState(false)
   const [selectedAuthority, setSelectedAuthority] = useState<Authority | null>(null)
+  const [userLocation, setUserLocation] = useState<{lat: number, lon: number} | null>(null)
+  const [favoriteAuthorities, setFavoriteAuthorities] = useState<string[]>([])
+  const [recentSearches, setRecentSearches] = useState<string[]>([])
+  const [showMap, setShowMap] = useState(false)
+  const [quickActions, setQuickActions] = useState(true)
   const [suggestions, setSuggestions] = useState<string[]>([])
   const [availableFilters, setAvailableFilters] = useState<any>({})
 
+  // Enhanced category icons with visual styling
   const categoryIcons = {
     kommunal: Building2,
     landesbehoerden: Users,
