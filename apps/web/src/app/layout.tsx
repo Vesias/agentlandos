@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
+import Providers from './providers'
+import GlobalTutorial from '@/components/GlobalTutorial'
 
 // Brandbook-compliant fonts
 const inter = Inter({ 
@@ -198,7 +200,10 @@ export default function RootLayout({
         }} />
       </head>
       <body className="font-nova text-neutral-gray bg-white antialiased">
-        {children}
+        <Providers>
+          {children}
+          <GlobalTutorial />
+        </Providers>
       </body>
     </html>
   )
