@@ -1,0 +1,48 @@
+- feature: Sicherheits-Audit
+  introduced: "2025-01-06"
+  current_status: Halb-Implementiert
+  open_steps: "Empfohlene Fixes aus dem Security Assessment (z. B. Hardcoded Credentials, Rate Limiting, CORS-Einschränkung) umsetzen"
+- feature: "Erste Chat-API mit Saarland-Daten"
+  introduced: "2025-02-02"
+  current_status: Halb-Implementiert
+  open_steps: "Chat nutzt feste Daten vom 02.02.2025; echte Live-Daten und DeepSeek-API-Key aktivieren"
+- feature: "Real Data Engine"
+  introduced: "2025-06-03"
+  current_status: Stabil
+  open_steps: "API-Keys für Wetter und Analytics hinterlegen, damit alle Datenquellen aktiv sind"
+- feature: "PLZ-Service mit vollständiger Abdeckung"
+  introduced: "2025-06-03"
+  current_status: Stabil
+  open_steps: "Cross-Border-PLZ und noch offene Behördeninformationen ergänzen"
+- feature: "Multi-Agent-Architektur"
+  introduced: "2025-06-03"
+  current_status: Halb-Implementiert
+  open_steps: "Navigator- und Spezialagenten sowie RAG-System umsetzen, Context Caching aktivieren"
+- feature: "Live Deployment mit Intelligentem Chat"
+  introduced: "2025-06-03"
+  current_status: Stabil
+  open_steps: "DeepSeek-API-Key eintragen und WebSocket-Integration nach Roadmap abschließen"
+- feature: "CLEAN Platform Refactor"
+  introduced: "2025-06-05"
+  current_status: Stabil
+  open_steps: "Keine offenen Punkte – neue, schlanke Struktur bereits umgesetzt"
+- feature: "Premium-Monetization-Plattform"
+  introduced: "2025-06-05"
+  current_status: Stabil
+  open_steps: "Zahlungsabwicklung und weitere Analysen laut Deployment Checkliste optimieren"
+- feature: "Performance Commander Optimierungen"
+  introduced: "2025-06-06"
+  current_status: Stabil
+  open_steps: "Horizontales Scaling, CDN und erweiterte Monitoring-Dashboards einrichten"
+- feature: "Mobile Optimization"
+  introduced: "2025-06-06"
+  current_status: Stabil
+  open_steps: "Phase-2-Features wie Voice Commands, Usage Analytics und Mehrsprachigkeit ergänzen"
+- feature: "Enhanced Implementation (Real-Time Hub, PLZ-Engine, AI Document Assistant)"
+  introduced: "2025-06-06"
+  current_status: Halb-Implementiert
+  open_steps: "DWD-Wetter, Cross-Border-Services und Government-APIs laut Roadmap aktivieren"
+- feature: "RAG-System mit Qdrant"
+  introduced: "2025-06-03"
+  current_status: Fehlend
+  open_steps: "Implementierung des Qdrant-Backends und Einbindung der Suche steht noch aus"
