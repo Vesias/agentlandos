@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useMemo, useCallback } from 'react';
 import { MapPin, Navigation, Info, Calendar, Euro, ExternalLink, AlertCircle } from 'lucide-react';
 
 // Dynamic import for Leaflet (client-side only)
@@ -171,8 +171,8 @@ export default function InteractiveSaarlandMap({
     }
   };
 
-  const getIconForCategory = (category: string) => {
-    const iconConfig: Record<string, { color: string; symbol: string }> = {
+  const iconConfig = useMemo(
+    () => ({
       tourist_attractions: { color: '#3B82F6', symbol: '🏞️' },
       education: { color: '#10B981', symbol: '🎓' },
       culture: { color: '#8B5CF6', symbol: '🎭' },
@@ -183,15 +183,19 @@ export default function InteractiveSaarlandMap({
       leisure: { color: '#14B8A6', symbol: '🛍️' },
       nature: { color: '#22C55E', symbol: '🌳' },
       cities: { color: '#0EA5E9', symbol: '🏘️' }
-    };
-    
-    const config = iconConfig[category] || { color: '#9CA3AF', symbol: '📍' };
-    
-    return L.divIcon({
-      className: 'custom-div-icon',
-      html: `
-        <div style="
-          background-color: ${config.color}; 
+    }),
+    []
+  );
+
+  const getIconForCategory = useCallback(
+    (category: string) => {
+      const config = iconConfig[category] || { color: '#9CA3AF', symbol: '📍' };
+
+      return L.divIcon({
+        className: 'custom-div-icon',
+        html: `
+          <div style="
+            background-color: ${config.color};
           width: 32px; 
           height: 32px; 
           border-radius: 50%; 
@@ -203,13 +207,15 @@ export default function InteractiveSaarlandMap({
           font-size: 16px;
         ">${config.symbol}</div>
       `,
-      iconSize: [32, 32],
-      iconAnchor: [16, 16],
-      popupAnchor: [0, -16]
-    });
-  };
+        iconSize: [32, 32],
+        iconAnchor: [16, 16],
+        popupAnchor: [0, -16]
+      });
+    },
+    [iconConfig]
+  );
 
-  const createPopupContent = (poi: POI) => {
+  const createPopupContent = useCallback((poi: POI) => {
     return `
       <div style="min-width: 200px;">
         <h3 style="margin: 0 0 8px 0; font-weight: bold;">${poi.name}</h3>
@@ -224,23 +230,23 @@ export default function InteractiveSaarlandMap({
         </div>
       </div>
     `;
-  };
+  }, []);
 
-  const navigateToPOI = (poi: POI) => {
+  const navigateToPOI = useCallback((poi: POI) => {
     if (mapInstanceRef.current) {
       mapInstanceRef.current.setView([poi.lat, poi.lon], 15, {
         animate: true,
         duration: 1
       });
     }
-  };
+  }, []);
 
-  const openDirections = (poi: POI) => {
+  const openDirections = useCallback((poi: POI) => {
     const url = `https://www.openstreetmap.org/directions?to=${poi.lat},${poi.lon}`;
     if (typeof window !== 'undefined') {
       window.open(url, '_blank');
     }
-  };
+  }, []);
 
   return (
     <div className="relative">

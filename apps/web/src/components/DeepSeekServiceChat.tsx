@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 import { Send, Loader2, Download, Share2, RefreshCw, Bot, User, FileText, Map, Calculator, Presentation } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
@@ -71,16 +71,16 @@ export default function DeepSeekServiceChat({
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 
-  const config = serviceConfig[serviceType]
+  const config = useMemo(() => serviceConfig[serviceType], [serviceType])
 
   // Auto-scroll to bottom
-  const scrollToBottom = () => {
+  const scrollToBottom = useCallback(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }
+  }, [])
 
   useEffect(() => {
     scrollToBottom()
-  }, [messages])
+  }, [messages, scrollToBottom])
 
   // Initialize with welcome message
   useEffect(() => {
@@ -98,7 +98,7 @@ export default function DeepSeekServiceChat({
   }, [serviceType, initialMessage])
 
   // Send message to DeepSeek API
-  const handleSendMessage = async (messageText?: string) => {
+  const handleSendMessage = useCallback(async (messageText?: string) => {
     const text = messageText || input.trim()
     if (!text) return
 
@@ -159,18 +159,21 @@ export default function DeepSeekServiceChat({
     } finally {
       setIsLoading(false)
     }
-  }
+  }, [input, messages, serviceType, sessionId])
 
   // Handle Enter key
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault()
-      handleSendMessage()
-    }
-  }
+  const handleKeyPress = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault()
+        handleSendMessage()
+      }
+    },
+    [handleSendMessage]
+  )
 
   // Export canvas data
-  const handleExportCanvas = (canvas: CanvasData) => {
+  const handleExportCanvas = useCallback((canvas: CanvasData) => {
     const blob = new Blob([JSON.stringify(canvas, null, 2)], { type: 'application/json' })
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
@@ -180,10 +183,10 @@ export default function DeepSeekServiceChat({
     a.click()
     document.body.removeChild(a)
     URL.revokeObjectURL(url)
-  }
+  }, [])
 
   // Render canvas component based on type
-  const renderCanvas = (canvas: CanvasData) => {
+  const renderCanvas = useCallback((canvas: CanvasData) => {
     switch (canvas.type) {
       case 'roadmap':
         return <RoadmapCanvas data={canvas.data} title={canvas.title} />
@@ -198,7 +201,7 @@ export default function DeepSeekServiceChat({
       default:
         return <GenericCanvas data={canvas.data} title={canvas.title} />
     }
-  }
+  }, [])
 
   return (
     <div className={`flex flex-col h-full bg-white rounded-xl border border-gray-200 shadow-lg overflow-hidden ${className}`}>
@@ -207,11 +210,11 @@ export default function DeepSeekServiceChat({
         <div className={`bg-gradient-to-r ${config.color} p-4 text-white`}>
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-xl font-bold flex items-center">
+              <h2 className="text-xl font-bold flex items-center font-quantum">
                 <span className="text-2xl mr-2">{config.icon}</span>
                 {config.title}
               </h2>
-              <p className="text-sm opacity-90 mt-1">{config.subtitle}</p>
+              <p className="text-sm opacity-90 mt-1 font-nova">{config.subtitle}</p>
             </div>
             <div className="flex items-center space-x-2">
               <Button
@@ -260,7 +263,7 @@ export default function DeepSeekServiceChat({
                     <User className="w-5 h-5 text-white mt-0.5 flex-shrink-0" />
                   )}
                   <div className="flex-1">
-                    <div className="whitespace-pre-wrap">{message.content}</div>
+                    <div className="whitespace-pre-wrap font-nova">{message.content}</div>
                     <div className="text-xs opacity-70 mt-1">
                       {message.timestamp.toLocaleTimeString()}
                     </div>
@@ -272,7 +275,7 @@ export default function DeepSeekServiceChat({
               {message.canvas && (
                 <div className="mt-3 p-4 bg-gray-50 rounded-lg border">
                   <div className="flex items-center justify-between mb-3">
-                    <h4 className="font-semibold text-gray-900 flex items-center">
+                    <h4 className="font-semibold text-gray-900 flex items-center font-quantum">
                       <Presentation className="w-4 h-4 mr-2" />
                       {message.canvas.title}
                     </h4>
@@ -322,7 +325,7 @@ export default function DeepSeekServiceChat({
             onKeyPress={handleKeyPress}
             placeholder={config.placeholder}
             disabled={isLoading}
-            className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100"
+            className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100 font-nova"
           />
           <Button
             onClick={() => handleSendMessage()}
