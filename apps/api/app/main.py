@@ -7,6 +7,8 @@ from typing import AsyncGenerator
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+import redis
+from app.middleware.security import SecurityMiddleware
 
 from app.core.config import settings
 from app.db.database import create_db_and_tables, engine
@@ -39,6 +41,10 @@ app = FastAPI(
     docs_url="/api/docs",
     redoc_url="/api/redoc",
 )
+
+# SECURITY MIDDLEWARE
+security_redis = redis.from_url(settings.REDIS_URL, decode_responses=True)
+app.add_middleware(SecurityMiddleware, redis_client=security_redis, config={})
 
 # SICHERHEITS-KONFIGURATION für regionale Zugriffe
 # KRITISCH: Restriktive CORS-Policy für Produktionsumgebung
