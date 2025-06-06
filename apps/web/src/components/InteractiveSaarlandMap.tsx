@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { MapPin, Navigation, Info, Calendar, Euro, ExternalLink, AlertCircle } from 'lucide-react';
 
 // Dynamic import for Leaflet (client-side only)
@@ -171,7 +171,7 @@ export default function InteractiveSaarlandMap({
     }
   };
 
-  const getIconForCategory = (category: string) => {
+  const getIconForCategory = useCallback((category: string) => {
     const iconConfig: Record<string, { color: string; symbol: string }> = {
       tourist_attractions: { color: '#3B82F6', symbol: '🏞️' },
       education: { color: '#10B981', symbol: '🎓' },
@@ -207,9 +207,9 @@ export default function InteractiveSaarlandMap({
       iconAnchor: [16, 16],
       popupAnchor: [0, -16]
     });
-  };
+  }, []);
 
-  const createPopupContent = (poi: POI) => {
+  const createPopupContent = useCallback((poi: POI) => {
     return `
       <div style="min-width: 200px;">
         <h3 style="margin: 0 0 8px 0; font-weight: bold;">${poi.name}</h3>
@@ -224,23 +224,23 @@ export default function InteractiveSaarlandMap({
         </div>
       </div>
     `;
-  };
+  }, []);
 
-  const navigateToPOI = (poi: POI) => {
+  const navigateToPOI = useCallback((poi: POI) => {
     if (mapInstanceRef.current) {
       mapInstanceRef.current.setView([poi.lat, poi.lon], 15, {
         animate: true,
         duration: 1
       });
     }
-  };
+  }, []);
 
-  const openDirections = (poi: POI) => {
+  const openDirections = useCallback((poi: POI) => {
     const url = `https://www.openstreetmap.org/directions?to=${poi.lat},${poi.lon}`;
     if (typeof window !== 'undefined') {
       window.open(url, '_blank');
     }
-  };
+  }, []);
 
   return (
     <div className="relative">

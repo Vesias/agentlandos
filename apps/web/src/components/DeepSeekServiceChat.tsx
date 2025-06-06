@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { Send, Loader2, Download, Share2, RefreshCw, Bot, User, FileText, Map, Calculator, Presentation } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
@@ -58,11 +58,11 @@ const serviceConfig = {
   }
 }
 
-export default function DeepSeekServiceChat({ 
-  serviceType, 
+function DeepSeekServiceChatComponent({
+  serviceType,
   className = '',
   initialMessage,
-  showHeader = true 
+  showHeader = true
 }: DeepSeekServiceChatProps) {
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState('')
@@ -74,9 +74,9 @@ export default function DeepSeekServiceChat({
   const config = serviceConfig[serviceType]
 
   // Auto-scroll to bottom
-  const scrollToBottom = () => {
+  const scrollToBottom = useCallback(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }
+  }, [])
 
   useEffect(() => {
     scrollToBottom()
@@ -98,7 +98,7 @@ export default function DeepSeekServiceChat({
   }, [serviceType, initialMessage])
 
   // Send message to DeepSeek API
-  const handleSendMessage = async (messageText?: string) => {
+  const handleSendMessage = useCallback(async (messageText?: string) => {
     const text = messageText || input.trim()
     if (!text) return
 
@@ -159,7 +159,7 @@ export default function DeepSeekServiceChat({
     } finally {
       setIsLoading(false)
     }
-  }
+  }, [input, messages, serviceType, sessionId])
 
   // Handle Enter key
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -170,7 +170,7 @@ export default function DeepSeekServiceChat({
   }
 
   // Export canvas data
-  const handleExportCanvas = (canvas: CanvasData) => {
+  const handleExportCanvas = useCallback((canvas: CanvasData) => {
     const blob = new Blob([JSON.stringify(canvas, null, 2)], { type: 'application/json' })
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
@@ -180,10 +180,10 @@ export default function DeepSeekServiceChat({
     a.click()
     document.body.removeChild(a)
     URL.revokeObjectURL(url)
-  }
+  }, [])
 
   // Render canvas component based on type
-  const renderCanvas = (canvas: CanvasData) => {
+  const renderCanvas = useCallback((canvas: CanvasData) => {
     switch (canvas.type) {
       case 'roadmap':
         return <RoadmapCanvas data={canvas.data} title={canvas.title} />
@@ -198,7 +198,7 @@ export default function DeepSeekServiceChat({
       default:
         return <GenericCanvas data={canvas.data} title={canvas.title} />
     }
-  }
+  }, [])
 
   return (
     <div className={`flex flex-col h-full bg-white rounded-xl border border-gray-200 shadow-lg overflow-hidden ${className}`}>
@@ -207,7 +207,7 @@ export default function DeepSeekServiceChat({
         <div className={`bg-gradient-to-r ${config.color} p-4 text-white`}>
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-xl font-bold flex items-center">
+              <h2 className="text-xl font-bold flex items-center font-quantum">
                 <span className="text-2xl mr-2">{config.icon}</span>
                 {config.title}
               </h2>
@@ -247,9 +247,9 @@ export default function DeepSeekServiceChat({
           >
             <div className={`max-w-[80%] ${message.role === 'user' ? 'order-2' : 'order-1'}`}>
               {/* Message bubble */}
-              <div className={`p-3 rounded-lg ${
-                message.role === 'user' 
-                  ? 'bg-blue-600 text-white' 
+              <div className={`p-3 rounded-lg font-nova ${
+                message.role === 'user'
+                  ? 'bg-blue-600 text-white'
                   : 'bg-gray-100 text-gray-900'
               }`}>
                 <div className="flex items-start space-x-2">
@@ -427,3 +427,5 @@ const GenericCanvas = ({ data, title }: { data: any; title: string }) => (
     </pre>
   </div>
 )
+
+export default React.memo(DeepSeekServiceChatComponent)

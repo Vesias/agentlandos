@@ -140,6 +140,41 @@ paths:
                 $ref: '#/components/schemas/CostLimitError'
 ```
 
+### POST /api/v1/claude/chat
+**Lightweight Claude Chat API**
+
+```yaml
+openapi: 3.0.3
+paths:
+  /api/v1/claude/chat:
+    post:
+      summary: "Claude 3 Sonnet chat"
+      description: "Direct interface to Anthropic Claude"
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [message]
+              properties:
+                message:
+                  type: string
+                  maxLength: 4000
+      responses:
+        200:
+          description: "Claude response"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  content:
+                    type: string
+```
+
 ### Response Schema
 ```yaml
 components:
