@@ -1,0 +1,90 @@
+- title: Brandbook Fonts Integration
+  description: "Quantum Sans/Nova Text fonts need to be loaded and referenced in the UI."
+  priority: Medium
+  assignee: frontend-modernizer
+  labels: [ui, design]
+  task: "Add font files to assets and update Tailwind/Next.js config to use them."
+
+- title: Performance Monitoring Setup
+  description: "Bundle Analyzer and metrics collection are pending."
+  priority: High
+  assignee: analytics-engine
+  labels: [performance, monitoring]
+  task: "Configure Next.js bundle analyzer and integrate metrics to Prometheus."
+
+- title: DWD Weather API Integration
+  description: "Real weather data should be served via the DWD service."
+  priority: High
+  assignee: api-guardian
+  labels: [api, integration]
+  task: "Connect DWD API to realtime hub and expose endpoints." 
+
+- title: Smart Revenue Engine Activation
+  description: "Subscription optimization via AI is planned but inactive."
+  priority: Medium
+  assignee: revenue-optimizer
+  labels: [business]
+  task: "Implement revenue engine and hook into billing flow."
+
+- title: Cross-Border Services Expansion
+  description: "Integrate DE/FR/LU data sources and enhance PWA capabilities."
+  priority: Medium
+  assignee: cross-border-agent
+  labels: [pwa, international]
+  task: "Add French and Luxembourg APIs; update PWA manifest for offline support."
+
+- title: Government API & Multilingual Support
+  description: "Official Saarland APIs and FR/EN translations are scheduled."
+  priority: Medium
+  assignee: admin-agent
+  labels: [api, i18n]
+  task: "Integrate official government endpoints and add i18n resources." 
+
+- title: Real Data Cache Endpoint Fix
+  description: "500 error due to missing environment variables."
+  priority: High
+  assignee: api-guardian
+  labels: [api, bug]
+  task: "Provide required API keys and enable /api/cache/real-data." 
+
+- title: JWT Validation & Sessions
+  description: "Authentication is incomplete according to the analysis report."
+  priority: High
+  assignee: security-enforcer
+  labels: [security]
+  task: "Implement full JWT verification and session handling across services."
+
+- title: CSRF/XSS Protection
+  description: "Middleware for security is missing or partial."
+  priority: High
+  assignee: security-enforcer
+  labels: [security]
+  task: "Add CSRF/XSS middleware and sanitize incoming data." 
+
+- title: Observability Pipeline
+  description: "Prometheus-based monitoring is missing."
+  priority: Medium
+  assignee: analytics-engine
+  labels: [monitoring]
+  task: "Deploy Prometheus stack and integrate logging." 
+
+- title: Rate Limiting & Abuse Prevention
+  description: "Architecture analysis notes missing rate limits."
+  priority: High
+  assignee: api-guardian
+  labels: [security, performance]
+  task: "Implement rate-limiting middleware such as SlowAPI and configure thresholds." 
+
+- title: Cross-Border PLZ Integration
+  description: "French and Luxembourg postal codes not available."
+  priority: Medium
+  assignee: cross-border-agent
+  labels: [data]
+  task: "Load Moselle and Luxembourg postal codes into the PLZ service." 
+
+- title: Government Billing & Compliance
+  description: "Billing, SLA management and white-label portal missing."
+  priority: Medium
+  assignee: premium-service-manager
+  labels: [business]
+  task: "Develop billing module, SLA tracking, and customizable portal." 
