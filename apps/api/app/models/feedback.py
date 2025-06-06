@@ -13,6 +13,7 @@ class Feedback(Base):
     agent_id = Column(String, nullable=False, index=True)
     user_id = Column(UUID(as_uuid=True), nullable=True, index=True)
     message_id = Column(UUID(as_uuid=True), nullable=False)
+    user_id = Column(UUID(as_uuid=True), nullable=False, index=True)
     rating = Column(Integer, nullable=False)
     comment = Column(Text, nullable=True)
     created_at = Column(DateTime(timezone=True), default=datetime.utcnow, index=True)

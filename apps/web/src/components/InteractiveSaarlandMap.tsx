@@ -1,18 +1,33 @@
 'use client'
 
 import React, { useEffect, useRef, useState } from 'react';
-import L from 'leaflet';
-import 'leaflet/dist/leaflet.css';
-import { MapPin, Navigation, Info, Calendar, Euro, ExternalLink } from 'lucide-react';
+import { MapPin, Navigation, Info, Calendar, Euro, ExternalLink, AlertCircle } from 'lucide-react';
 
-// Fix für Leaflet Marker Icons
+// Dynamic import for Leaflet (client-side only)
+let L: any = null;
+
 if (typeof window !== 'undefined') {
-  delete (L.Icon.Default.prototype as any)._getIconUrl;
-  L.Icon.Default.mergeOptions({
-    iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
-    iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
-    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+  import('leaflet').then((leaflet) => {
+    L = leaflet.default;
+    
+    // Fix für Leaflet Marker Icons
+    delete (L.Icon.Default.prototype as any)._getIconUrl;
+    L.Icon.Default.mergeOptions({
+      iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
+      iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
+      shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+    });
   });
+  
+  // Load Leaflet CSS dynamically
+  if (!document.querySelector('link[href*="leaflet.css"]')) {
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+    link.integrity = 'sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=';
+    link.crossOrigin = '';
+    document.head.appendChild(link);
+  }
 }
 
 interface POI {
@@ -45,26 +60,63 @@ export default function InteractiveSaarlandMap({
   const [loading, setLoading] = useState(true);
   const [pois, setPOIs] = useState<Record<string, POI[]>>({});
   const [selectedPOI, setSelectedPOI] = useState<POI | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [mapReady, setMapReady] = useState(false);
 
   useEffect(() => {
-    if (!mapRef.current || mapInstanceRef.current) return;
+    if (!mapRef.current || mapInstanceRef.current || !L) return;
 
-    // Initialisiere Karte
-    const map = L.map(mapRef.current).setView([49.3833, 6.9167], 10);
-    mapInstanceRef.current = map;
+    const initializeMap = async () => {
+      try {
+        // Ensure Leaflet is loaded
+        if (!L) {
+          setTimeout(initializeMap, 100);
+          return;
+        }
 
-    // OpenStreetMap Tiles
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-      maxZoom: 18,
-    }).addTo(map);
+        // Initialisiere Karte
+        const map = L.map(mapRef.current, {
+          center: [49.3833, 6.9167],
+          zoom: 10,
+          zoomControl: true,
+          scrollWheelZoom: true,
+          doubleClickZoom: true,
+          dragging: true
+        });
+        
+        mapInstanceRef.current = map;
 
-    // Lade POIs
-    if (showPOIs) {
-      loadPOIs(map);
-    }
+        // OpenStreetMap Tiles
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors | AGENTLAND.SAARLAND',
+          maxZoom: 18,
+          minZoom: 8
+        }).addTo(map);
 
-    setLoading(false);
+        // Saarland Bounds (rough approximation)
+        const saarlandBounds = L.latLngBounds(
+          [49.1, 6.3], // Southwest
+          [49.6, 7.4]  // Northeast
+        );
+        
+        // Set max bounds to keep focus on Saarland
+        map.setMaxBounds(saarlandBounds);
+
+        // Lade POIs
+        if (showPOIs) {
+          await loadPOIs(map);
+        }
+
+        setMapReady(true);
+        setLoading(false);
+      } catch (error) {
+        console.error('Map initialization error:', error);
+        setError('Fehler beim Laden der Karte. Bitte laden Sie die Seite neu.');
+        setLoading(false);
+      }
+    };
+
+    initializeMap();
 
     return () => {
       if (mapInstanceRef.current) {
@@ -74,34 +126,48 @@ export default function InteractiveSaarlandMap({
     };
   }, [showPOIs]);
 
-  const loadPOIs = async (map: L.Map) => {
+  const loadPOIs = async (map: any) => {
     try {
       const response = await fetch('/api/realtime/maps/pois');
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
       const data = await response.json();
       
-      if (data.status === 'success') {
+      if (data.status === 'success' && data.data) {
         setPOIs(data.data);
         
         // Füge Marker für alle POIs hinzu
         Object.entries(data.data).forEach(([category, items]) => {
-          (items as POI[]).forEach(poi => {
-            const icon = getIconForCategory(category);
-            
-            const marker = L.marker([poi.lat, poi.lon], { icon })
-              .addTo(map)
-              .bindPopup(createPopupContent(poi));
-            
-            marker.on('click', () => {
-              setSelectedPOI(poi);
-              if (onLocationSelect) {
-                onLocationSelect(poi);
+          if (Array.isArray(items)) {
+            items.forEach((poi: POI) => {
+              try {
+                const icon = getIconForCategory(category);
+                
+                const marker = L.marker([poi.lat, poi.lon], { icon })
+                  .addTo(map)
+                  .bindPopup(createPopupContent(poi));
+                
+                marker.on('click', () => {
+                  setSelectedPOI(poi);
+                  if (onLocationSelect) {
+                    onLocationSelect(poi);
+                  }
+                });
+              } catch (markerError) {
+                console.error('Error creating marker for POI:', poi.name, markerError);
               }
             });
-          });
+          }
         });
+      } else {
+        throw new Error('Invalid data format received from POI API');
       }
     } catch (error) {
       console.error('Error loading POIs:', error);
+      setError('Fehler beim Laden der Standorte. Einige POIs werden möglicherweise nicht angezeigt.');
     }
   };
 
@@ -183,10 +249,30 @@ export default function InteractiveSaarlandMap({
       
       {/* Loading Overlay */}
       {loading && (
-        <div className="absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center rounded-lg">
+        <div className="absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center rounded-lg z-[2000]">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
             <p className="mt-2 text-gray-600">Karte wird geladen...</p>
+            <p className="text-xs text-gray-500 mt-1">Lädt Leaflet & Saarland POIs...</p>
+          </div>
+        </div>
+      )}
+      
+      {/* Error Display */}
+      {error && (
+        <div className="absolute top-4 left-4 right-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded z-[2000]">
+          <div className="flex items-center">
+            <AlertCircle className="w-5 h-5 mr-2" />
+            <div>
+              <p className="font-medium">Kartenfehler</p>
+              <p className="text-sm">{error}</p>
+            </div>
+            <button
+              onClick={() => setError(null)}
+              className="ml-auto text-red-500 hover:text-red-700"
+            >
+              ×
+            </button>
           </div>
         </div>
       )}

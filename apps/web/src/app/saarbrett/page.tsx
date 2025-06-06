@@ -143,7 +143,7 @@ export default function SaarBrettPage() {
             </div>
             
             <h1 className="text-5xl md:text-6xl font-bold mb-4 font-quantum">
-              SAARBRETT
+              🗞️ SAARBRETT
             </h1>
             <p className="text-xl md:text-2xl mb-2 opacity-90">
               Das digitale Schwarze Brett für das Saarland
@@ -151,6 +151,9 @@ export default function SaarBrettPage() {
             <p className="text-lg opacity-75 max-w-3xl mx-auto">
               KI-gestützte Plattform für SAARUSER und SAARFIRMEN • Angebote • Gesuche • Jobs • Events
             </p>
+            <div className="mt-4 bg-white/20 backdrop-blur-sm rounded-xl px-4 py-2 inline-block">
+              <span className="text-sm font-medium">🔗 Live: https://agentland.saarland/saarbrett</span>
+            </div>
             
             <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
               <button

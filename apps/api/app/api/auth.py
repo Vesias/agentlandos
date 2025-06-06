@@ -11,8 +11,12 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from jose import JWTError, jwt
 from passlib.context import CryptContext
 from pydantic import BaseModel, EmailStr
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import settings
+from app.db.database import get_async_session
+from app.models.user import User
 
 router = APIRouter()
 
@@ -51,7 +55,7 @@ class TokenData(BaseModel):
     Token Payload Schema
     """
     username: str | None = None
-    user_id: UUID | None = None
+
 
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
@@ -82,7 +86,10 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
     return encoded_jwt
 
 
-async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
+async def get_current_user(
+    token: Annotated[str, Depends(oauth2_scheme)],
+    session: AsyncSession = Depends(get_async_session)
+):
     """
     Dependency zum Abrufen des aktuellen Benutzers aus dem Token
     """
@@ -94,82 +101,3 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
     try:
         payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
         username: str = payload.get("sub")
-        user_id_str: str = payload.get("uid")
-        if username is None or user_id_str is None:
-            raise credentials_exception
-        token_data = TokenData(username=username, user_id=UUID(user_id_str))
-    except JWTError:
-        raise credentials_exception
-    # TODO: Benutzer aus Datenbank laden
-    return token_data
-
-
-@router.post("/register", response_model=dict)
-async def register(user: UserCreate):
-    """
-    Registriert einen neuen Benutzer
-    """
-    # TODO: In Datenbank speichern
-    hashed_password = get_password_hash(user.password)
-    
-    return {
-        "message": "Benutzer erfolgreich registriert",
-        "username": user.username,
-        "email": user.email,
-        "region": user.region,
-    }
-
-
-@router.post("/token", response_model=Token)
-async def login(form_data: Annotated[OAuth2PasswordRequestForm, Depends()]):
-    """
-    Authentifiziert einen Benutzer und gibt ein Token zurück
-    SICHERHEIT: Rate Limiting und Brute Force Protection implementiert
-    """
-    import logging
-    logger = logging.getLogger(__name__)
-    
-    # SICHERHEIT: Rate Limiting für Login-Versuche prüfen
-    # TODO: Implementiere Redis-basiertes Rate Limiting
-    
-    # KRITISCH: Entferne hardcoded Credentials in Produktion!
-    # Temporäre Demo-Implementierung - MUSS durch echte DB-Validierung ersetzt werden
-    if form_data.username == "demo" and form_data.password == "saarland2024":
-        logger.warning("SECURITY WARNING: Using hardcoded demo credentials!")
-        
-        access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
-        access_token = create_access_token(
-            data={"sub": form_data.username, "uid": str(DEMO_USER_ID)},
-            expires_delta=access_token_expires,
-        )
-        
-        # SICHERHEIT: Erfolgreiche Anmeldung loggen
-        logger.info(f"Successful login for user: {form_data.username}")
-        
-        return {"access_token": access_token, "token_type": "bearer"}
-    
-    # SICHERHEIT: Fehlgeschlagene Anmeldeversuche loggen
-    logger.warning(f"Failed login attempt for user: {form_data.username}")
-    
-    # TODO: Implementiere Account Lockout nach mehreren Fehlversuchen
-    # TODO: Implementiere CAPTCHA nach 3 Fehlversuchen
-    
-    raise HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Falsche Anmeldedaten",
-        headers={"WWW-Authenticate": "Bearer"},
-    )
-
-
-@router.get("/me")
-async def read_users_me(current_user: Annotated[TokenData, Depends(get_current_user)]):
-    """
-    Gibt Informationen über den aktuellen Benutzer zurück
-    """
-    return {
-        "user_id": str(current_user.user_id),
-        "username": current_user.username,
-        "email": f"{current_user.username}@agentland.saarland",
-        "region": "Saarland",
-        "language_preference": "de",
-    }
