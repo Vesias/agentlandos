@@ -75,7 +75,7 @@ export default function HomePage() {
             </div>
             <p className="text-white/90 mb-4">
               Als erste KI-Agentur im Saarland unterstützen wir unsere Heimat - 
-              <strong className="text-[#FDB913]"> komplett kostenlos mit fairen Limits</strong>
+              <strong className="text-[#FDB913]"> komplett kostenlos mit echten Echtzeit-Daten</strong>
             </p>
             <Link href="/register?plan=saarland-free">
               <button className="bg-[#FDB913] hover:bg-[#E5A50A] text-[#003399] px-6 py-3 rounded-xl font-bold transition-all duration-300 hover:scale-105">
@@ -86,9 +86,15 @@ export default function HomePage() {
 
           {/* Live AGENTNET Hero Metrics */}
           <div className="mb-8">
-            <div className="inline-flex items-center gap-2 bg-red-500/20 border border-red-500/30 rounded-full px-4 py-2 mb-6">
-              <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
-              <span className="text-red-300 font-semibold text-sm">LIVE: Internet stirbt JETZT</span>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-6">
+              <div className="inline-flex items-center gap-2 bg-red-500/20 border border-red-500/30 rounded-full px-4 py-2">
+                <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
+                <span className="text-red-300 font-semibold text-sm">LIVE: Internet stirbt JETZT</span>
+              </div>
+              <div className="inline-flex items-center gap-2 bg-green-500/20 border border-green-500/30 rounded-full px-4 py-2">
+                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                <span className="text-green-300 font-semibold text-sm">✅ NUR ECHTE DATEN - KEINE FAKE METRICS</span>
+              </div>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-2xl mx-auto mb-8">
@@ -224,15 +230,15 @@ export default function HomePage() {
 
           {/* Service Packages - Quick Overview */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-16">
-            {/* KOSTENLOS für SAARUSER */}
-            <div className="bg-gradient-to-br from-[#003399] to-[#009FE3] p-6 rounded-3xl shadow-xl text-white relative overflow-hidden transform hover:scale-105 transition-all duration-300">
-              <div className="absolute top-0 right-0 bg-[#FDB913] text-[#003399] px-3 py-1 rounded-bl-xl font-bold text-sm">SAARLAND</div>
+            {/* KOSTENLOS STANDARD MITGLIEDSCHAFT */}
+            <div className="bg-gradient-to-br from-[#003399] to-[#009FE3] p-6 rounded-3xl shadow-xl text-white relative overflow-hidden transform scale-110 border-4 border-[#FDB913] transition-all duration-300">
+              <div className="absolute top-0 right-0 bg-[#FDB913] text-[#003399] px-4 py-2 rounded-bl-xl font-bold text-sm">⭐ STANDARD</div>
               <div className="text-center pt-4">
                 <h3 className="text-2xl font-bold mb-2">🆓 KOSTENLOS</h3>
                 <div className="text-3xl font-bold mb-4">0€<span className="text-lg text-blue-100">/Monat</span></div>
                 <div className="bg-[#FDB913]/20 border border-[#FDB913]/30 rounded-xl p-3 mb-4">
-                  <div className="text-lg font-bold text-[#FDB913]">Nur für Saarlänger!</div>
-                  <div className="text-sm text-blue-100">Mit fairen Limits</div>
+                  <div className="text-lg font-bold text-[#FDB913]">Standard-Mitgliedschaft</div>
+                  <div className="text-sm text-blue-100">Kostenlos für alle Saarlänger</div>
                 </div>
                 <ul className="text-sm text-blue-100 space-y-2 mb-6 text-left">
                   <li>• 10 KI-Anfragen/Tag</li>
