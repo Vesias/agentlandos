@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { 
   Send, Mic, Image, Paperclip, Bot, User, MapPin, Clock, 
   Zap, Brain, Building2, GraduationCap, Palette, Users,

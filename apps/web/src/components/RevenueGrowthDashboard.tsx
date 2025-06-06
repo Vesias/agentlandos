@@ -84,19 +84,19 @@ export const RevenueGrowthDashboard: React.FC = () => {
   };
 
   const getTrendIcon = (current: number, previous: number) => {
-    if (current > previous) return <ArrowUp className=\"w-4 h-4 text-green-500\" />;
-    if (current < previous) return <ArrowDown className=\"w-4 h-4 text-red-500\" />;
-    return <Minus className=\"w-4 h-4 text-gray-500\" />;
+    if (current > previous) return <ArrowUp className="w-4 h-4 text-green-500" />;
+    if (current < previous) return <ArrowDown className="w-4 h-4 text-red-500" />;
+    return <Minus className="w-4 h-4 text-gray-500" />;
   };
 
   if (isLoading) {
     return (
-      <div className=\"p-8 bg-gradient-to-br from-blue-50 to-indigo-100 rounded-xl\">
-        <div className=\"animate-pulse space-y-6\">
-          <div className=\"h-8 bg-gray-200 rounded w-1/3\"></div>
-          <div className=\"grid grid-cols-4 gap-4\">
+      <div className="p-8 bg-gradient-to-br from-blue-50 to-indigo-100 rounded-xl">
+        <div className="animate-pulse space-y-6">
+          <div className="h-8 bg-gray-200 rounded w-1/3"></div>
+          <div className="grid grid-cols-4 gap-4">
             {[...Array(4)].map((_, i) => (
-              <div key={i} className=\"h-32 bg-gray-200 rounded-xl\"></div>
+              <div key={i} className="h-32 bg-gray-200 rounded-xl"></div>
             ))}
           </div>
         </div>
@@ -106,226 +106,214 @@ export const RevenueGrowthDashboard: React.FC = () => {
 
   if (!metrics) {
     return (
-      <div className=\"p-8 text-center\">
-        <p className=\"text-gray-600\">Fehler beim Laden der Revenue-Daten</p>
+      <div className="p-8 bg-gradient-to-br from-blue-50 to-indigo-100 rounded-xl">
+        <div className="text-center text-gray-600">
+          <Target className="w-12 h-12 mx-auto mb-4 opacity-50" />
+          <p>Revenue-Daten werden geladen...</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className=\"space-y-8\">
+    <div className="w-full max-w-7xl mx-auto p-6 space-y-6">
       {/* Header */}
-      <div className=\"bg-gradient-to-r from-blue-900 via-blue-800 to-indigo-800 text-white p-8 rounded-2xl\">
-        <div className=\"flex items-center justify-between\">
+      <div className="bg-gradient-to-r from-saarland-blue to-innovation-cyan rounded-xl p-6 text-white">
+        <div className="flex items-center justify-between">
           <div>
-            <h1 className=\"text-3xl font-bold mb-2 flex items-center gap-3\">
-              <Crown className=\"w-8 h-8 text-yellow-400\" />
-              Revenue Growth Dashboard
-            </h1>
-            <p className=\"text-blue-200 text-lg\">
-              AGENTLAND.SAARLAND • Weg zu €25k+ MRR
-            </p>
+            <h1 className="text-3xl font-bold mb-2">Revenue Growth Dashboard</h1>
+            <p className="text-blue-100">Real-time Einblick in KI-Agentur Performance</p>
           </div>
-          <div className=\"text-right\">
-            <div className=\"text-4xl font-bold text-yellow-400\">
+          <div className="text-right">
+            <div className="text-4xl font-bold">
               {formatCurrency(metrics.currentMRR)}
             </div>
-            <div className=\"text-blue-200\">Aktueller MRR</div>
+            <div className="text-blue-100">Monthly Recurring Revenue</div>
           </div>
         </div>
       </div>
 
       {/* Key Metrics Grid */}
-      <div className=\"grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6\">
-        {/* Current MRR */}
-        <div className=\"bg-gradient-to-br from-green-500 to-emerald-600 text-white p-6 rounded-xl shadow-lg\">
-          <div className=\"flex items-center justify-between mb-4\">
-            <DollarSign className=\"w-8 h-8\" />
-            <div className=\"text-right\">
-              <div className=\"text-2xl font-bold\">{formatCurrency(metrics.currentMRR)}</div>
-              <div className=\"text-green-100 text-sm\">Monthly Recurring Revenue</div>
-            </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="bg-white rounded-xl p-6 shadow-sm border">
+          <div className="flex items-center justify-between mb-4">
+            <DollarSign className="w-8 h-8 text-green-500" />
+            {getTrendIcon(metrics.currentMRR, metrics.currentMRR * 0.8)}
           </div>
-          <div className=\"bg-white/20 rounded-lg p-3\">
-            <div className=\"text-sm font-medium mb-1\">Ziel €25k Progress</div>
-            <div className=\"w-full bg-white/30 rounded-full h-2\">
+          <div className="text-2xl font-bold text-gray-900">
+            {formatCurrency(metrics.currentMRR)}
+          </div>
+          <div className="text-sm text-gray-600">Current MRR</div>
+          <div className="mt-2 text-xs text-gray-500">
+            Ziel: €25,000 ({formatPercent((metrics.currentMRR / 25000) * 100)})
+          </div>
+        </div>
+
+        <div className="bg-white rounded-xl p-6 shadow-sm border">
+          <div className="flex items-center justify-between mb-4">
+            <Users className="w-8 h-8 text-blue-500" />
+            {getTrendIcon(metrics.totalUsers, metrics.totalUsers * 0.9)}
+          </div>
+          <div className="text-2xl font-bold text-gray-900">
+            {metrics.totalUsers.toLocaleString()}
+          </div>
+          <div className="text-sm text-gray-600">Aktive Nutzer</div>
+          <div className="mt-2 text-xs text-gray-500">
+            Ziel: 50,000 ({formatPercent((metrics.totalUsers / 50000) * 100)})
+          </div>
+        </div>
+
+        <div className="bg-white rounded-xl p-6 shadow-sm border">
+          <div className="flex items-center justify-between mb-4">
+            <Target className="w-8 h-8 text-purple-500" />
+            {getTrendIcon(metrics.conversionRate, 5)}
+          </div>
+          <div className="text-2xl font-bold text-gray-900">
+            {formatPercent(metrics.conversionRate)}
+          </div>
+          <div className="text-sm text-gray-600">Conversion Rate</div>
+          <div className="mt-2 text-xs text-gray-500">
+            Free → Premium Subscriptions
+          </div>
+        </div>
+
+        <div className="bg-white rounded-xl p-6 shadow-sm border">
+          <div className="flex items-center justify-between mb-4">
+            <TrendingUp className="w-8 h-8 text-orange-500" />
+            {getTrendIcon(100 - metrics.churnRate, 95)}
+          </div>
+          <div className="text-2xl font-bold text-gray-900">
+            {formatPercent(100 - metrics.churnRate)}
+          </div>
+          <div className="text-sm text-gray-600">Retention Rate</div>
+          <div className="mt-2 text-xs text-gray-500">
+            Monatliche Kundenbindung
+          </div>
+        </div>
+      </div>
+
+      {/* Revenue Goals Progress */}
+      <div className="bg-white rounded-xl p-6 shadow-sm border">
+        <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
+          <Award className="w-6 h-6 text-yellow-500" />
+          Revenue Goals 2025
+        </h3>
+        
+        <div className="space-y-6">
+          <div>
+            <div className="flex justify-between items-center mb-2">
+              <span className="font-medium">€25,000 MRR Ziel</span>
+              <span className="text-sm text-gray-600">
+                {formatPercent(metrics.goalProgress.target25k)} erreicht
+              </span>
+            </div>
+            <div className="w-full bg-gray-200 rounded-full h-3">
               <div 
-                className=\"bg-white rounded-full h-2 transition-all duration-500\"
+                className={`h-3 rounded-full bg-gradient-to-r ${getProgressColor(metrics.goalProgress.target25k)}`}
                 style={{ width: `${Math.min(metrics.goalProgress.target25k, 100)}%` }}
               ></div>
             </div>
-            <div className=\"text-xs mt-1\">{formatPercent(metrics.goalProgress.target25k)}</div>
           </div>
-        </div>
 
-        {/* Total Users */}
-        <div className=\"bg-gradient-to-br from-blue-500 to-cyan-600 text-white p-6 rounded-xl shadow-lg\">
-          <div className=\"flex items-center justify-between mb-4\">
-            <Users className=\"w-8 h-8\" />
-            <div className=\"text-right\">
-              <div className=\"text-2xl font-bold\">{metrics.totalUsers.toLocaleString()}</div>
-              <div className=\"text-blue-100 text-sm\">Premium Users</div>
+          <div>
+            <div className="flex justify-between items-center mb-2">
+              <span className="font-medium">50,000 Nutzer Ziel</span>
+              <span className="text-sm text-gray-600">
+                {formatPercent(metrics.goalProgress.target50kUsers)} erreicht
+              </span>
             </div>
-          </div>
-          <div className=\"bg-white/20 rounded-lg p-3\">
-            <div className=\"text-sm font-medium mb-1\">Ziel 50k Progress</div>
-            <div className=\"w-full bg-white/30 rounded-full h-2\">
+            <div className="w-full bg-gray-200 rounded-full h-3">
               <div 
-                className=\"bg-white rounded-full h-2 transition-all duration-500\"
+                className={`h-3 rounded-full bg-gradient-to-r ${getProgressColor(metrics.goalProgress.target50kUsers)}`}
                 style={{ width: `${Math.min(metrics.goalProgress.target50kUsers, 100)}%` }}
               ></div>
             </div>
-            <div className=\"text-xs mt-1\">{formatPercent(metrics.goalProgress.target50kUsers)}</div>
           </div>
         </div>
+      </div>
 
-        {/* ARPU */}
-        <div className=\"bg-gradient-to-br from-purple-500 to-violet-600 text-white p-6 rounded-xl shadow-lg\">
-          <div className=\"flex items-center justify-between mb-4\">
-            <Target className=\"w-8 h-8\" />
-            <div className=\"text-right\">
-              <div className=\"text-2xl font-bold\">{formatCurrency(metrics.averageRevenuePerUser)}</div>
-              <div className=\"text-purple-100 text-sm\">ARPU</div>
+      {/* Real-time Stats */}
+      <div className="bg-white rounded-xl p-6 shadow-sm border">
+        <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
+          <Zap className="w-6 h-6 text-blue-500" />
+          Real-time KI-Agentur Stats
+        </h3>
+        
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="text-center p-4 bg-green-50 rounded-lg">
+            <div className="text-2xl font-bold text-green-600">
+              {formatCurrency(metrics.realTimeStats.revenueToday)}
             </div>
+            <div className="text-sm text-green-700">Revenue Heute</div>
           </div>
-          <div className=\"space-y-2 text-sm\">
-            <div className=\"flex justify-between\">
-              <span>Conversion Rate:</span>
-              <span className=\"font-bold\">{formatPercent(metrics.conversionRate)}</span>
+          
+          <div className="text-center p-4 bg-blue-50 rounded-lg">
+            <div className="text-2xl font-bold text-blue-600">
+              {metrics.realTimeStats.newUsersToday}
             </div>
-            <div className=\"flex justify-between\">
-              <span>Churn Rate:</span>
-              <span className=\"font-bold\">{formatPercent(metrics.churnRate)}</span>
-            </div>
+            <div className="text-sm text-blue-700">Neue Nutzer Heute</div>
           </div>
-        </div>
-
-        {/* Real-time Today */}
-        <div className=\"bg-gradient-to-br from-orange-500 to-red-600 text-white p-6 rounded-xl shadow-lg\">
-          <div className=\"flex items-center justify-between mb-4\">
-            <Zap className=\"w-8 h-8\" />
-            <div className=\"text-right\">
-              <div className=\"text-2xl font-bold\">{formatCurrency(metrics.realTimeStats.revenueToday)}</div>
-              <div className=\"text-orange-100 text-sm\">Revenue Heute</div>
+          
+          <div className="text-center p-4 bg-purple-50 rounded-lg">
+            <div className="text-2xl font-bold text-purple-600">
+              {metrics.realTimeStats.upgradesThisWeek}
             </div>
+            <div className="text-sm text-purple-700">Upgrades diese Woche</div>
           </div>
-          <div className=\"space-y-2 text-sm\">
-            <div className=\"flex justify-between\">
-              <span>Neue User:</span>
-              <span className=\"font-bold\">{metrics.realTimeStats.newUsersToday}</span>
+          
+          <div className="text-center p-4 bg-red-50 rounded-lg">
+            <div className="text-2xl font-bold text-red-600">
+              {metrics.realTimeStats.churnThisMonth}
             </div>
-            <div className=\"flex justify-between\">
-              <span>Upgrades (7d):</span>
-              <span className=\"font-bold\">{metrics.realTimeStats.upgradesThisWeek}</span>
-            </div>
+            <div className="text-sm text-red-700">Churn diesen Monat</div>
           </div>
         </div>
       </div>
 
       {/* Projections */}
       {projections && (
-        <div className=\"bg-white rounded-2xl shadow-xl p-8\">
-          <h2 className=\"text-2xl font-bold text-gray-900 mb-6 flex items-center gap-3\">
-            <Sparkles className=\"w-6 h-6 text-yellow-500\" />
-            Revenue Projections
-          </h2>
+        <div className="bg-white rounded-xl p-6 shadow-sm border">
+          <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
+            <Crown className="w-6 h-6 text-yellow-500" />
+            KI-Agentur Revenue Projections
+          </h3>
           
-          <div className=\"grid grid-cols-1 md:grid-cols-3 gap-6 mb-8\">
-            <div className=\"text-center p-6 bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl\">
-              <div className=\"text-3xl font-bold text-blue-800 mb-2\">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="text-center p-4 border rounded-lg">
+              <div className="text-3xl font-bold text-gray-900">
                 {formatCurrency(projections.mrr3Months)}
               </div>
-              <div className=\"text-blue-600 font-medium\">3 Monate</div>
-              <div className=\"text-sm text-blue-500 mt-1\">
-                +{formatPercent(((projections.mrr3Months - metrics.currentMRR) / metrics.currentMRR) * 100)}
-              </div>
+              <div className="text-sm text-gray-600">Projected MRR (3 Monate)</div>
             </div>
             
-            <div className=\"text-center p-6 bg-gradient-to-br from-green-50 to-green-100 rounded-xl\">
-              <div className=\"text-3xl font-bold text-green-800 mb-2\">
+            <div className="text-center p-4 border rounded-lg">
+              <div className="text-3xl font-bold text-gray-900">
                 {formatCurrency(projections.mrr6Months)}
               </div>
-              <div className=\"text-green-600 font-medium\">6 Monate</div>
-              <div className=\"text-sm text-green-500 mt-1\">
-                +{formatPercent(((projections.mrr6Months - metrics.currentMRR) / metrics.currentMRR) * 100)}
-              </div>
+              <div className="text-sm text-gray-600">Projected MRR (6 Monate)</div>
             </div>
             
-            <div className=\"text-center p-6 bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl\">
-              <div className=\"text-3xl font-bold text-purple-800 mb-2\">
+            <div className="text-center p-4 border rounded-lg">
+              <div className="text-3xl font-bold text-gray-900">
                 {formatCurrency(projections.mrr12Months)}
               </div>
-              <div className=\"text-purple-600 font-medium\">12 Monate</div>
-              <div className=\"text-sm text-purple-500 mt-1\">
-                +{formatPercent(((projections.mrr12Months - metrics.currentMRR) / metrics.currentMRR) * 100)}
-              </div>
+              <div className="text-sm text-gray-600">Projected MRR (12 Monate)</div>
             </div>
           </div>
-
-          {/* Target Achievement */}
-          <div className=\"bg-gradient-to-r from-yellow-400 to-orange-500 text-white p-6 rounded-xl\">
-            <div className=\"flex items-center justify-between\">
-              <div>
-                <h3 className=\"text-xl font-bold mb-2\">🎯 €25k MRR Ziel</h3>
-                <p className=\"text-yellow-100\">
-                  Voraussichtlich erreicht am: {' '}
-                  <span className=\"font-bold\">
-                    {new Date(projections.targetDate25k).toLocaleDateString('de-DE', {
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric'
-                    })}
-                  </span>
-                </p>
-              </div>
-              <Award className=\"w-12 h-12 text-yellow-200\" />
+          
+          <div className="mt-6 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg">
+            <div className="flex items-center gap-2 mb-2">
+              <Sparkles className="w-5 h-5 text-blue-500" />
+              <span className="font-semibold text-blue-900">Prognose für €25k MRR</span>
             </div>
+            <p className="text-blue-800">
+              Voraussichtliches Erreichen: <strong>{projections.targetDate25k}</strong>
+            </p>
           </div>
         </div>
       )}
-
-      {/* Action Items */}
-      <div className=\"bg-gradient-to-br from-indigo-50 to-blue-50 p-8 rounded-2xl\">
-        <h2 className=\"text-2xl font-bold text-gray-900 mb-6\">🚀 Nächste Schritte für Wachstum</h2>
-        
-        <div className=\"grid grid-cols-1 md:grid-cols-2 gap-6\">
-          <div className=\"space-y-4\">
-            <h3 className=\"text-lg font-semibold text-gray-800\">Kurzziele (30 Tage)</h3>
-            <ul className=\"space-y-2 text-gray-700\">
-              <li className=\"flex items-center gap-2\">
-                <div className=\"w-2 h-2 bg-green-500 rounded-full\"></div>
-                Launch A/B Tests für Conversion Optimization
-              </li>
-              <li className=\"flex items-center gap-2\">
-                <div className=\"w-2 h-2 bg-blue-500 rounded-full\"></div>
-                Implement Referral Program
-              </li>
-              <li className=\"flex items-center gap-2\">
-                <div className=\"w-2 h-2 bg-purple-500 rounded-full\"></div>
-                Enhanced Onboarding Flow
-              </li>
-            </ul>
-          </div>
-          
-          <div className=\"space-y-4\">
-            <h3 className=\"text-lg font-semibold text-gray-800\">Mittelfristig (90 Tage)</h3>
-            <ul className=\"space-y-2 text-gray-700\">
-              <li className=\"flex items-center gap-2\">
-                <div className=\"w-2 h-2 bg-yellow-500 rounded-full\"></div>
-                Cross-border DE/FR/LU Expansion
-              </li>
-              <li className=\"flex items-center gap-2\">
-                <div className=\"w-2 h-2 bg-red-500 rounded-full\"></div>
-                Enterprise B2B Sales
-              </li>
-              <li className=\"flex items-center gap-2\">
-                <div className=\"w-2 h-2 bg-indigo-500 rounded-full\"></div>
-                API Marketplace Launch
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
     </div>
   );
-};"
+};
+
+export default RevenueGrowthDashboard;
