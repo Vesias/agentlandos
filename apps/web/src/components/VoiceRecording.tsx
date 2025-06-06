@@ -9,6 +9,8 @@ import VoiceTroubleshooting from './VoiceTroubleshooting'
 interface VoiceRecordingProps {
   onTranscript?: (text: string) => void
   onAudioData?: (audioBlob: Blob) => void
+  onStart?: () => void
+  onEnd?: () => void
   className?: string
   autoSend?: boolean
   showLanguageSelector?: boolean
@@ -25,6 +27,8 @@ const supportedLanguages = [
 export default function VoiceRecording({
   onTranscript,
   onAudioData,
+  onStart,
+  onEnd,
   className = '',
   autoSend = false,
   showLanguageSelector = true,
@@ -64,16 +68,23 @@ export default function VoiceRecording({
     continuous: true,
     interimResults: true,
     onResult: (text, isFinal) => {
+      console.log('Voice recognition result:', { text, isFinal, autoSend })
       if (isFinal && autoSend && text.trim()) {
+        console.log('Auto-sending transcript:', text)
         onTranscript?.(text)
         resetTranscript()
       }
     },
     onStart: () => {
+      console.log('Voice recognition started')
       setShowTranscript(true)
+      onStart?.()
     },
     onEnd: () => {
+      console.log('Voice recognition ended, transcript:', transcript)
+      onEnd?.()
       if (!autoSend && transcript.trim()) {
+        console.log('Sending final transcript:', transcript)
         onTranscript?.(transcript)
       }
     }
@@ -197,6 +208,7 @@ export default function VoiceRecording({
   // Send transcript manually
   const sendTranscript = () => {
     if (transcript.trim()) {
+      console.log('Manually sending transcript:', transcript)
       onTranscript?.(transcript)
       resetTranscript()
       setShowTranscript(false)

@@ -57,7 +57,7 @@ export default function EnhancedMultiAgentChat() {
   const [inputMessage, setInputMessage] = useState('')
   const [selectedAgent, setSelectedAgent] = useState('auto')
   const [availableAgents, setAvailableAgents] = useState<AgentInfo[]>([])
-  const [isRecording, setIsRecording] = useState(false)
+  const [voiceInputActive, setVoiceInputActive] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [attachments, setAttachments] = useState<File[]>([])
   const [features, setFeatures] = useState({
@@ -227,65 +227,26 @@ export default function EnhancedMultiAgentChat() {
     setAttachments(prev => prev.filter((_, i) => i !== index))
   }
 
-  const startVoiceRecording = async () => {
-    if (isRecording) {
-      setIsRecording(false)
-      return
-    }
+  // Handle voice transcript from VoiceRecording component
+  const handleVoiceTranscript = (text: string) => {
+    console.log('Voice transcript received:', text)
+    setInputMessage(prev => {
+      const newMessage = prev + (prev ? ' ' : '') + text
+      console.log('Updated input message:', newMessage)
+      return newMessage
+    })
+    setVoiceInputActive(false)
+  }
 
-    try {
-      // Check if speech recognition is supported
-      if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-        alert('Spracherkennung wird in diesem Browser nicht unterstützt. Bitte nutzen Sie Chrome, Safari oder Edge.')
-        return
-      }
+  // Handle voice recording start/stop
+  const handleVoiceStart = () => {
+    console.log('Voice recording started')
+    setVoiceInputActive(true)
+  }
 
-      setIsRecording(true)
-      
-      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
-      const recognition = new SpeechRecognition()
-      
-      recognition.continuous = false
-      recognition.interimResults = false
-      recognition.lang = 'de-DE'
-      recognition.maxAlternatives = 1
-      
-      recognition.onresult = (event) => {
-        const transcript = event.results[0][0].transcript
-        setInputMessage(prev => prev + (prev ? ' ' : '') + transcript)
-        setIsRecording(false)
-      }
-      
-      recognition.onerror = (event) => {
-        console.error('Speech recognition error:', event.error)
-        setIsRecording(false)
-        
-        let errorMessage = 'Spracherkennung fehlgeschlagen'
-        switch (event.error) {
-          case 'not-allowed':
-            errorMessage = 'Mikrofon-Zugriff verweigert. Bitte erlauben Sie den Mikrofonzugriff.'
-            break
-          case 'no-speech':
-            errorMessage = 'Keine Sprache erkannt. Bitte versuchen Sie es erneut.'
-            break
-          case 'network':
-            errorMessage = 'Netzwerkfehler bei der Spracherkennung.'
-            break
-        }
-        alert(errorMessage)
-      }
-      
-      recognition.onend = () => {
-        setIsRecording(false)
-      }
-      
-      recognition.start()
-      
-    } catch (error) {
-      console.error('Voice recording error:', error)
-      setIsRecording(false)
-      alert('Fehler beim Starten der Spracherkennung')
-    }
+  const handleVoiceEnd = () => {
+    console.log('Voice recording ended')
+    setVoiceInputActive(false)
   }
 
   const playVoiceResponse = (url: string) => {
@@ -510,13 +471,20 @@ export default function EnhancedMultiAgentChat() {
           </button>
           
           {/* Voice Recording */}
-          <VoiceRecording
-            onTranscript={(text) => setInputMessage(prev => prev + (prev ? ' ' : '') + text)}
-            autoSend={false}
-            showLanguageSelector={false}
-            disabled={isLoading}
-            className="flex-shrink-0"
-          />
+          <div className="flex-shrink-0 relative">
+            <VoiceRecording
+              onTranscript={handleVoiceTranscript}
+              onStart={handleVoiceStart}
+              onEnd={handleVoiceEnd}
+              autoSend={false}
+              showLanguageSelector={false}
+              disabled={isLoading}
+              className=""
+            />
+            {voiceInputActive && (
+              <div className="absolute -top-2 -right-2 w-3 h-3 bg-red-500 rounded-full animate-pulse" />
+            )}
+          </div>
           
           {/* Message Input */}
           <div className="flex-1">
@@ -525,8 +493,10 @@ export default function EnhancedMultiAgentChat() {
               value={inputMessage}
               onChange={(e) => setInputMessage(e.target.value)}
               onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
-              placeholder="Schreiben Sie Ihre Nachricht..."
-              className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#003399] focus:border-transparent resize-none"
+              placeholder={voiceInputActive ? "Sprechen Sie jetzt..." : "Schreiben Sie Ihre Nachricht..."}
+              className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-[#003399] focus:border-transparent resize-none transition-all duration-200 ${
+              voiceInputActive ? 'border-red-300 bg-red-50' : 'border-gray-300'
+            }`}
               disabled={isLoading}
             />
           </div>
