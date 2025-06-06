@@ -2,8 +2,10 @@
 AGENTLAND.SAARLAND API - Simplified Version with DeepSeek
 """
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
+import redis
+from app.middleware.security import SecurityMiddleware
 from pydantic import BaseModel
 import httpx
 import os
@@ -24,6 +26,19 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Security Middleware
+redis_url = os.getenv("REDIS_URL", "redis://localhost:6379")
+try:
+    redis_client = redis.from_url(redis_url, decode_responses=True)
+except Exception:
+    redis_client = None
+
+security = SecurityMiddleware(redis_client, {})
+
+@app.middleware("http")
+async def apply_security(request: Request, call_next):
+    return await security(request, call_next)
 
 # DeepSeek Configuration
 DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY", "")

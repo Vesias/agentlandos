@@ -5,8 +5,12 @@ Haupteinstiegspunkt für die AGENTLAND.SAARLAND API
 from contextlib import asynccontextmanager
 from typing import AsyncGenerator
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+import os
+import redis
+
+from app.middleware.security import SecurityMiddleware
 
 from app.core.config import settings
 from app.db.database import create_db_and_tables, engine
@@ -65,6 +69,19 @@ app.add_middleware(
 # PERFORMANCE MIDDLEWARE - OPTIMIERT FÜR 200K USERS
 app.add_middleware(PerformanceMiddleware)
 app.add_middleware(MemoryOptimizationMiddleware)
+
+# Security Middleware
+redis_url = os.getenv("REDIS_URL", "redis://localhost:6379")
+try:
+    redis_client = redis.from_url(redis_url, decode_responses=True)
+except Exception:
+    redis_client = None
+
+security = SecurityMiddleware(redis_client, {})
+
+@app.middleware("http")
+async def apply_security(request: Request, call_next):
+    return await security(request, call_next)
 
 # API-Router einbinden
 app.include_router(health.router, prefix="/api/health", tags=["Gesundheit"])
