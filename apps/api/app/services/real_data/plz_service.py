@@ -55,7 +55,13 @@ class SaarlandPLZService:
             
             # Saarlouis
             "66740": {"stadt": "Saarlouis", "kreis": "Landkreis Saarlouis", "lat": 49.3133, "lon": 6.7528},
-            
+
+            # Cross‑Border: Frankreich
+            "57200": {"stadt": "Sarreguemines", "kreis": "Moselle (FR)", "lat": 49.1100, "lon": 7.0700},
+
+            # Cross‑Border: Luxemburg
+            "4110": {"stadt": "Esch-sur-Alzette", "kreis": "Luxembourg (LU)", "lat": 49.4950, "lon": 5.9800},
+
             # Weitere wichtige PLZ...
         }
         
@@ -154,6 +160,24 @@ class SaarlandPLZService:
                     "telefon": "06831 443-0",
                     "email": "buergerbuero@saarlouis.de",
                     "online_services": "https://www.saarlouis.de/buergerservice"
+                }
+            },
+            "Moselle (FR)": {
+                "buergeramt": {
+                    "name": "Mairie de Sarreguemines",
+                    "adresse": "Hôtel de Ville, 57200 Sarreguemines, France",
+                    "telefon": "+33 3 87 98 93 00",
+                    "online_services": "https://www.sarreguemines.fr",
+                    "oeffnungszeiten": {"Mo-Fr": "08:00-12:00 / 13:30-17:00"}
+                }
+            },
+            "Luxembourg (LU)": {
+                "buergeramt": {
+                    "name": "Bierger-Center Luxemburg",
+                    "adresse": "44 Place Guillaume II, 2090 Luxembourg",
+                    "telefon": "+352 4796-2200",
+                    "online_services": "https://www.vdl.lu",
+                    "oeffnungszeiten": {"Mo-Fr": "08:00-17:00"}
                 }
             }
         }

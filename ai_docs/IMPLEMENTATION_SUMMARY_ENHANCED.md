@@ -50,6 +50,7 @@ const SAARLAND_DATA_SOURCES = {
 - **Real-time Verfügbarkeit** aller Behörden
 - **Intelligent Service Matching** basierend auf PLZ
 - **Alternative Empfehlungen** in benachbarten Gebieten
+- **Cross-Border PLZ Support** für Frankreich und Luxemburg
 - **ETA-Berechnungen** für Bearbeitungszeiten
 
 ### **Service Database**:
