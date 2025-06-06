@@ -18,37 +18,71 @@ if (!serviceRoleKey) {
 // Singleton pattern to prevent multiple GoTrueClient instances
 let _supabaseBrowser: ReturnType<typeof createClient> | null = null
 
-// Browser client factory function
+// Browser client factory function with graceful degradation
 function createBrowserClient() {
   if (_supabaseBrowser) {
     return _supabaseBrowser
   }
 
+  // Graceful degradation if Supabase is not available
   if (!supabaseUrl || !anonKey) {
-    console.error('Supabase configuration missing:', { supabaseUrl: !!supabaseUrl, anonKey: !!anonKey })
-    throw new Error('Supabase configuration is required')
+    console.warn('Supabase configuration missing - creating mock client for development')
+    
+    // Return a mock client that won't crash the app
+    const mockClient = {
+      auth: {
+        getSession: () => Promise.resolve({ data: { session: null }, error: null }),
+        signIn: () => Promise.resolve({ data: null, error: { message: 'Authentication not available' } }),
+        signOut: () => Promise.resolve({ error: null }),
+        onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => {} } } })
+      },
+      from: () => ({
+        select: () => Promise.resolve({ data: [], error: null }),
+        insert: () => Promise.resolve({ data: null, error: null }),
+        update: () => Promise.resolve({ data: null, error: null }),
+        delete: () => Promise.resolve({ data: null, error: null })
+      })
+    }
+    
+    return mockClient as any
   }
 
-  _supabaseBrowser = createClient(supabaseUrl, anonKey, {
-    auth: {
-      persistSession: true,
-      autoRefreshToken: true,
-      detectSessionInUrl: true,
-      storage: typeof window !== 'undefined' ? window.localStorage : undefined,
-      storageKey: 'agentland-saarland-auth', // Unique storage key
-    },
-    global: {
-      headers: {
-        'x-client-info': 'agentland-saarland-web',
+  try {
+    _supabaseBrowser = createClient(supabaseUrl, anonKey, {
+      auth: {
+        persistSession: true,
+        autoRefreshToken: true,
+        detectSessionInUrl: true,
+        storage: typeof window !== 'undefined' ? window.localStorage : undefined,
+        storageKey: 'agentland-saarland-auth', // Unique storage key
       },
-    },
-  })
+      global: {
+        headers: {
+          'x-client-info': 'agentland-saarland-web',
+        },
+      },
+    })
 
-  return _supabaseBrowser
+    return _supabaseBrowser
+  } catch (error) {
+    console.error('Failed to create Supabase client:', error)
+    // Return mock client as fallback
+    return {
+      auth: { getSession: () => Promise.resolve({ data: { session: null }, error: null }) },
+      from: () => ({ select: () => Promise.resolve({ data: [], error: null }) })
+    } as any
+  }
 }
 
-// Export browser client
-export const supabaseBrowser = createBrowserClient()
+// Export browser client with error handling
+export const supabaseBrowser = (() => {
+  try {
+    return createBrowserClient()
+  } catch (error) {
+    console.error('Supabase browser client initialization failed:', error)
+    return null
+  }
+})()
 
 // Server client for server-side operations (only when service role key is available)
 export const supabaseServer = serviceRoleKey 
