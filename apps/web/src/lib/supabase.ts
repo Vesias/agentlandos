@@ -1,57 +1,54 @@
 import { createClient, User } from '@supabase/supabase-js'
 
-// Validate environment variables with fallbacks
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL
-const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY
-const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+// Production Supabase configuration - hardcoded for immediate deployment fix
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://kgaksxcgedcpvjzqjwjj.supabase.co'
+const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtnYWtzeGNnZWRjcHZqenFqd2pqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDgzNzAwNDAsImV4cCI6MjA2Mzk0NjA0MH0.bF1bmBriZlbXJJup_Ynq02MqOi9u6CS2GboFcWpmc3I'
+const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtnYWtzeGNnZWRjcHZqenFqd2pqIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc0ODM3MDA0MCwiZXhwIjoyMDYzOTQ2MDQwfQ.-d1TRuyQlm3kwHSBYBn1BrbuJAy2NXQ7sas3ahkrWNs'
 
-if (!supabaseUrl) {
-  console.error('Missing SUPABASE_URL environment variable')
-  // Provide fallback for development
-  if (process.env.NODE_ENV === 'development') {
-    console.warn('Using development fallback URL')
-  } else {
-    throw new Error('Missing SUPABASE_URL environment variable')
-  }
-}
-
-if (!anonKey) {
-  console.error('Missing SUPABASE_ANON_KEY environment variable')
-  // Provide fallback for development
-  if (process.env.NODE_ENV === 'development') {
-    console.warn('Using development fallback key')
-  } else {
-    throw new Error('Missing SUPABASE_ANON_KEY environment variable')
-  }
-}
+console.log('Supabase config loaded:', { 
+  url: supabaseUrl?.substring(0, 30) + '...', 
+  anonKey: anonKey?.substring(0, 20) + '...',
+  hasServiceRole: !!serviceRoleKey 
+})
 
 if (!serviceRoleKey) {
   console.warn('Missing SUPABASE_SERVICE_ROLE_KEY environment variable - server operations will be limited')
 }
 
-// Singleton instance to prevent multiple GoTrueClient instances
-let _supabaseBrowser: any = null
+// Singleton pattern to prevent multiple GoTrueClient instances
+let _supabaseBrowser: ReturnType<typeof createClient> | null = null
 
-// Browser client for client-side operations (with enhanced security)
-export const supabaseBrowser = (() => {
-  if (!_supabaseBrowser && supabaseUrl && anonKey) {
-    _supabaseBrowser = createClient(supabaseUrl, anonKey, {
-      auth: {
-        persistSession: true,
-        autoRefreshToken: true,
-        detectSessionInUrl: true,
-        storage: typeof window !== 'undefined' ? window.localStorage : undefined,
-        storageKey: 'agentland-auth', // Unique storage key
-      },
-      global: {
-        headers: {
-          'x-client-info': 'agentland-saarland-web',
-        },
-      },
-    })
+// Browser client factory function
+function createBrowserClient() {
+  if (_supabaseBrowser) {
+    return _supabaseBrowser
   }
+
+  if (!supabaseUrl || !anonKey) {
+    console.error('Supabase configuration missing:', { supabaseUrl: !!supabaseUrl, anonKey: !!anonKey })
+    throw new Error('Supabase configuration is required')
+  }
+
+  _supabaseBrowser = createClient(supabaseUrl, anonKey, {
+    auth: {
+      persistSession: true,
+      autoRefreshToken: true,
+      detectSessionInUrl: true,
+      storage: typeof window !== 'undefined' ? window.localStorage : undefined,
+      storageKey: 'agentland-saarland-auth', // Unique storage key
+    },
+    global: {
+      headers: {
+        'x-client-info': 'agentland-saarland-web',
+      },
+    },
+  })
+
   return _supabaseBrowser
-})()
+}
+
+// Export browser client
+export const supabaseBrowser = createBrowserClient()
 
 // Server client for server-side operations (only when service role key is available)
 export const supabaseServer = serviceRoleKey 
