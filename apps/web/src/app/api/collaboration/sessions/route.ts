@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { DatabaseService, supabase } from '@/lib/supabase'
+import RealTimeCollaboration from '@/lib/collaboration/real-time-collaboration'
 
 export const dynamic = 'force-dynamic'
 
