@@ -1,7 +1,14 @@
-'use client';
+"use client";
 
-import React, { useState, useEffect } from 'react';
-import { Search, Database, Zap, CheckCircle, XCircle, Loader2 } from 'lucide-react';
+import React, { useState, useEffect } from "react";
+import {
+  Search,
+  Database,
+  Zap,
+  CheckCircle,
+  XCircle,
+  Loader2,
+} from "lucide-react";
 
 interface ResearchResult {
   id: string;
@@ -17,13 +24,15 @@ interface ResearchResult {
 }
 
 interface EmbeddingsHealth {
-  status: 'healthy' | 'degraded' | 'unhealthy';
+  status: "healthy" | "degraded" | "unhealthy";
   details: string;
 }
 
 const SaarlandResearchCenter: React.FC = () => {
-  const [query, setQuery] = useState('');
-  const [searchCategory, setSearchCategory] = useState<'saarland' | 'verwaltung' | 'tourismus' | 'wirtschaft' | 'bildung'>('saarland');
+  const [query, setQuery] = useState("");
+  const [searchCategory, setSearchCategory] = useState<
+    "saarland" | "verwaltung" | "tourismus" | "wirtschaft" | "bildung"
+  >("saarland");
   const [results, setResults] = useState<ResearchResult[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [health, setHealth] = useState<EmbeddingsHealth | null>(null);
@@ -36,16 +45,16 @@ const SaarlandResearchCenter: React.FC = () => {
 
   const checkEmbeddingsHealth = async () => {
     try {
-      const response = await fetch('/api/ai/embeddings?action=health');
+      const response = await fetch("/api/ai/embeddings?action=health");
       const data = await response.json();
       setHealth({
         status: data.status,
-        details: data.details
+        details: data.details,
       });
     } catch (error) {
       setHealth({
-        status: 'unhealthy',
-        details: 'Unable to connect to embeddings service'
+        status: "unhealthy",
+        details: "Unable to connect to embeddings service",
       });
     }
   };
@@ -58,13 +67,13 @@ const SaarlandResearchCenter: React.FC = () => {
     setError(null);
 
     try {
-      const response = await fetch('/api/ai/embeddings', {
-        method: 'POST',
+      const response = await fetch("/api/ai/embeddings", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          action: 'search',
+          action: "search",
           query: query.trim(),
           searchIn: searchCategory,
           options: {
@@ -84,11 +93,11 @@ const SaarlandResearchCenter: React.FC = () => {
       if (data.success) {
         setResults(data.results || []);
       } else {
-        setError(data.error || 'Search failed');
+        setError(data.error || "Search failed");
         setResults([]);
       }
     } catch (error) {
-      setError('Network error - please try again');
+      setError("Network error - please try again");
       setResults([]);
     } finally {
       setIsLoading(false);
@@ -97,13 +106,13 @@ const SaarlandResearchCenter: React.FC = () => {
 
   const getHealthIcon = () => {
     if (!health) return <Loader2 className="w-4 h-4 animate-spin" />;
-    
+
     switch (health.status) {
-      case 'healthy':
+      case "healthy":
         return <CheckCircle className="w-4 h-4 text-green-600" />;
-      case 'degraded':
+      case "degraded":
         return <XCircle className="w-4 h-4 text-yellow-600" />;
-      case 'unhealthy':
+      case "unhealthy":
         return <XCircle className="w-4 h-4 text-red-600" />;
       default:
         return <Loader2 className="w-4 h-4 animate-spin" />;
@@ -112,11 +121,11 @@ const SaarlandResearchCenter: React.FC = () => {
 
   const getCategoryLabel = (category: string) => {
     const labels = {
-      saarland: '🏛️ Alles Saarland',
-      verwaltung: '📋 Verwaltung',
-      tourismus: '🎭 Tourismus',
-      wirtschaft: '💼 Wirtschaft',
-      bildung: '🎓 Bildung',
+      saarland: "🏛️ Alles Saarland",
+      verwaltung: "📋 Verwaltung",
+      tourismus: "🎭 Tourismus",
+      wirtschaft: "💼 Wirtschaft",
+      bildung: "🎓 Bildung",
     };
     return labels[category as keyof typeof labels] || category;
   };
@@ -126,8 +135,8 @@ const SaarlandResearchCenter: React.FC = () => {
   };
 
   const formatDate = (dateString?: string) => {
-    if (!dateString) return 'Unbekannt';
-    return new Date(dateString).toLocaleDateString('de-DE');
+    if (!dateString) return "Unbekannt";
+    return new Date(dateString).toLocaleDateString("de-DE");
   };
 
   return (
@@ -143,14 +152,18 @@ const SaarlandResearchCenter: React.FC = () => {
               KI-gestützte Semantic Search mit OpenAI Embeddings
             </p>
           </div>
-          
+
           {/* Health Status */}
           <div className="flex items-center space-x-2 bg-white px-4 py-2 rounded-lg border">
             {getHealthIcon()}
             <span className="text-sm">
-              {health?.status === 'healthy' ? 'Operational' : 
-               health?.status === 'degraded' ? 'Degraded' : 
-               health?.status === 'unhealthy' ? 'Offline' : 'Checking...'}
+              {health?.status === "healthy"
+                ? "Operational"
+                : health?.status === "degraded"
+                  ? "Degraded"
+                  : health?.status === "unhealthy"
+                    ? "Offline"
+                    : "Checking..."}
             </span>
           </div>
         </div>
@@ -175,7 +188,7 @@ const SaarlandResearchCenter: React.FC = () => {
                 />
               </div>
             </div>
-            
+
             <div className="w-48">
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Kategorie
@@ -196,7 +209,9 @@ const SaarlandResearchCenter: React.FC = () => {
 
           <button
             type="submit"
-            disabled={isLoading || !query.trim() || health?.status === 'unhealthy'}
+            disabled={
+              isLoading || !query.trim() || health?.status === "unhealthy"
+            }
             className="w-full bg-saarland-blue text-white py-3 px-6 rounded-lg font-semibold hover:bg-saarland-blue/90 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
           >
             {isLoading ? (
@@ -233,7 +248,8 @@ const SaarlandResearchCenter: React.FC = () => {
               🎯 Research Ergebnisse
             </h2>
             <div className="text-sm text-gray-600">
-              {results.length} Treffer für "{query}" in {getCategoryLabel(searchCategory)}
+              {results.length} Treffer für &quot;{query}&quot; in{" "}
+              {getCategoryLabel(searchCategory)}
             </div>
           </div>
 
@@ -272,7 +288,7 @@ const SaarlandResearchCenter: React.FC = () => {
                       </div>
                     </div>
                   </div>
-                  
+
                   <Database className="w-5 h-5 text-gray-400" />
                 </div>
 
@@ -303,7 +319,8 @@ const SaarlandResearchCenter: React.FC = () => {
             Keine Ergebnisse gefunden
           </h3>
           <p className="text-gray-600">
-            Versuchen Sie andere Suchbegriffe oder wählen Sie eine andere Kategorie.
+            Versuchen Sie andere Suchbegriffe oder wählen Sie eine andere
+            Kategorie.
           </p>
         </div>
       )}
@@ -314,10 +331,11 @@ const SaarlandResearchCenter: React.FC = () => {
           🧠 Über das Research Center
         </h3>
         <p className="text-gray-700 leading-relaxed">
-          Das SAARLAND RESEARCH CENTER nutzt OpenAI's modernste Embedding-Modelle für 
-          semantische Suche in regionalen Inhalten. Die KI versteht den Kontext Ihrer 
-          Anfragen und findet relevante Informationen basierend auf Bedeutung, nicht nur 
-          Schlüsselwörtern. Regionale und offizielle Quellen werden automatisch bevorzugt.
+          Das SAARLAND RESEARCH CENTER nutzt OpenAI&apos;s modernste
+          Embedding-Modelle für semantische Suche in regionalen Inhalten. Die KI
+          versteht den Kontext Ihrer Anfragen und findet relevante Informationen
+          basierend auf Bedeutung, nicht nur Schlüsselwörtern. Regionale und
+          offizielle Quellen werden automatisch bevorzugt.
         </p>
       </div>
     </div>

@@ -1,130 +1,140 @@
-'use client'
+"use client";
 
-import React, { useState, useEffect } from 'react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
+import React, { useState, useEffect } from "react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 interface NewsItem {
-  id: string
-  title: string
-  description: string
-  source: string
-  pubDate: string
-  category: string
-  premium?: boolean
+  id: string;
+  title: string;
+  description: string;
+  source: string;
+  pubDate: string;
+  category: string;
+  premium?: boolean;
 }
 
 interface FootballScore {
-  homeTeam: string
-  awayTeam: string
-  homeScore: number
-  awayScore: number
-  status: string
-  minute?: number
+  homeTeam: string;
+  awayTeam: string;
+  homeScore: number;
+  awayScore: number;
+  status: string;
+  minute?: number;
 }
 
 interface UserProfile {
-  id: string
-  name: string
-  points: number
-  level: number
-  badges: string[]
-  premium: boolean
+  id: string;
+  name: string;
+  points: number;
+  level: number;
+  badges: string[];
+  premium: boolean;
 }
 
 export default function SaarCommunityDashboard() {
-  const [activeTab, setActiveTab] = useState('news')
-  const [news, setNews] = useState<NewsItem[]>([])
-  const [footballScores, setFootballScores] = useState<FootballScore[]>([])
-  const [userProfile, setUserProfile] = useState<UserProfile | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [isPremium, setIsPremium] = useState(false)
+  const [activeTab, setActiveTab] = useState("news");
+  const [news, setNews] = useState<NewsItem[]>([]);
+  const [footballScores, setFootballScores] = useState<FootballScore[]>([]);
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [isPremium, setIsPremium] = useState(false);
 
   useEffect(() => {
-    loadData()
-  }, [])
+    loadData();
+  }, []);
 
   const loadData = async () => {
     try {
-      setLoading(true)
+      setLoading(true);
 
       // Load news
-      const newsResponse = await fetch(`/api/saarnews?premium=${isPremium}&limit=5`)
-      const newsData = await newsResponse.json()
+      const newsResponse = await fetch(
+        `/api/saarnews?premium=${isPremium}&limit=5`,
+      );
+      const newsData = await newsResponse.json();
       if (newsData.success) {
-        setNews(newsData.news)
+        setNews(newsData.news);
       }
 
       // Load football scores
-      const footballResponse = await fetch('/api/saar-football?type=scores')
-      const footballData = await footballResponse.json()
+      const footballResponse = await fetch("/api/saar-football?type=scores");
+      const footballData = await footballResponse.json();
       if (footballData.success) {
-        setFootballScores(footballData.scores)
+        setFootballScores(footballData.scores);
       }
 
       // Load user profile
-      const communityResponse = await fetch('/api/community?type=profile&user_id=demo_user')
-      const communityData = await communityResponse.json()
+      const communityResponse = await fetch(
+        "/api/community?type=profile&user_id=demo_user",
+      );
+      const communityData = await communityResponse.json();
       if (communityData.success) {
-        setUserProfile(communityData.user)
+        setUserProfile(communityData.user);
       }
     } catch (error) {
-      console.error('Failed to load data:', error)
+      console.error("Failed to load data:", error);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   const handlePremiumUpgrade = async () => {
     try {
-      const response = await fetch('/api/premium/saarland', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("/api/premium/saarland", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          tier: 'premium',
-          user_id: 'demo_user',
-          payment_method: 'demo'
-        })
-      })
+          tier: "premium",
+          user_id: "demo_user",
+          payment_method: "demo",
+        }),
+      });
 
-      const data = await response.json()
+      const data = await response.json();
       if (data.success) {
-        setIsPremium(true)
-        alert(data.message)
-        loadData() // Reload with premium content
+        setIsPremium(true);
+        alert(data.message);
+        loadData(); // Reload with premium content
       }
     } catch (error) {
-      console.error('Premium upgrade failed:', error)
+      console.error("Premium upgrade failed:", error);
     }
-  }
+  };
 
   const handleNewsAction = async (action: string, newsId: string) => {
     try {
-      const response = await fetch('/api/saarnews', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("/api/saarnews", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           type: action,
-          user_id: 'demo_user',
-          data: { news_id: newsId }
-        })
-      })
+          user_id: "demo_user",
+          data: { news_id: newsId },
+        }),
+      });
 
-      const data = await response.json()
+      const data = await response.json();
       if (data.success) {
-        alert(data.message)
+        alert(data.message);
         // Update user points
         if (userProfile) {
           setUserProfile({
             ...userProfile,
-            points: userProfile.points + (data.points_earned || 3)
-          })
+            points: userProfile.points + (data.points_earned || 3),
+          });
         }
       }
     } catch (error) {
-      console.error('News action failed:', error)
+      console.error("News action failed:", error);
     }
-  }
+  };
 
   if (loading) {
     return (
@@ -134,7 +144,7 @@ export default function SaarCommunityDashboard() {
           <p className="text-gray-600">Lade Saarland Community...</p>
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -167,7 +177,7 @@ export default function SaarCommunityDashboard() {
                   {userProfile.badges.length} Badges
                 </div>
                 {!isPremium && (
-                  <Button 
+                  <Button
                     onClick={handlePremiumUpgrade}
                     className="bg-yellow-500 hover:bg-yellow-600 text-black"
                   >
@@ -188,16 +198,16 @@ export default function SaarCommunityDashboard() {
       {/* Navigation Tabs */}
       <div className="flex space-x-4 mb-6">
         {[
-          { id: 'news', label: '📰 Saarnews', icon: '📰' },
-          { id: 'football', label: '⚽ Saar-Fußball', icon: '⚽' },
-          { id: 'community', label: '🤝 Community', icon: '🤝' }
-        ].map(tab => (
+          { id: "news", label: "📰 Saarnews", icon: "📰" },
+          { id: "football", label: "⚽ Saar-Fußball", icon: "⚽" },
+          { id: "community", label: "🤝 Community", icon: "🤝" },
+        ].map((tab) => (
           <Button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            variant={activeTab === tab.id ? 'default' : 'outline'}
+            variant={activeTab === tab.id ? "default" : "outline"}
             className={`text-lg px-6 py-3 ${
-              activeTab === tab.id ? 'bg-blue-600 text-white' : ''
+              activeTab === tab.id ? "bg-blue-600 text-white" : ""
             }`}
           >
             {tab.icon} {tab.label}
@@ -206,7 +216,7 @@ export default function SaarCommunityDashboard() {
       </div>
 
       {/* Content Sections */}
-      {activeTab === 'news' && (
+      {activeTab === "news" && (
         <div className="grid gap-6">
           <div className="flex justify-between items-center">
             <h2 className="text-2xl font-bold text-gray-800">
@@ -221,30 +231,34 @@ export default function SaarCommunityDashboard() {
 
           <div className="grid gap-4">
             {news.map((item) => (
-              <Card key={item.id} className={item.premium ? 'border-yellow-400 bg-yellow-50' : ''}>
+              <Card
+                key={item.id}
+                className={item.premium ? "border-yellow-400 bg-yellow-50" : ""}
+              >
                 <CardHeader>
                   <div className="flex justify-between items-start">
                     <div className="flex-1">
                       <CardTitle className="text-lg flex items-center gap-2">
-                        {item.premium && '💎'}
+                        {item.premium && "💎"}
                         {item.title}
                       </CardTitle>
                       <CardDescription className="text-sm text-gray-600">
-                        {item.source} • {new Date(item.pubDate).toLocaleDateString('de-DE')}
+                        {item.source} •{" "}
+                        {new Date(item.pubDate).toLocaleDateString("de-DE")}
                       </CardDescription>
                     </div>
                     <div className="flex space-x-2">
                       <Button
                         size="sm"
                         variant="outline"
-                        onClick={() => handleNewsAction('share', item.id)}
+                        onClick={() => handleNewsAction("share", item.id)}
                       >
                         📤 Teilen (+3)
                       </Button>
                       <Button
                         size="sm"
                         variant="outline"
-                        onClick={() => handleNewsAction('bookmark', item.id)}
+                        onClick={() => handleNewsAction("bookmark", item.id)}
                       >
                         📌 Merken
                       </Button>
@@ -268,7 +282,7 @@ export default function SaarCommunityDashboard() {
         </div>
       )}
 
-      {activeTab === 'football' && (
+      {activeTab === "football" && (
         <div className="grid gap-6">
           <h2 className="text-2xl font-bold text-gray-800">
             ⚽ Saar-Fußball Live
@@ -286,15 +300,17 @@ export default function SaarCommunityDashboard() {
                       </div>
                       <span className="font-bold">{score.awayTeam}</span>
                     </div>
-                    {score.status === 'live' && (
+                    {score.status === "live" && (
                       <div className="flex items-center space-x-2">
                         <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
-                        <span className="text-red-600 font-bold">{score.minute}'</span>
+                        <span className="text-red-600 font-bold">
+                          {score.minute}&apos;
+                        </span>
                       </div>
                     )}
                   </CardTitle>
                   <CardDescription>
-                    {score.status === 'live' ? '🔴 LIVE' : '⏰ Anpfiff bald'}
+                    {score.status === "live" ? "🔴 LIVE" : "⏰ Anpfiff bald"}
                   </CardDescription>
                 </CardHeader>
               </Card>
@@ -313,7 +329,10 @@ export default function SaarCommunityDashboard() {
                   <li>• Ticket-Vorverkauf Benachrichtigungen</li>
                   <li>• VIP Fan-Events</li>
                 </ul>
-                <Button onClick={handlePremiumUpgrade} className="bg-yellow-500 hover:bg-yellow-600">
+                <Button
+                  onClick={handlePremiumUpgrade}
+                  className="bg-yellow-500 hover:bg-yellow-600"
+                >
                   Jetzt Premium holen!
                 </Button>
               </CardContent>
@@ -322,7 +341,7 @@ export default function SaarCommunityDashboard() {
         </div>
       )}
 
-      {activeTab === 'community' && userProfile && (
+      {activeTab === "community" && userProfile && (
         <div className="grid gap-6">
           <h2 className="text-2xl font-bold text-gray-800">
             🤝 Saarland Community
@@ -345,7 +364,9 @@ export default function SaarCommunityDashboard() {
                   </div>
                   <div className="flex justify-between">
                     <span>Badges</span>
-                    <span className="font-bold">{userProfile.badges.length} 🏅</span>
+                    <span className="font-bold">
+                      {userProfile.badges.length} 🏅
+                    </span>
                   </div>
                 </div>
               </CardContent>
@@ -356,24 +377,24 @@ export default function SaarCommunityDashboard() {
                 <CardTitle>🎯 Aktionen</CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
-                <Button 
-                  className="w-full" 
+                <Button
+                  className="w-full"
                   variant="outline"
-                  onClick={() => handleNewsAction('share', 'demo')}
+                  onClick={() => handleNewsAction("share", "demo")}
                 >
                   📰 News kommentieren (+5 Punkte)
                 </Button>
-                <Button 
-                  className="w-full" 
+                <Button
+                  className="w-full"
                   variant="outline"
-                  onClick={() => handleNewsAction('share', 'demo')}
+                  onClick={() => handleNewsAction("share", "demo")}
                 >
                   ⚽ Fußball diskutieren (+5 Punkte)
                 </Button>
-                <Button 
-                  className="w-full" 
+                <Button
+                  className="w-full"
                   variant="outline"
-                  onClick={() => handleNewsAction('share', 'demo')}
+                  onClick={() => handleNewsAction("share", "demo")}
                 >
                   📤 Content teilen (+3 Punkte)
                 </Button>
@@ -427,5 +448,5 @@ export default function SaarCommunityDashboard() {
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }
