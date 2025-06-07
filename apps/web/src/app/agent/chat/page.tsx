@@ -1,14 +1,14 @@
-'use client';
+"use client";
 
-import React, { useState, useEffect, useRef } from 'react';
-import { useRouter } from 'next/navigation';
-import { Send, Bot, User, Loader2, RefreshCw, History } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { supabaseBrowser } from '@/lib/supabase';
-import { v4 as uuidv4 } from 'uuid';
+import React, { useState, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
+import { Send, Bot, User, Loader2, RefreshCw, History } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { supabaseBrowser } from "@/lib/supabase";
+// Using crypto.randomUUID() instead of uuid package
 
 interface ChatMessage {
-  role: 'user' | 'assistant';
+  role: "user" | "assistant";
   content: string;
   timestamp?: string;
 }
@@ -16,32 +16,34 @@ interface ChatMessage {
 export default function AgentChatPage() {
   const router = useRouter();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
-  const [input, setInput] = useState('');
+  const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [sessionId, setSessionId] = useState<string>('');
+  const [sessionId, setSessionId] = useState<string>("");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const [streamingMessage, setStreamingMessage] = useState('');
+  const [streamingMessage, setStreamingMessage] = useState("");
 
   // Check authentication
   useEffect(() => {
     const checkAuth = async () => {
-      const { data: { session } } = await supabaseBrowser.auth.getSession();
+      const {
+        data: { session },
+      } = await supabaseBrowser.auth.getSession();
       if (!session) {
-        router.push('/auth?mode=login&redirect=/agent/chat');
+        router.push("/auth?mode=login&redirect=/agent/chat");
         return;
       }
       setIsAuthenticated(true);
-      
+
       // Initialize or retrieve session ID
-      const storedSessionId = localStorage.getItem('agent-session-id');
+      const storedSessionId = localStorage.getItem("agent-session-id");
       if (storedSessionId) {
         setSessionId(storedSessionId);
         loadSessionHistory(storedSessionId, session.access_token);
       } else {
-        const newSessionId = uuidv4();
+        const newSessionId = crypto.randomUUID();
         setSessionId(newSessionId);
-        localStorage.setItem('agent-session-id', newSessionId);
+        localStorage.setItem("agent-session-id", newSessionId);
       }
     };
 
@@ -50,17 +52,17 @@ export default function AgentChatPage() {
 
   // Auto-scroll to bottom
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, streamingMessage]);
 
   const loadSessionHistory = async (sessionId: string, token: string) => {
     try {
       const response = await fetch(`/api/agent/claude?sessionId=${sessionId}`, {
         headers: {
-          'Authorization': `Bearer ${token}`
-        }
+          Authorization: `Bearer ${token}`,
+        },
       });
-      
+
       if (response.ok) {
         const data = await response.json();
         if (data.session?.messages) {
@@ -68,7 +70,7 @@ export default function AgentChatPage() {
         }
       }
     } catch (error) {
-      console.error('Failed to load session history:', error);
+      console.error("Failed to load session history:", error);
     }
   };
 
@@ -76,45 +78,47 @@ export default function AgentChatPage() {
     if (!input.trim() || isLoading || !isAuthenticated) return;
 
     const userMessage = input.trim();
-    setInput('');
+    setInput("");
     setIsLoading(true);
-    setStreamingMessage('');
+    setStreamingMessage("");
 
     // Add user message
     const newUserMessage: ChatMessage = {
-      role: 'user',
+      role: "user",
       content: userMessage,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     };
-    setMessages(prev => [...prev, newUserMessage]);
+    setMessages((prev) => [...prev, newUserMessage]);
 
     try {
-      const { data: { session } } = await supabaseBrowser.auth.getSession();
+      const {
+        data: { session },
+      } = await supabaseBrowser.auth.getSession();
       if (!session) {
-        throw new Error('Not authenticated');
+        throw new Error("Not authenticated");
       }
 
-      const response = await fetch('/api/agent/claude', {
-        method: 'POST',
+      const response = await fetch("/api/agent/claude", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${session.access_token}`
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session.access_token}`,
         },
         body: JSON.stringify({
           message: userMessage,
           sessionId,
-          stream: true
-        })
+          stream: true,
+        }),
       });
 
       if (!response.ok) {
-        throw new Error('Failed to send message');
+        throw new Error("Failed to send message");
       }
 
       // Handle streaming response
       const reader = response.body?.getReader();
       const decoder = new TextDecoder();
-      let assistantMessage = '';
+      let assistantMessage = "";
 
       if (reader) {
         while (true) {
@@ -122,10 +126,10 @@ export default function AgentChatPage() {
           if (done) break;
 
           const chunk = decoder.decode(value);
-          const lines = chunk.split('\n');
+          const lines = chunk.split("\n");
 
           for (const line of lines) {
-            if (line.startsWith('data: ')) {
+            if (line.startsWith("data: ")) {
               try {
                 const data = JSON.parse(line.slice(6));
                 if (data.text) {
@@ -142,33 +146,37 @@ export default function AgentChatPage() {
         // Add complete assistant message
         if (assistantMessage) {
           const newAssistantMessage: ChatMessage = {
-            role: 'assistant',
+            role: "assistant",
             content: assistantMessage,
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
           };
-          setMessages(prev => [...prev, newAssistantMessage]);
-          setStreamingMessage('');
+          setMessages((prev) => [...prev, newAssistantMessage]);
+          setStreamingMessage("");
         }
       }
     } catch (error) {
-      console.error('Chat error:', error);
+      console.error("Chat error:", error);
       // Add error message
-      setMessages(prev => [...prev, {
-        role: 'assistant',
-        content: 'Entschuldigung, es ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.',
-        timestamp: new Date().toISOString()
-      }]);
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: "assistant",
+          content:
+            "Entschuldigung, es ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.",
+          timestamp: new Date().toISOString(),
+        },
+      ]);
     } finally {
       setIsLoading(false);
     }
   };
 
   const startNewSession = () => {
-    const newSessionId = uuidv4();
+    const newSessionId = crypto.randomUUID();
     setSessionId(newSessionId);
-    localStorage.setItem('agent-session-id', newSessionId);
+    localStorage.setItem("agent-session-id", newSessionId);
     setMessages([]);
-    setStreamingMessage('');
+    setStreamingMessage("");
   };
 
   if (!isAuthenticated) {
@@ -218,9 +226,13 @@ export default function AgentChatPage() {
             {messages.length === 0 && !streamingMessage && (
               <div className="text-center text-gray-500 py-12">
                 <Bot className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                <p>Willkommen! Wie kann ich Ihnen bei der KI-Automatisierung helfen?</p>
+                <p>
+                  Willkommen! Wie kann ich Ihnen bei der KI-Automatisierung
+                  helfen?
+                </p>
                 <p className="text-sm mt-2">
-                  Fragen Sie mich über Kosteneinsparungen, Prozessoptimierung oder KI-Integration.
+                  Fragen Sie mich über Kosteneinsparungen, Prozessoptimierung
+                  oder KI-Integration.
                 </p>
               </div>
             )}
@@ -229,22 +241,22 @@ export default function AgentChatPage() {
               <div
                 key={index}
                 className={`flex gap-3 ${
-                  message.role === 'user' ? 'justify-end' : 'justify-start'
+                  message.role === "user" ? "justify-end" : "justify-start"
                 }`}
               >
                 <div
                   className={`flex gap-3 max-w-[80%] ${
-                    message.role === 'user' ? 'flex-row-reverse' : 'flex-row'
+                    message.role === "user" ? "flex-row-reverse" : "flex-row"
                   }`}
                 >
                   <div
                     className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
-                      message.role === 'user'
-                        ? 'bg-saarland-blue text-white'
-                        : 'bg-innovation-cyan text-white'
+                      message.role === "user"
+                        ? "bg-saarland-blue text-white"
+                        : "bg-innovation-cyan text-white"
                     }`}
                   >
-                    {message.role === 'user' ? (
+                    {message.role === "user" ? (
                       <User className="w-5 h-5" />
                     ) : (
                       <Bot className="w-5 h-5" />
@@ -252,17 +264,23 @@ export default function AgentChatPage() {
                   </div>
                   <div
                     className={`px-4 py-2 rounded-lg ${
-                      message.role === 'user'
-                        ? 'bg-saarland-blue text-white'
-                        : 'bg-gray-100 text-gray-900'
+                      message.role === "user"
+                        ? "bg-saarland-blue text-white"
+                        : "bg-gray-100 text-gray-900"
                     }`}
                   >
                     <p className="whitespace-pre-wrap">{message.content}</p>
                     {message.timestamp && (
-                      <p className={`text-xs mt-1 ${
-                        message.role === 'user' ? 'text-blue-100' : 'text-gray-500'
-                      }`}>
-                        {new Date(message.timestamp).toLocaleTimeString('de-DE')}
+                      <p
+                        className={`text-xs mt-1 ${
+                          message.role === "user"
+                            ? "text-blue-100"
+                            : "text-gray-500"
+                        }`}
+                      >
+                        {new Date(message.timestamp).toLocaleTimeString(
+                          "de-DE",
+                        )}
                       </p>
                     )}
                   </div>
@@ -324,8 +342,9 @@ export default function AgentChatPage() {
         {/* Info Box */}
         <div className="bg-white rounded-xl shadow-sm p-4 mt-4">
           <p className="text-sm text-gray-600 text-center">
-            💡 <strong>Tipp:</strong> Fragen Sie nach konkreten Einsparungsmöglichkeiten, 
-            ROI-Berechnungen oder Automatisierungsstrategien für Ihr Unternehmen.
+            💡 <strong>Tipp:</strong> Fragen Sie nach konkreten
+            Einsparungsmöglichkeiten, ROI-Berechnungen oder
+            Automatisierungsstrategien für Ihr Unternehmen.
           </p>
         </div>
       </div>
