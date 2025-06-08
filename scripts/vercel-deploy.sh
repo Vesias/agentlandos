@@ -36,8 +36,10 @@ fi
 
 echo ""
 
-# Set project directory
-cd /Users/deepsleeping/agentlandos/apps/web
+# Set project directory relative to repo root
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+PROJECT_ROOT="$(git -C "$SCRIPT_DIR/.." rev-parse --show-toplevel)"
+cd "$PROJECT_ROOT/apps/web"
 
 echo "📁 Working Directory: $(pwd)"
 echo "🌐 Target Domain: agentland.saarland"
