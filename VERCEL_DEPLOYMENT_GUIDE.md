@@ -12,7 +12,10 @@ Ensure the following variables are set in the Vercel dashboard:
 - `SUPABASE_SERVICE_ROLE_KEY`
 - `OPENAI_API_KEY`
 
-You can also use `apps/web/vercel-env-setup.sh` to add them via the CLI.
+The repository provides an `env.production.example` file with the full list of
+required variables. Copy it to `.env.production` and fill in your secrets before
+deploying. You can also use `apps/web/vercel-env-setup.sh` to add them via the
+CLI.
 
 ## 2. Project Settings
 
