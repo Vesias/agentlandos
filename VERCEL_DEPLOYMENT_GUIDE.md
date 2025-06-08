@@ -7,10 +7,14 @@ This guide describes the recommended way to deploy the **Agentland Saarland** pr
 Ensure the following variables are set in the Vercel dashboard:
 
 - `DEEPSEEK_API_KEY`
+- `DEEPSEEK_API_URL`
+- `OPENAI_API_KEY`
+- `ANTHROPIC_API_KEY`
 - `NEXT_PUBLIC_SUPABASE_URL`
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 - `SUPABASE_SERVICE_ROLE_KEY`
-- `OPENAI_API_KEY`
+
+`NEXT_PUBLIC_API_URL` defaults to `/api` as defined in `vercel.json`.
 
 The repository provides an `env.production.example` file with the full list of
 required variables. Copy it to `.env.production` and fill in your secrets before
@@ -42,4 +46,4 @@ The script validates required environment variables and then executes `vercel --
 
 ---
 
-**Last Updated:** 8 June 2025
+**Last Updated:** 9 June 2025
