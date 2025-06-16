@@ -55,7 +55,7 @@
     "react-hook-form": "^7.57.0",
     "stripe": "^18.2.1",
     "swr": "^2.3.3",
-    "tailwind-merge": "^2.6.0",
+    "tailwind-merge": "^3.3.1",
     "tailwindcss-animate": "^1.0.7",
     "uuid": "^11.1.0",
     "workbox-webpack-plugin": "^7.3.0",
