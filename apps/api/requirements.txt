@@ -3,7 +3,7 @@ pydantic==2.5.0
 typing-extensions==4.8.0
 
 certifi==2025.4.26
-aiohttp==3.12.9
+aiohttp==3.12.14
 
 redis[async]==5.0.1
 sqlalchemy[asyncio]==2.0.23
